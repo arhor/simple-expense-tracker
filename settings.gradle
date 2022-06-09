@@ -1,0 +1,29 @@
+// @formatter:off
+pluginManagement {
+    plugins {
+        id "org.flywaydb.flyway"             version settings["app.version.flyway"]
+        id "org.springframework.boot"        version settings["app.version.springBoot"]
+        id "io.spring.dependency-management" version settings["app.version.springDependencyManagement"]
+        id "com.github.node-gradle.node"     version settings["app.version.nodeGradlePlugin"]
+        id "io.freefair.lombok"              version settings["app.version.lombok"]
+        id "org.jsonschema2dataclass"        version settings["app.version.json2pojo"]
+    }
+}
+
+rootProject.name = "simple-expense-tracker"
+
+include ":app-client"
+include ":app-model"
+include ":app-server"
+
+dependencyResolutionManagement {
+    versionCatalogs {
+        libs {
+            this.properties
+                .findAll { it.key.startsWith "app.version." }
+                .collectEntries { [it.key - "app.version.", it.value] }
+                .each { version (it.key, it.value) }
+        }
+    }
+}
+// @formatter:on

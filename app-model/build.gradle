@@ -1,0 +1,58 @@
+import com.github.gradle.node.npm.task.NpmTask
+
+plugins {
+    id "idea"
+    id "java-library"
+    id "org.jsonschema2dataclass"
+    id "com.github.node-gradle.node"
+}
+
+node {
+    version = libs.versions.node.get()
+    download = true
+
+    def rootGradleDir = "${rootDir}/.gradle"
+
+    workDir = file("${rootGradleDir}/nodejs")
+    npmWorkDir = file("${rootGradleDir}/npm")
+    yarnWorkDir = file("${rootGradleDir}/yarn")
+}
+
+idea {
+    module {
+        excludeDirs += files(
+            "$projectDir/node_modules",
+        )
+    }
+}
+
+dependencies {
+    implementation "com.fasterxml.jackson.core:jackson-databind:${libs.versions.jackson.get()}"
+    implementation "javax.validation:validation-api:${libs.versions.javaxValidation.get()}"
+    implementation "com.google.code.findbugs:jsr305:${libs.versions.findbugsJsr305.get()}"
+}
+
+jsonSchema2Pojo {
+    targetVersion = "17"
+    targetPackage = "com.github.arhor.simple.expense.tracker.model"
+    removeOldOutput = true
+    includeJsr303Annotations = true
+    includeJsr305Annotations = true
+    includeSetters = true
+    includeGetters = true
+    useOptionalForGetters = true
+    useBigDecimals = true
+    useLongIntegers = true
+    dateTimeType = "java.time.LocalDateTime"
+}
+
+task generateJsonSchema2TypeScript(type: NpmTask, dependsOn: npmInstall) {
+    group = "build"
+    description = "Builds d.ts files according to the provided schemas"
+    workingDir.fileValue(projectDir)
+    args = ["run", "build"]
+}
+
+build {
+    dependsOn generateJsonSchema2TypeScript
+}

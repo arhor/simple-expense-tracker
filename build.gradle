@@ -1,0 +1,36 @@
+plugins {
+    id "base"
+}
+
+ext {
+    env = Dotenv.configure().location("$rootDir").allowMissingFile(true).load()
+}
+
+wrapper {
+    gradleVersion = libs.versions.gradle.get()
+}
+
+allprojects {
+    repositories {
+        mavenCentral()
+    }
+}
+
+task stage(type: Jar, dependsOn: [":app-client:build", ":app-server:build"]) {
+    group = "build"
+    description = "Created composite Jar file including client and server part"
+
+    entryCompression = ZipEntryCompression.STORED
+
+    def serverBuild = zipTree("${project(":app-server").buildDir}/libs/app-server.jar")
+    def clientBuild = "${project(":app-client").projectDir}/dist"
+
+    from(serverBuild) { into "/" }
+    from(clientBuild) { into "/BOOT-INF/classes/static" }
+
+    manifest {
+        from {
+            serverBuild.find { it.name == "MANIFEST.MF" }
+        }
+    }
+}

@@ -1,0 +1,12 @@
+{
+  "name": "app-model",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "build": "node index.js"
+  },
+  "type": "module",
+  "dependencies": {
+    "json-schema-to-typescript": "^10.1.5"
+  }
+}

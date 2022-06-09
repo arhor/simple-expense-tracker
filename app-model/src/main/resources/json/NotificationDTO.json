@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Notification",
+  "type": "object",
+  "properties": {
+    "severity": {
+      "type": "string",
+      "enum": [
+        "error",
+        "success",
+        "warning",
+        "info"
+      ]
+    },
+    "message": {
+      "type": "string",
+      "minLength": 3,
+      "maxLength": 50
+    }
+  },
+  "additionalProperties": false
+}

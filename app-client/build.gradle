@@ -1,0 +1,56 @@
+import com.github.gradle.node.npm.task.NpmTask
+import com.github.gradle.node.npm.task.NpxTask
+
+plugins {
+    id "com.github.node-gradle.node"
+    id "idea"
+}
+
+description = "app-client"
+
+node {
+    version = property("app.version.node")
+    download = true
+
+    workDir = file("${rootDir}/.gradle/nodejs")
+    npmWorkDir = file("${rootDir}/.gradle/npm")
+    yarnWorkDir = file("${rootDir}/.gradle/yarn")
+}
+
+idea {
+    module {
+        excludeDirs += files(
+            "$projectDir/node_modules",
+            "$projectDir/dist",
+        )
+    }
+}
+
+def generatedSourcesDir = "src/generated"
+
+task clearGeneratedModel(type: Delete) {
+    delete generatedSourcesDir
+}
+
+task copyGeneratedModel(type: Copy, dependsOn: [clearGeneratedModel, ":app-model:build"]) {
+    from "${project(":app-model").buildDir}/generated/sources/js2ts"
+    into "${projectDir}/${generatedSourcesDir}"
+}
+
+task updateBrowserlist(type: NpxTask, dependsOn: npmInstall) {
+    workingDir.fileValue(projectDir)
+    command.set("browserslist@latest")
+    args = ["--update-db"]
+}
+
+task test(type: NpmTask, dependsOn: [updateBrowserlist, copyGeneratedModel]) {
+    group = "verification"
+    workingDir.fileValue(projectDir)
+    args = ["run", "test"]
+}
+
+task build(type: NpmTask, dependsOn: test) {
+    group = "build"
+    workingDir.fileValue(projectDir)
+    args = ["run", "build"]
+}
