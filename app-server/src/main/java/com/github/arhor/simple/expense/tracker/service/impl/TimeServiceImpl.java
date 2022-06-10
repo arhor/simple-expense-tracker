@@ -46,15 +46,18 @@ public class TimeServiceImpl implements TimeService {
         final OffsetDateTime startDate,
         final OffsetDateTime endDate
     ) {
-        var systemStartDate = toSystemLocalDateTime(
-            (startDate != null)
+        final var startDatePresent = startDate != null;
+        final var endDatePresent = endDate != null;
+
+        final var systemStartDate = toSystemLocalDateTime(
+            startDatePresent
                 ? startDate
-                : OffsetDateTime.now().with(firstDayOfMonth())
+                : (endDatePresent ? endDate : OffsetDateTime.now()).with(firstDayOfMonth())
         );
-        var systemEndDate = toSystemLocalDateTime(
-            (endDate != null)
+        final var systemEndDate = toSystemLocalDateTime(
+            endDatePresent
                 ? endDate
-                : OffsetDateTime.now().with(lastDayOfMonth())
+                : (startDatePresent ? startDate : OffsetDateTime.now()).with(lastDayOfMonth())
         );
         if (systemStartDate.isAfter(systemEndDate)) {
             throw new IllegalStateException(
