@@ -1,13 +1,14 @@
 import log from 'loglevel';
-import { action, observable, makeObservable, runInAction } from 'mobx';
+import { action, makeObservable, observable } from 'mobx';
 
-import { getCurrentUser } from '@/api/userClient';
-import { RootStore } from '@/store/RootStore';
+import client from '@/api/client.js';
+import { UserResponse } from '@/generated/UserResponse';
+import { Store } from '@/store/Store';
 import { Optional } from '@/utils/core-utils';
 
 export default class UserStore {
 
-    root?: RootStore;
+    root?: Store;
 
     id: Optional<number> = null;
     username: Optional<string> = null;
@@ -19,31 +20,41 @@ export default class UserStore {
             id: observable,
             username: observable,
             authenticated: observable,
+            signUp: action.bound,
             fetchData: action.bound,
+            setData: action.bound,
+            clear: action.bound,
         });
+    }
+
+    async signUp(username: string, password: string): Promise<void> {
+        const { data } = await client.post('/users', {
+            username,
+            password,
+        });
+        this.setData(data);
     }
 
     async fetchData(): Promise<void> {
         if (!this.authenticated) {
             try {
-                const user = await getCurrentUser();
-
-                log.debug('Sucessfully fetched current user');
-
-                runInAction(() => {
-                    this.id = user.id;
-                    this.username = user.username;
-                    this.authenticated = true;
-                });
+                const { data } = await client.get('/users/current');
+                log.debug('Successfully fetched current user');
+                this.setData(data);
             } catch (e) {
                 log.error('Unable to fetch current user info', e);
-
-                runInAction(() => {
-                    this.id = null;
-                    this.username = null;
-                    this.authenticated = false;
-                });
+                this.clear();
             }
         }
+    }
+
+    setData(data: Partial<UserResponse>) {
+        this.id = data.id;
+        this.username = data.username;
+        this.authenticated = Boolean(data.id) && Boolean(data.username);
+    }
+
+    clear() {
+        this.setData({});
     }
 }

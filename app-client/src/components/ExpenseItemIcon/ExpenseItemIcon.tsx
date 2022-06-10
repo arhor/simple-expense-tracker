@@ -21,9 +21,9 @@ export type Props = {
     icon: Optional<string>;
 };
 
-const CustomIcon = (props: Props) => {
+const ExpenseItemIcon = (props: Props) => {
     const IconComponent = availableIcons.get(props.icon) ?? QuestionMarkIcon;
     return <IconComponent />;
 };
 
-export default CustomIcon;
+export default ExpenseItemIcon;

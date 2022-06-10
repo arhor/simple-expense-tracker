@@ -2,18 +2,18 @@ import ExpenseStore from '@/store/expense';
 import NotificationStore from '@/store/notification';
 import UserStore from '@/store/user';
 
-export type RootStore = {
+export type Store = {
     user: UserStore;
     expense: ExpenseStore;
     notification: NotificationStore;
 };
 
-export default class implements RootStore {
+export class RootStore implements Store {
     user: UserStore;
     expense: ExpenseStore;
     notification: NotificationStore;
 
-    constructor(provided: Partial<RootStore> = {}) {
+    constructor(provided: Partial<Store> = {}) {
         this.user = Object.assign(provided.user ?? new UserStore(), {
             root: this,
         });

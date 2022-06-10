@@ -15,6 +15,9 @@ public interface ExpenseRepository extends BaseRepository<Expense, Long> {
     @Query("SELECT e.* FROM expenses e WHERE e.deleted = FALSE AND e.user_id = :userId")
     List<Expense> findByUserId(Long userId);
 
+    @Query("SELECT e.* FROM expenses e WHERE e.deleted = FALSE AND e.user_id = :userId AND e.id = :expenseId")
+    Optional<Expense> findByUserIdAndExpenseId(Long userId, Long expenseId);
+
     @Override
     @Modifying
     @Query("UPDATE expenses SET deleted = TRUE WHERE id IN (:ids)")

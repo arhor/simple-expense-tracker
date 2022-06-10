@@ -11,6 +11,8 @@ import SignUp from '@/views/SignUp';
 const AppLayout = withSecurity(lazy(() => import('@/AppLayout')));
 
 const Home = lazy(() => import('@/views/Home'));
+const ExpenseCreate = lazy(() => import( '@/views/ExpenseCreate'));
+const ExpenseUpdate = lazy(() => import( '@/views/ExpenseUpdate'));
 const Reports = lazy(() => import( '@/views/Reports'));
 const Settings = lazy(() => import( '@/views/Settings'));
 
@@ -28,6 +30,8 @@ const AppRouter = () => (
                 }
             >
                 <Route index element={<Home />} />
+                <Route path="/expenses" element={<ExpenseCreate />} />
+                <Route path="/expenses/:id" element={<ExpenseUpdate />} />
                 <Route path="/reports" element={<Reports />} />
                 <Route path="/settings" element={<Settings />} />
             </Route>

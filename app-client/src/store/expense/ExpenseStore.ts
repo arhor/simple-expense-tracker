@@ -1,15 +1,15 @@
 import log from 'loglevel';
-import { action, computed, observable, makeObservable, runInAction } from 'mobx';
+import { action, computed, makeObservable, observable } from 'mobx';
 
-import { getCurrentUserExpenses } from '@/api/expenseClient';
-import { ExpenseDTO } from '@/generated/ExpenseDTO';
-import { RootStore } from '@/store/RootStore';
+import client from '@/api/client.js';
+import { ExpenseResponseDTO } from '@/generated/ExpenseResponseDTO';
+import { Store } from '@/store/Store';
 
 export default class ExpenseStore {
 
-    root?: RootStore;
+    root?: Store;
 
-    items: ExpenseDTO[] = [];
+    items: ExpenseResponseDTO[] = [];
     loaded = false;
 
     constructor() {
@@ -18,7 +18,9 @@ export default class ExpenseStore {
             items: observable,
             loaded: observable,
             totalAmount: computed,
-            fetchData: action.bound
+            fetchData: action.bound,
+            setData: action.bound,
+            clear: action.bound,
         });
     }
 
@@ -31,21 +33,21 @@ export default class ExpenseStore {
             return;
         }
         try {
-            const expenses = await getCurrentUserExpenses();
-
+            const { data } = await client.get('/expenses');
             log.debug('Successfully fetched current user expenses');
-
-            runInAction(() => {
-                this.items = expenses;
-                this.loaded = true;
-            });
+            this.setData(data, true);
         } catch (e) {
             log.error('Unable to fetch current user expenses', e);
-
-            runInAction(() => {
-                this.items = [];
-                this.loaded = false;
-            });
+            this.clear();
         }
+    }
+
+    setData(items: ExpenseResponseDTO[], loaded: boolean): void {
+        this.items = items;
+        this.loaded = loaded;
+    }
+
+    clear() {
+        this.setData([], false);
     }
 }

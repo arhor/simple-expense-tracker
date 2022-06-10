@@ -2,46 +2,51 @@ import { ComponentStoryObj, ComponentMeta } from '@storybook/react';
 
 import log from 'loglevel';
 
-import ExpenseList from '@/components/ExpenseList';
+import ExpenseItemList from '@/components/ExpenseItemList';
 
 log.setLevel('INFO');
 
 export default {
-    title: 'Library/ExpenseList',
-    component: ExpenseList,
-} as ComponentMeta<typeof ExpenseList>;
+    title: 'Library/ExpenseItemList',
+    component: ExpenseItemList,
+} as ComponentMeta<typeof ExpenseItemList>;
 
-export const Default: ComponentStoryObj<typeof ExpenseList> = {
+export const Default: ComponentStoryObj<typeof ExpenseItemList> = {
     args: {
         expenses: [
             {
                 id: 1,
                 name: 'Miscellaneous',
                 total: 10.15,
+                currency: 'USD',
             },
             {
                 id: 2,
                 icon: 'coffee',
                 name: 'Coffee',
-                total: 25.75
+                total: 25.75,
+                currency: 'USD',
             },
             {
                 id: 3,
                 icon: 'cloth',
                 name: 'Clothing',
-                total: 130.53
+                total: 130.53,
+                currency: 'USD',
             },
             {
                 id: 4,
                 icon: 'fastfood',
                 name: 'Junk food',
-                total: 31.99
+                total: 31.99,
+                currency: 'USD',
             },
             {
                 id: 5,
                 icon: 'home',
                 name: 'Household',
-                total: 379
+                total: 379,
+                currency: 'USD',
             },
         ],
         onCreate: () => {

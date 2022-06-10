@@ -15,7 +15,6 @@ public class ExpenseItem extends DomainObject<Long> {
 
     private Long expenseId;
     private BigDecimal amount;
-    private Currency currency;
     private LocalDateTime timestamp;
     private String comment;
 }

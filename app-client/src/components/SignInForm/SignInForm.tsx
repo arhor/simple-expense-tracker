@@ -12,23 +12,22 @@ import Link from '@mui/material/Link';
 import Stack from '@mui/material/Stack';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
-import useMediaQuery from '@mui/material/useMediaQuery';
 
 import { useStore } from '@/store';
 
 const SignInForm = () => {
     const { user } = useStore();
-    const orientationPortrait = useMediaQuery('(orientation: portrait)');
 
     return user.authenticated ? (
         <Navigate to={{ pathname: '/' }} />
     ) : (
         <Box
             sx={{
-                marginTop: orientationPortrait ? 20 : 0,
                 display: 'flex',
                 flexDirection: 'column',
                 alignItems: 'center',
+                justifyContent: 'center',
+                height: '100vh',
             }}
         >
             <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>

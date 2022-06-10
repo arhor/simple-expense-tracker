@@ -1,6 +1,6 @@
 import { action, makeObservable, observable } from 'mobx';
 
-import { RootStore } from '@/store/RootStore';
+import { Store } from '@/store/Store';
 import { generateUUID, Optional } from '@/utils/core-utils';
 
 type Notification = {
@@ -13,7 +13,7 @@ type NotificationId = string | number;
 
 export default class NotificationStore {
 
-    root?: RootStore;
+    root?: Store;
 
     items: (Notification & { id: NotificationId })[] = [];
 

@@ -1,2 +1,2 @@
 export * from '@/store/StoreProvider';
-export * from '@/store/RootStore';
+export * from '@/store/Store';

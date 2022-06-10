@@ -1,7 +1,6 @@
-import { FormEvent } from 'react';
+import { FormEvent, useState } from 'react';
 
-import log from 'loglevel';
-import { Link as RouterLink, Navigate } from 'react-router-dom';
+import { Link as RouterLink, Navigate, useNavigate } from 'react-router-dom';
 
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Avatar from '@mui/material/Avatar';
@@ -11,46 +10,68 @@ import Grid from '@mui/material/Grid';
 import Link from '@mui/material/Link';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
-import useMediaQuery from '@mui/material/useMediaQuery';
 
-import { signUp } from '@/api/userClient';
-import { UserDto } from '@/generated/UserDto';
+import { UserRequest } from '@/generated/UserRequest';
 import { useStore } from '@/store';
-import { REG_EXP_EMAIL } from '@/utils/patterns';
+import { Optional } from '@/utils/core-utils';
 import { defineValidator } from '@/utils/validation-utils';
 
-const validator = defineValidator<UserDto>({
-    email: [
+const USERNAME_REG_EXP = /^.+$/;
+const PASSWORD_REG_EXP = /^.+$/;
+
+const validator = defineValidator<UserRequest>({
+    username: [
         (v) => !!v
-            || 'E-mail is required',
-        (v) => (v && REG_EXP_EMAIL.test(v))
-            || 'E-mail must be valid'
+            || 'Username is required',
+        (v) => (v && v.length >= 4)
+            || 'Username must have more than 3 characters',
+        (v) => (v && v.length <= 20)
+            || 'Username must have less than 21 character',
+        (v) => (v && USERNAME_REG_EXP.test(v))
+            || 'Username must be valid'
     ],
     password: [
         (v) => !!v
             || 'Password is required',
-        (v) => (v && v.length <= 10)
-            || 'Password must be less than 10 characters',
+        (v) => (v && v.length >= 6)
+            || 'Password must have more than 5 characters',
+        (v) => (v && v.length <= 20)
+            || 'Password must have less than 21 character',
+        (v) => (v && PASSWORD_REG_EXP.test(v))
+            || 'Password must be valid'
     ]
 });
 
-log.info(validator);
-
 const SignUpForm = () => {
     const { user } = useStore();
-    const orientationPortrait = useMediaQuery('(orientation: portrait)');
+    const navigate = useNavigate();
+    const [ errors, setErrors ] = useState<Partial<UserRequest>>({})
+
+    const formIsValid = () => {
+        for (const error in Object.values(errors)) {
+            if (error) {
+                return false;
+            }
+        }
+        return true;
+    };
 
     const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
         const formData = new FormData(e.currentTarget);
 
-        const username = formData.get('username');
-        const password = formData.get('password');
+        const username = formData.get('username') as Optional<string>;
+        const password = formData.get('password') as Optional<string>;
 
-        if ((typeof username === 'string') && (typeof password === 'string')) {
-            const response = await signUp(username, password);
-            log.info(response);
+        const currentErrors = validator({ username, password });
+
+        setErrors(currentErrors);
+
+        if (formIsValid()) {
+            user.signUp(username as string, password as string).then(() => {
+                navigate('/');
+            });
         }
     };
 
@@ -59,10 +80,11 @@ const SignUpForm = () => {
     ) : (
         <Box
             sx={{
-                marginTop: orientationPortrait ? 20 : 0,
                 display: 'flex',
                 flexDirection: 'column',
                 alignItems: 'center',
+                justifyContent: 'center',
+                height: '100vh',
             }}
         >
             <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
@@ -79,8 +101,11 @@ const SignUpForm = () => {
                             name="username"
                             label="Username"
                             margin="normal"
+                            error={Boolean(errors.username)}
+                            helperText={errors.username}
                             required
                             fullWidth
+                            sx={{ mb: 5 }}
                         />
                     </Grid>
                     <Grid item xs={10}>
@@ -90,8 +115,11 @@ const SignUpForm = () => {
                             type="password"
                             label="Password"
                             margin="normal"
+                            error={Boolean(errors.password)}
+                            helperText={errors.password}
                             required
                             fullWidth
+                            sx={{ mb: 5 }}
                         />
                     </Grid>
                     <Grid item xs={10}>

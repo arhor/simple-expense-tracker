@@ -5,18 +5,27 @@
     "id": {
       "type": "integer"
     },
-    "email": {
+    "name": {
       "type": "string"
     },
-    "password": {
+    "total": {
+      "type": "number"
+    },
+    "currency": {
+      "$ref": "Currency.json"
+    },
+    "icon": {
       "type": "string"
     },
-    "externalId": {
-      "type": "string"
-    },
-    "externalProvider": {
+    "color": {
       "type": "string"
     }
   },
+  "required": [
+    "id",
+    "name",
+    "total",
+    "currency"
+  ],
   "additionalProperties": false
 }

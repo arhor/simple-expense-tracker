@@ -1,15 +1,15 @@
 import Grid from '@mui/material/Grid';
 
-import ExpenseItem, { Props as ExpenseItemProps } from '@/components/ExpenseItem';
-import { ExpenseDTO } from '@/generated/ExpenseDTO';
+import ExpenseItem from '@/components/ExpenseItem';
+import { ExpenseResponseDTO } from '@/generated/ExpenseResponseDTO';
 
 export type Props = {
-    expenses: ExpenseDTO[];
+    expenses: ExpenseResponseDTO[];
     onCreate: () => void;
     onUpdate: (expenseId: number) => void;
 };
 
-const ExpenseList = ({ expenses, onCreate, onUpdate }: Props) => (
+const ExpenseItemList = ({ expenses, onCreate, onUpdate }: Props) => (
     <Grid container spacing={{ xs: 3 }} columns={{ xs: 3, sm: 4 }}>
         {expenses.map((expense, index) => (
             <Grid item xs={1} key={index}>
@@ -22,4 +22,4 @@ const ExpenseList = ({ expenses, onCreate, onUpdate }: Props) => (
     </Grid>
 );
 
-export default ExpenseList;
+export default ExpenseItemList;

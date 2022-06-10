@@ -7,16 +7,17 @@ import org.mapstruct.Mapping;
 import com.github.arhor.simple.expense.tracker.config.mapping.IgnoreAuditProps;
 import com.github.arhor.simple.expense.tracker.config.mapping.MapStructConfig;
 import com.github.arhor.simple.expense.tracker.data.model.Expense;
-import com.github.arhor.simple.expense.tracker.model.ExpenseDTO;
+import com.github.arhor.simple.expense.tracker.model.ExpenseRequestDTO;
+import com.github.arhor.simple.expense.tracker.model.ExpenseResponseDTO;
 
 @Mapper(config = MapStructConfig.class)
 public interface ExpenseConverter {
 
     @IgnoreAuditProps
     @Mapping(target = "userId", ignore = true)
-    Expense mapDtoToEntity(ExpenseDTO item);
+    Expense mapToEntity(ExpenseRequestDTO item);
 
     @InheritInverseConfiguration
     @Mapping(target = "total", ignore = true)
-    ExpenseDTO mapEntityToDto(Expense item);
+    ExpenseResponseDTO mapToDTO(Expense item);
 }

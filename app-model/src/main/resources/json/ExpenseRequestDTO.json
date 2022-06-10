@@ -2,14 +2,11 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "type": "object",
   "properties": {
-    "id": {
-      "type": "integer"
-    },
     "name": {
       "type": "string"
     },
-    "total": {
-      "type": "number"
+    "currency": {
+      "$ref": "Currency.json"
     },
     "icon": {
       "type": "string"
@@ -19,9 +16,8 @@
     }
   },
   "required": [
-    "id",
     "name",
-    "total"
+    "currency"
   ],
   "additionalProperties": false
 }
