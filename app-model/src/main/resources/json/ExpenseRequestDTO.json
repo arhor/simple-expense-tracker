@@ -5,9 +5,6 @@
     "name": {
       "type": "string"
     },
-    "currency": {
-      "$ref": "Currency.json"
-    },
     "icon": {
       "type": "string"
     },
@@ -16,8 +13,7 @@
     }
   },
   "required": [
-    "name",
-    "currency"
+    "name"
   ],
   "additionalProperties": false
 }

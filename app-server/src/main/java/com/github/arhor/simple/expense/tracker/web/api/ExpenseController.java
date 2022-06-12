@@ -2,8 +2,9 @@ package com.github.arhor.simple.expense.tracker.web.api;
 
 import lombok.RequiredArgsConstructor;
 
-import java.time.OffsetDateTime;
+import java.time.LocalDate;
 import java.util.List;
+import java.util.TimeZone;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -46,28 +47,30 @@ public class ExpenseController {
     @GetMapping
     @PreAuthorize("isAuthenticated()")
     public List<ExpenseResponseDTO> getUserExpenses(
-        @RequestParam(required = false) final OffsetDateTime startDate,
-        @RequestParam(required = false) final OffsetDateTime endDate,
+        @RequestParam(required = false) final LocalDate startDate,
+        @RequestParam(required = false) final LocalDate endDate,
+        final TimeZone timezone,
         final Authentication auth
     ) {
-        var currentUserId = userService.determineUserId(auth);
-        var dateTimeRange = timeService.convertToSystemTimeRange(startDate, endDate);
+        final var currentUserId = userService.determineUserId(auth);
+        final var dateRange = timeService.convertToDateRange(startDate, endDate, timezone);
 
-        return expenseService.getUserExpenses(currentUserId, dateTimeRange);
+        return expenseService.getUserExpenses(currentUserId, dateRange);
     }
 
     @GetMapping("/{expenseId}")
     @PreAuthorize("isAuthenticated()")
     public ExpenseResponseDTO getExpenseById(
         @PathVariable final Long expenseId,
-        @RequestParam(required = false) final OffsetDateTime startDate,
-        @RequestParam(required = false) final OffsetDateTime endDate,
+        @RequestParam(required = false) final LocalDate startDate,
+        @RequestParam(required = false) final LocalDate endDate,
+        final TimeZone timezone,
         final Authentication auth
     ) {
-        var currentUserId = userService.determineUserId(auth);
-        var dateTimeRange = timeService.convertToSystemTimeRange(startDate, endDate);
+        final var currentUserId = userService.determineUserId(auth);
+        final var dateRange = timeService.convertToDateRange(startDate, endDate, timezone);
 
-        return expenseService.getUserExpenseById(currentUserId, expenseId, dateTimeRange);
+        return expenseService.getUserExpenseById(currentUserId, expenseId, dateRange);
     }
 
     @PostMapping
@@ -76,10 +79,10 @@ public class ExpenseController {
         @RequestBody final ExpenseRequestDTO requestDTO,
         final Authentication auth
     ) {
-        var currentUserId = userService.determineUserId(auth);
-        var createdExpense = expenseService.createUserExpense(currentUserId, requestDTO);
+        final var currentUserId = userService.determineUserId(auth);
+        final var createdExpense = expenseService.createUserExpense(currentUserId, requestDTO);
 
-        var location =
+        final var location =
             ServletUriComponentsBuilder.fromCurrentRequestUri()
                 .path("/{expenseId}")
                 .build(createdExpense.getId());

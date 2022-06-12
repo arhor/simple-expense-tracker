@@ -7,11 +7,15 @@
     },
     "username": {
       "type": "string"
+    },
+    "currency": {
+      "type": "string"
     }
   },
   "required": [
     "id",
-    "username"
+    "username",
+    "currency"
   ],
   "additionalProperties": false
 }

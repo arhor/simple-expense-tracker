@@ -7,11 +7,15 @@
     },
     "password": {
       "type": "string"
+    },
+    "currency": {
+      "type": "string"
     }
   },
   "required": [
     "username",
-    "password"
+    "password",
+    "currency"
   ],
   "additionalProperties": false
 }

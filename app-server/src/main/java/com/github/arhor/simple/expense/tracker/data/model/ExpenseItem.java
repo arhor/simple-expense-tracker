@@ -4,7 +4,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 import org.springframework.data.relational.core.mapping.Table;
 
@@ -13,8 +13,9 @@ import org.springframework.data.relational.core.mapping.Table;
 @EqualsAndHashCode(callSuper = true)
 public class ExpenseItem extends DomainObject<Long> {
 
-    private Long expenseId;
+    private LocalDate date;
     private BigDecimal amount;
-    private LocalDateTime timestamp;
+    private String currency;
     private String comment;
+    private Long expenseId;
 }

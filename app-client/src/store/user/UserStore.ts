@@ -51,7 +51,7 @@ export default class UserStore {
     setData(data: Partial<UserResponse>) {
         this.id = data.id;
         this.username = data.username;
-        this.authenticated = Boolean(data.id) && Boolean(data.username);
+        this.authenticated = ((data.id !== null) && (data.id !== undefined));
     }
 
     clear() {

@@ -1,6 +1,6 @@
 package com.github.arhor.simple.expense.tracker.data.repository;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.data.jdbc.repository.query.Query;
@@ -18,6 +18,6 @@ public interface ExpenseItemRepository extends BaseRepository<ExpenseItem, Long>
         SELECT ei.*
         FROM expense_items ei
         WHERE ei.expense_id = :expenseId
-          AND ei.timestamp BETWEEN :startDate AND :endDate""")
-    List<ExpenseItem> findByExpenseIdAndDateRange(Long expenseId, LocalDateTime startDate, LocalDateTime endDate);
+          AND ei.date BETWEEN :startDate AND :endDate""")
+    List<ExpenseItem> findByExpenseIdAndDateRange(Long expenseId, LocalDate startDate, LocalDate endDate);
 }

@@ -2,17 +2,19 @@ package com.github.arhor.simple.expense.tracker.service.impl;
 
 import lombok.RequiredArgsConstructor;
 
-import java.math.BigDecimal;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 
+import javax.money.Monetary;
+
+import org.javamoney.moneta.FastMoney;
+import org.javamoney.moneta.Money;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.github.arhor.simple.expense.tracker.data.model.ExpenseItem;
+import com.github.arhor.simple.expense.tracker.data.model.InternalUser;
 import com.github.arhor.simple.expense.tracker.data.repository.ExpenseItemRepository;
 import com.github.arhor.simple.expense.tracker.data.repository.ExpenseRepository;
 import com.github.arhor.simple.expense.tracker.data.repository.UserRepository;
@@ -21,9 +23,9 @@ import com.github.arhor.simple.expense.tracker.model.ExpenseItemDTO;
 import com.github.arhor.simple.expense.tracker.model.ExpenseRequestDTO;
 import com.github.arhor.simple.expense.tracker.model.ExpenseResponseDTO;
 import com.github.arhor.simple.expense.tracker.service.ExpenseService;
+import com.github.arhor.simple.expense.tracker.service.MoneyConverter;
 import com.github.arhor.simple.expense.tracker.service.TimeService.TemporalRange;
 import com.github.arhor.simple.expense.tracker.service.mapping.ExpenseConverter;
-import com.github.arhor.simple.expense.tracker.service.mapping.ExpenseItemConverter;
 
 @Service
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
@@ -33,25 +35,22 @@ public class ExpenseServiceImpl implements ExpenseService {
     private final ExpenseRepository expenseRepository;
     private final ExpenseItemRepository expenseItemRepository;
     private final ExpenseConverter expenseConverter;
-    private final ExpenseItemConverter expenseItemConverter;
+    private final MoneyConverter moneyConverter;
 
     @Override
-    public List<ExpenseResponseDTO> getUserExpenses(
-        final Long userId,
-        final TemporalRange<LocalDateTime> dateTimeRange
-    ) {
-        var expenses = expenseRepository.findByUserId(userId);
+    public List<ExpenseResponseDTO> getUserExpenses(final Long userId, final TemporalRange<LocalDate> dateRange) {
+        final var expenses = expenseRepository.findByUserId(userId);
 
         if (expenses.isEmpty()) {
             return Collections.emptyList();
         }
 
-        var result = new ArrayList<ExpenseResponseDTO>(expenses.size());
+        final var result = new ArrayList<ExpenseResponseDTO>(expenses.size());
 
-        for (var expense : expenses) {
-            var responseDTO = expenseConverter.mapToDTO(expense);
+        for (final var expense : expenses) {
+            final var responseDTO = expenseConverter.mapToDTO(expense);
 
-            initializeExpenseTotal(responseDTO, dateTimeRange);
+            initializeExpenseTotal(responseDTO, userId, dateRange);
 
             result.add(responseDTO);
         }
@@ -62,13 +61,13 @@ public class ExpenseServiceImpl implements ExpenseService {
     public ExpenseResponseDTO getUserExpenseById(
         final Long userId,
         final Long expenseId,
-        final TemporalRange<LocalDateTime> dateTimeRange
+        final TemporalRange<LocalDate> dateRange
     ) {
-        var responseDTO = expenseRepository.findByUserIdAndExpenseId(userId, expenseId)
+        final var responseDTO = expenseRepository.findByUserIdAndExpenseId(userId, expenseId)
             .map(expenseConverter::mapToDTO)
             .orElseThrow(() -> new EntityNotFoundException("Expense", "userId=" + userId + ", expenseId=" + expenseId));
 
-        initializeExpenseTotal(responseDTO, dateTimeRange);
+        initializeExpenseTotal(responseDTO, userId, dateRange);
 
         return responseDTO;
     }
@@ -79,34 +78,42 @@ public class ExpenseServiceImpl implements ExpenseService {
             throw new EntityNotFoundException("InternalUser", "id=" + userId);
         }
 
-        var expense = expenseConverter.mapToEntity(requestDTO);
+        final var expense = expenseConverter.mapToEntity(requestDTO);
         expense.setUserId(userId);
-        var result = expenseRepository.save(expense);
+        final var result = expenseRepository.save(expense);
 
         return expenseConverter.mapToDTO(result);
     }
 
     @Override
     public ExpenseItemDTO createExpenseItem(final Long expenseId, final ExpenseItemDTO dto) {
+        // TODO: implement
         return null;
     }
 
     private void initializeExpenseTotal(
         final ExpenseResponseDTO expense,
-        final TemporalRange<LocalDateTime> dateTimeRange
+        final Long userId,
+        final TemporalRange<LocalDate> dateRange
     ) {
-        var expenseItems = expenseItemRepository.findByExpenseIdAndDateRange(
+        final var targetCurrency = userRepository.findById(userId)
+            .map(InternalUser::getCurrency)
+            .map(Monetary::getCurrency)
+            .orElseThrow(() -> new EntityNotFoundException("User", "id=" + userId));
+
+        final var expenseItems = expenseItemRepository.findByExpenseIdAndDateRange(
             expense.getId(),
-            dateTimeRange.start(),
-            dateTimeRange.end()
+            dateRange.start(),
+            dateRange.end()
         );
 
-        var total = expenseItems.stream()
-            .filter(Objects::nonNull)
-            .map(ExpenseItem::getAmount)
-            .filter(Objects::nonNull)
-            .reduce(BigDecimal.ZERO, BigDecimal::add);
+        var total = Money.zero(targetCurrency);
+        for (final var item : expenseItems) {
+            final var amount = FastMoney.of(item.getAmount(), item.getCurrency());
+            final var convertedAmount = moneyConverter.convert(amount, targetCurrency, item.getDate());
 
-        expense.setTotal(total);
+            total = total.add(convertedAmount);
+        }
+        expense.setTotal(total.getNumberStripped());
     }
 }

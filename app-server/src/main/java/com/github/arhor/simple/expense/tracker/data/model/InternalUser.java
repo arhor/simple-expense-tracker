@@ -12,6 +12,7 @@ public class InternalUser extends AuditableDomainObject<Long> {
 
     private String username;
     private String password;
+    private String currency;
     private String externalId;
     private String externalProvider;
 }

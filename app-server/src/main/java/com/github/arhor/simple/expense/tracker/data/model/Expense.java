@@ -5,8 +5,6 @@ import lombok.EqualsAndHashCode;
 
 import org.springframework.data.relational.core.mapping.Table;
 
-import com.github.arhor.simple.expense.tracker.model.Currency;
-
 @Data
 @Table("expenses")
 @EqualsAndHashCode(callSuper = true)
@@ -16,5 +14,4 @@ public class Expense extends AuditableDomainObject<Long> {
     private String name;
     private String icon;
     private String color;
-    private Currency currency;
 }

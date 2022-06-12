@@ -57,6 +57,7 @@ dependencies {
     implementation "org.apache.commons:commons-lang3:${libs.versions.apacheCommonsLang.get()}"
     implementation "org.apache.commons:commons-collections4:${libs.versions.apacheCommonsCollections.get()}"
     implementation "org.flywaydb:flyway-core"
+    implementation "org.javamoney:moneta:${libs.versions.javamoneyMoneta.get()}"
 
     implementation "org.springframework.boot:spring-boot-starter-actuator"
     implementation "org.springframework.boot:spring-boot-starter-aop"
@@ -90,6 +91,10 @@ tasks.withType(JavaCompile) {
 
 tasks.withType(Test) {
     useJUnitPlatform()
+}
+
+bootRun {
+    jvmArgs += "--enable-preview"
 }
 
 check {

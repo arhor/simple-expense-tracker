@@ -2,7 +2,7 @@ package com.github.arhor.simple.expense.tracker.aspect;
 
 import lombok.RequiredArgsConstructor;
 
-import java.util.Arrays;
+import java.util.StringJoiner;
 
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -18,8 +18,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestContextHolder;
 
 import com.github.arhor.simple.expense.tracker.CurrentRequestContext;
-
-import static java.util.stream.Collectors.joining;
 
 @Aspect
 @Component
@@ -44,7 +42,7 @@ public class LoggingAspect {
                 "Request-ID: {}, Method: {}, Arguments: {}",
                 requestId,
                 signatureName,
-                Arrays.stream(joinPoint.getArgs()).map(Object::toString).collect(joining())
+                stringifyJoinPointArgs(joinPoint)
             );
             var result = joinPoint.proceed();
             log.debug(
@@ -98,6 +96,14 @@ public class LoggingAspect {
 
     private boolean isRequestAvailable() {
         return RequestContextHolder.getRequestAttributes() != null;
+    }
+
+    private String stringifyJoinPointArgs(final JoinPoint joinPoint) {
+        final var result = new StringJoiner(", ");
+        for (final var arg : joinPoint.getArgs()) {
+            result.add(String.valueOf(arg));
+        }
+        return result.toString();
     }
 }
 

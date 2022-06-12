@@ -3,8 +3,7 @@ package com.github.arhor.simple.expense.tracker.service.impl;
 import java.time.Clock;
 import java.time.Duration;
 import java.time.Instant;
-import java.time.LocalDateTime;
-import java.time.OffsetDateTime;
+import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.temporal.ChronoUnit;
@@ -28,10 +27,10 @@ public class TimeServiceImpl implements TimeService {
     }
 
     @Override
-    public Instant now(final TimeZone timeZone) {
+    public Instant now(final TimeZone timezone) {
         return currentInstant(
-            (timeZone != null)
-                ? timeZone.toZoneId()
+            (timezone != null)
+                ? timezone.toZoneId()
                 : DEFAULT_TIME_ZONE
         );
     }
@@ -42,36 +41,34 @@ public class TimeServiceImpl implements TimeService {
     }
 
     @Override
-    public TemporalRange<LocalDateTime> convertToSystemTimeRange(
-        final OffsetDateTime startDate,
-        final OffsetDateTime endDate
+    public TemporalRange<LocalDate> convertToDateRange(
+        final LocalDate startDate,
+        final LocalDate endDate,
+        final TimeZone timezone
     ) {
         final var startDatePresent = startDate != null;
         final var endDatePresent = endDate != null;
 
-        final var systemStartDate = toSystemLocalDateTime(
-            startDatePresent
-                ? startDate
-                : (endDatePresent ? endDate : OffsetDateTime.now()).with(firstDayOfMonth())
-        );
-        final var systemEndDate = toSystemLocalDateTime(
-            endDatePresent
-                ? endDate
-                : (startDatePresent ? startDate : OffsetDateTime.now()).with(lastDayOfMonth())
-        );
-        if (systemStartDate.isAfter(systemEndDate)) {
+        final ZoneId zoneId = (timezone != null)
+            ? timezone.toZoneId()
+            : DEFAULT_TIME_ZONE;
+
+        final var safeStartDate = startDatePresent
+            ? startDate
+            : (endDatePresent ? endDate : LocalDate.now(zoneId)).with(firstDayOfMonth());
+        final var safeEndDate = endDatePresent
+            ? endDate
+            : (startDatePresent ? startDate : LocalDate.now(zoneId)).with(lastDayOfMonth());
+
+        if (safeStartDate.isAfter(safeEndDate)) {
             throw new IllegalStateException(
-                "Start date cannot be placed after end date - start: %s, end: %s".formatted(
-                    systemStartDate,
-                    systemEndDate
+                "Start date cannot be greater than/*- end date - start: %s, end: %s".formatted(
+                    safeStartDate,
+                    safeEndDate
                 )
             );
         }
-        return new TemporalRange<>(systemStartDate, systemEndDate);
-    }
-
-    private LocalDateTime toSystemLocalDateTime(final OffsetDateTime offsetDateTime) {
-        return offsetDateTime.withOffsetSameLocal(DEFAULT_TIME_ZONE).toLocalDateTime();
+        return new TemporalRange<>(safeStartDate, safeEndDate);
     }
 
     private Instant currentInstant(final ZoneId zoneId) {

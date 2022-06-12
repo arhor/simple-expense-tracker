@@ -14,6 +14,7 @@ import com.github.arhor.simple.expense.tracker.model.ExpenseResponseDTO;
 public interface ExpenseConverter {
 
     @IgnoreAuditProps
+    @Mapping(target = "id", ignore = true)
     @Mapping(target = "userId", ignore = true)
     Expense mapToEntity(ExpenseRequestDTO item);
 

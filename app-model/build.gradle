@@ -44,6 +44,7 @@ jsonSchema2Pojo {
     useBigDecimals = true
     useLongIntegers = true
     dateTimeType = "java.time.LocalDateTime"
+    dateType = "java.time.LocalDate"
 }
 
 task generateJsonSchema2TypeScript(type: NpmTask, dependsOn: npmInstall) {

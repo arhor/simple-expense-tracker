@@ -17,6 +17,7 @@ import com.github.arhor.simple.expense.tracker.data.model.InternalUser;
 import com.github.arhor.simple.expense.tracker.data.repository.UserRepository;
 import com.github.arhor.simple.expense.tracker.exception.EntityDuplicateException;
 import com.github.arhor.simple.expense.tracker.exception.EntityNotFoundException;
+import com.github.arhor.simple.expense.tracker.model.Currency;
 import com.github.arhor.simple.expense.tracker.model.UserRequest;
 import com.github.arhor.simple.expense.tracker.model.UserResponse;
 import com.github.arhor.simple.expense.tracker.service.UserService;
@@ -50,39 +51,43 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     @Override
     public Long determineUserId(final Authentication auth) {
-        var user = determineInternalUser(auth);
+        final var user = determineInternalUser(auth);
         return user.getId();
     }
 
     @Override
     public UserResponse determineUser(Authentication auth) {
-        var user = determineInternalUser(auth);
+        final var user = determineInternalUser(auth);
         return userConverter.mapToResponse(user);
     }
 
     @Override
     @Transactional
     public UserResponse createNewUser(final UserRequest request) {
-        var username = request.getUsername();
+        final var username = request.getUsername();
+
         if (userRepository.existsByUsername(username)) {
             throw new EntityDuplicateException("InternalUser", "username=" + username);
         }
-        var user = userConverter.mapToUser(request);
-        var createdUser = userRepository.save(user);
+
+        final var user = userConverter.mapToUser(request);
+        final var createdUser = userRepository.save(user);
+
         return userConverter.mapToResponse(createdUser);
     }
 
     @Override
     public void createNewUserIfNecessary(final Authentication authentication) {
         if (authentication instanceof OAuth2AuthenticationToken authenticationToken) {
-            var externalId = authenticationToken.getName();
-            var externalProvider = authenticationToken.getAuthorizedClientRegistrationId();
+            final var externalId = authenticationToken.getName();
+            final var externalProvider = authenticationToken.getAuthorizedClientRegistrationId();
 
             if (shouldCreateInternalUser(externalId, externalProvider)) {
-                var user = new InternalUser();
+                final var user = new InternalUser();
 
                 user.setExternalId(externalId);
                 user.setExternalProvider(externalProvider);
+                user.setCurrency(Currency.USD.name());
 
                 userRepository.save(user);
             }
@@ -97,7 +102,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     private InternalUser determineInternalUser(final Authentication auth) {
         return switch (auth) {
-            case OAuth2AuthenticationToken token -> {
+            case final OAuth2AuthenticationToken token -> {
                 var externalId = token.getName();
                 var externalProvider = token.getAuthorizedClientRegistrationId();
 
@@ -107,7 +112,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
                     )
                 );
             }
-            case UsernamePasswordAuthenticationToken token -> {
+            case final UsernamePasswordAuthenticationToken token -> {
                 var username = token.getName();
 
                 yield userRepository.findByUsername(username).orElseThrow(() ->
