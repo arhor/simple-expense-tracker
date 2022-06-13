@@ -36,6 +36,8 @@ configurations {
     }
     implementation {
         exclude module: "spring-boot-starter-tomcat"
+        exclude module: "moneta-convert-ecb"
+        exclude module: "moneta-convert-imf"
     }
     testImplementation {
         exclude module: "junit-vintage-engine"

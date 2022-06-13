@@ -9,9 +9,7 @@ import javax.money.CurrencyUnit;
 import javax.money.MonetaryAmount;
 import javax.money.convert.ConversionQueryBuilder;
 import javax.money.convert.ExchangeRateProvider;
-import javax.money.convert.ExchangeRateProviderSupplier;
 
-import org.javamoney.moneta.convert.ExchangeRateType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -77,15 +75,15 @@ public class MoneyConverterImpl implements MoneyConverter {
         final var period = conversionDate.until(currentDate);
         final int daysPassedFromConversion = period.getDays();
 
-        final ExchangeRateProviderSupplier provider;
+        final String provider;
 
         if (daysPassedFromConversion <= 0) {
-            provider = ExchangeRateType.ECB;
+            provider = "EXCHANGERATE_HOST";
         } else if (daysPassedFromConversion <= 90) {
-            provider = ExchangeRateType.ECB_HIST90;
+            provider = "EXCHANGERATE_HOST";
         } else {
-            provider = ExchangeRateType.ECB_HIST;
+            provider = "EXCHANGERATE_HOST";
         }
-        return provider.get();
+        return provider;
     }
 }
