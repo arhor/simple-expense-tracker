@@ -95,3 +95,6 @@ configuration:
   tasks:
     notifications:
       enabled: true
+  conversion-rates:
+    data-file-pattern: classpath*:conversion-rates/defaults/exchange.host/*.json
+    years-to-load: 5

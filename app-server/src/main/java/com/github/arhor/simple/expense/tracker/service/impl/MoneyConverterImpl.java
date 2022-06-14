@@ -28,18 +28,19 @@ public class MoneyConverterImpl implements MoneyConverter {
         final CurrencyUnit targetCurrency,
         final LocalDate date
     ) {
-        final var sourceCurrency = amount.getCurrency();
-        final var conversionDate = determineConversionDate(date);
-        final var providerName = determineProviderName(conversionDate);
+        var sourceCurrency = amount.getCurrency();
+        var conversionDate = determineConversionDate(date);
+        var providerName = determineProviderName(conversionDate);
 
-        final var currencyConversion = exchangeRateProvider.getCurrencyConversion(
-            ConversionQueryBuilder.of()
-                .setBaseCurrency(sourceCurrency)
-                .setTermCurrency(targetCurrency)
-                .setProviderName(providerName)
-                .set(conversionDate)
-                .build()
-        );
+        var query = ConversionQueryBuilder.of()
+            .setBaseCurrency(sourceCurrency)
+            .setTermCurrency(targetCurrency)
+            .setProviderName(providerName)
+            .set(conversionDate)
+            .build();
+
+        var currencyConversion = exchangeRateProvider.getCurrencyConversion(query);
+
         return amount.with(currencyConversion);
     }
 
@@ -71,12 +72,11 @@ public class MoneyConverterImpl implements MoneyConverter {
      * </p>
      */
     private String determineProviderName(final LocalDate conversionDate) {
-        final var currentDate = LocalDate.now();
-        final var period = conversionDate.until(currentDate);
-        final int daysPassedFromConversion = period.getDays();
+        var currentDate = LocalDate.now();
+        var period = conversionDate.until(currentDate);
+        var daysPassedFromConversion = period.getDays();
 
-        final String provider;
-
+        String provider;
         if (daysPassedFromConversion <= 0) {
             provider = "EXCHANGERATE_HOST";
         } else if (daysPassedFromConversion <= 90) {

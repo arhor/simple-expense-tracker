@@ -39,16 +39,16 @@ public class ExpenseServiceImpl implements ExpenseService {
 
     @Override
     public List<ExpenseResponseDTO> getUserExpenses(final Long userId, final TemporalRange<LocalDate> dateRange) {
-        final var expenses = expenseRepository.findByUserId(userId);
+        var expenses = expenseRepository.findByUserId(userId);
 
         if (expenses.isEmpty()) {
             return Collections.emptyList();
         }
 
-        final var result = new ArrayList<ExpenseResponseDTO>(expenses.size());
+        var result = new ArrayList<ExpenseResponseDTO>(expenses.size());
 
-        for (final var expense : expenses) {
-            final var responseDTO = expenseConverter.mapToDTO(expense);
+        for (var expense : expenses) {
+            var responseDTO = expenseConverter.mapToDTO(expense);
 
             initializeExpenseTotal(responseDTO, userId, dateRange);
 
@@ -63,7 +63,7 @@ public class ExpenseServiceImpl implements ExpenseService {
         final Long expenseId,
         final TemporalRange<LocalDate> dateRange
     ) {
-        final var responseDTO = expenseRepository.findByUserIdAndExpenseId(userId, expenseId)
+        var responseDTO = expenseRepository.findByUserIdAndExpenseId(userId, expenseId)
             .map(expenseConverter::mapToDTO)
             .orElseThrow(() -> new EntityNotFoundException("Expense", "userId=" + userId + ", expenseId=" + expenseId));
 
@@ -78,9 +78,9 @@ public class ExpenseServiceImpl implements ExpenseService {
             throw new EntityNotFoundException("InternalUser", "id=" + userId);
         }
 
-        final var expense = expenseConverter.mapToEntity(requestDTO);
+        var expense = expenseConverter.mapToEntity(requestDTO);
         expense.setUserId(userId);
-        final var result = expenseRepository.save(expense);
+        var result = expenseRepository.save(expense);
 
         return expenseConverter.mapToDTO(result);
     }

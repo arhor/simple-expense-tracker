@@ -108,7 +108,7 @@ public class GlobalExceptionHandler {
     ) {
         var requestURL = exception.getRequestURL();
 
-        final Object result;
+        Object result;
         if (requestURL.equals("/")) {
             result = handleErrorCode(HANDLER_NOT_FOUND_DEFAULT, locale, timeZone);
         } else if (requestURL.startsWith(apiUrlPath("/"))) {
