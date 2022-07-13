@@ -18,14 +18,12 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import com.github.arhor.simple.expense.tracker.model.UserRequest;
 import com.github.arhor.simple.expense.tracker.model.UserResponse;
 import com.github.arhor.simple.expense.tracker.service.UserService;
-import com.github.arhor.simple.expense.tracker.web.security.UserAttributeResolver;
 
 @RestController
 @RequestMapping("/users")
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 public class UserController {
 
-    private final UserAttributeResolver userAttributeResolver;
     private final UserService userService;
 
     @PostMapping

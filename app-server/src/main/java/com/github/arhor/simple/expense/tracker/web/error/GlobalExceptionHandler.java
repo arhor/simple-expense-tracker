@@ -73,7 +73,7 @@ public class GlobalExceptionHandler {
     }
 
     @ResponseStatus(HttpStatus.CONFLICT)
-    @ExceptionHandler(com.github.arhor.simple.expense.tracker.exception.EntityDuplicateException.class)
+    @ExceptionHandler(EntityDuplicateException.class)
     public ErrorResponse handleEntityDuplicateException(
         final EntityDuplicateException exception,
         final Locale locale,
@@ -170,7 +170,9 @@ public class GlobalExceptionHandler {
         final Object... args
     ) {
         var currentRequestContext = currentRequestContextProvider.getIfAvailable();
-        var requestId = (currentRequestContext != null) ? currentRequestContext.getRequestId().toString() : "UNKNOWN";
+        var requestId = (currentRequestContext != null)
+            ? currentRequestContext.getRequestId().toString()
+            : "UNKNOWN";
 
         return new ErrorResponse(
             requestId,

@@ -1,11 +1,10 @@
 package com.github.arhor.simple.expense.tracker.service.impl;
 
-import java.time.Clock;
 import java.time.Duration;
-import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.TimeZone;
 
@@ -22,13 +21,13 @@ public class TimeServiceImpl implements TimeService {
     private static final ZoneOffset DEFAULT_TIME_ZONE = ZoneOffset.UTC;
 
     @Override
-    public Instant now() {
-        return currentInstant(DEFAULT_TIME_ZONE);
+    public ZonedDateTime now() {
+        return currentDateTime(DEFAULT_TIME_ZONE);
     }
 
     @Override
-    public Instant now(final TimeZone timezone) {
-        return currentInstant(
+    public ZonedDateTime now(final TimeZone timezone) {
+        return currentDateTime(
             (timezone != null)
                 ? timezone.toZoneId()
                 : DEFAULT_TIME_ZONE
@@ -36,7 +35,7 @@ public class TimeServiceImpl implements TimeService {
     }
 
     @Override
-    public Instant weekAgo() {
+    public ZonedDateTime weekAgo() {
         return now().minus(Duration.ofDays(7));
     }
 
@@ -71,7 +70,7 @@ public class TimeServiceImpl implements TimeService {
         return new TemporalRange<>(safeStartDate, safeEndDate);
     }
 
-    private Instant currentInstant(final ZoneId zoneId) {
-        return Clock.system(zoneId).instant().truncatedTo(ChronoUnit.MILLIS);
+    private ZonedDateTime currentDateTime(final ZoneId zoneId) {
+        return ZonedDateTime.now(zoneId).truncatedTo(ChronoUnit.MILLIS);
     }
 }

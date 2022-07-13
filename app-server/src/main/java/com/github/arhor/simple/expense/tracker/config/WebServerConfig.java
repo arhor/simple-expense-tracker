@@ -3,6 +3,7 @@ package com.github.arhor.simple.expense.tracker.config;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
@@ -25,7 +26,7 @@ public class WebServerConfig implements WebMvcConfigurer {
 
     private static final String API_PATH_PREFIX = "/api";
 
-    private final ResourcesConfigurationProperties resources;
+    private final Optional<ResourcesConfigurationProperties> resources;
 
     @Override
     public void addViewControllers(final ViewControllerRegistry registry) {
@@ -39,7 +40,12 @@ public class WebServerConfig implements WebMvcConfigurer {
 
     @Override
     public void addResourceHandlers(final ResourceHandlerRegistry registry) {
-        registry.addResourceHandler(resources.getPatterns()).addResourceLocations(resources.getLocations());
+        resources.ifPresent(it -> {
+            var patterns = it.getPatterns();
+            var locations = it.getLocations();
+            registry.addResourceHandler(patterns).addResourceLocations(locations);
+        });
+
     }
 
     @Override

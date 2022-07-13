@@ -10,12 +10,6 @@ wrapper {
     gradleVersion = libs.versions.gradle.get()
 }
 
-allprojects {
-    repositories {
-        mavenCentral()
-    }
-}
-
 task stage(type: Jar, dependsOn: [":app-client:build", ":app-server:build"]) {
     group = "build"
     description = "Created composite Jar file including client and server part"

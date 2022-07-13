@@ -26,6 +26,10 @@ idea {
     }
 }
 
+repositories {
+    mavenCentral()
+}
+
 dependencies {
     implementation "com.fasterxml.jackson.core:jackson-databind:${libs.versions.jackson.get()}"
     implementation "javax.validation:validation-api:${libs.versions.javaxValidation.get()}"

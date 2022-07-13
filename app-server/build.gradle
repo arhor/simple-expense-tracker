@@ -24,10 +24,8 @@ ext {
     ].collect { "com/github/arhor/linden/dragon/tavern/$it" }
 }
 
-dependencyManagement {
-    imports {
-        mavenBom "org.testcontainers:testcontainers-bom:${property("app.version.testcontainers")}"
-    }
+repositories {
+    mavenCentral()
 }
 
 configurations {
@@ -81,6 +79,12 @@ dependencies {
     testImplementation "org.testcontainers:postgresql"
 }
 
+dependencyManagement {
+    imports {
+        mavenBom "org.testcontainers:testcontainers-bom:${property("app.version.testcontainers")}"
+    }
+}
+
 tasks.withType(JavaCompile) {
     options.compilerArgs = [
         "-Xlint:unchecked",
@@ -91,16 +95,40 @@ tasks.withType(JavaCompile) {
     ]
 }
 
-tasks.withType(Test) {
-    useJUnitPlatform()
+task contractTest(type: Test) {
+    group = "verification"
+    useJUnitPlatform {
+        includeTags "contract"
+    }
+    shouldRunAfter test
+}
+
+task integrationTest(type: Test) {
+    group = "verification"
+    useJUnitPlatform {
+        includeTags "integration"
+    }
+    shouldRunAfter contractTest
+}
+
+test {
+    useJUnitPlatform {
+        excludeTags "contract", "integration"
+    }
+}
+
+check {
+    dependsOn = [
+        test,
+        contractTest,
+        integrationTest,
+        jacocoTestReport,
+        jacocoTestCoverageVerification,
+    ]
 }
 
 bootRun {
     jvmArgs += "--enable-preview"
-}
-
-check {
-    dependsOn jacocoTestReport, jacocoTestCoverageVerification
 }
 
 jacoco {

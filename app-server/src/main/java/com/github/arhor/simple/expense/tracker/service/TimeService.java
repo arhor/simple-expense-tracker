@@ -1,17 +1,17 @@
 package com.github.arhor.simple.expense.tracker.service;
 
-import java.time.Instant;
 import java.time.LocalDate;
+import java.time.ZonedDateTime;
 import java.time.temporal.Temporal;
 import java.util.TimeZone;
 
 public interface TimeService {
 
-    Instant now();
+    ZonedDateTime now();
 
-    Instant now(TimeZone timezone);
+    ZonedDateTime now(TimeZone timezone);
 
-    Instant weekAgo();
+    ZonedDateTime weekAgo();
 
     TemporalRange<LocalDate> convertToDateRange(LocalDate startDate, LocalDate endDate, TimeZone timezone);
 
