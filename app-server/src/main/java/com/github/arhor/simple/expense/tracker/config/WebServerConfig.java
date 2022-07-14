@@ -45,7 +45,6 @@ public class WebServerConfig implements WebMvcConfigurer {
             var locations = it.getLocations();
             registry.addResourceHandler(patterns).addResourceLocations(locations);
         });
-
     }
 
     @Override
