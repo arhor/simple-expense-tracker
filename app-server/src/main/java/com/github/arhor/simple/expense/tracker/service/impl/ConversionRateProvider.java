@@ -8,7 +8,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -17,7 +16,6 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ExecutionException;
 import java.util.stream.Stream;
 
 import javax.annotation.PostConstruct;
@@ -44,6 +42,9 @@ import org.springframework.web.client.RestTemplate;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.arhor.simple.expense.tracker.config.properties.ConversionRatesConfigurationProperties;
+
+import static java.util.Arrays.sort;
+import static java.util.Comparator.comparing;
 
 @Slf4j
 @Service
@@ -84,13 +85,14 @@ public class ConversionRateProvider extends AbstractRateProvider {
     }
 
     @PostConstruct
-    public void init() throws ExecutionException, InterruptedException, IOException {
+    public void init() throws IOException {
         var dataFilePattern = conversionRatesConfigurationProperties.getDataFilePattern();
         var yearsToLoad = conversionRatesConfigurationProperties.getYearsToLoad();
         var resources = resourcePatternResolver.getResources(dataFilePattern);
+
         var tasks = new CompletableFuture[yearsToLoad];
 
-        Arrays.sort(resources, Comparator.comparing((final Resource resource) -> {
+        sort(resources, comparing((final Resource resource) -> {
             var filename = resource.getFilename();
 
             if (filename != null) {
@@ -117,7 +119,7 @@ public class ConversionRateProvider extends AbstractRateProvider {
                 )
             );
         }
-        CompletableFuture.allOf(tasks).get();
+        CompletableFuture.allOf(tasks).join();
     }
 
     @Override
