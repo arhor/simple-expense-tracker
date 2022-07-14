@@ -32,14 +32,15 @@ public class UserController {
 
         var location =
             ServletUriComponentsBuilder.fromCurrentRequestUri()
-                .path("/current")
+                .path("/")
+                .queryParam("current")
                 .build()
                 .toUri();
 
         return ResponseEntity.created(location).body(createdUser);
     }
 
-    @GetMapping("/current")
+    @GetMapping(params = "current")
     @PreAuthorize("isAuthenticated()")
     public UserResponse getCurrentUser(final Authentication auth) {
         return userService.determineUser(auth);

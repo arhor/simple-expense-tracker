@@ -5,11 +5,9 @@ import java.util.Optional;
 
 import org.springframework.data.jdbc.repository.query.Modifying;
 import org.springframework.data.jdbc.repository.query.Query;
-import org.springframework.stereotype.Repository;
 
 import com.github.arhor.simple.expense.tracker.data.model.Expense;
 
-@Repository
 public interface ExpenseRepository extends BaseRepository<Expense, Long> {
 
     @Query("SELECT e.* FROM expenses e WHERE e.deleted = FALSE AND e.user_id = :userId")

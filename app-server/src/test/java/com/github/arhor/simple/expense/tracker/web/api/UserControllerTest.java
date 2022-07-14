@@ -47,7 +47,7 @@ class UserControllerTest extends BaseControllerTest {
             .willReturn(response);
 
         // when
-        http.perform(get("/api/users/current"))
+        http.perform(get("/api/users?current"))
             .andDo(print())
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.id", equalTo(response.getId()), long.class))

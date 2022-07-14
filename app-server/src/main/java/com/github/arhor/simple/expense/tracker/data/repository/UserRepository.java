@@ -5,11 +5,9 @@ import java.util.Optional;
 
 import org.springframework.data.jdbc.repository.query.Modifying;
 import org.springframework.data.jdbc.repository.query.Query;
-import org.springframework.stereotype.Repository;
 
 import com.github.arhor.simple.expense.tracker.data.model.InternalUser;
 
-@Repository
 public interface UserRepository extends BaseRepository<InternalUser, Long> {
 
     @Query("SELECT u.* FROM users u WHERE u.deleted = FALSE AND u.username = :username")
@@ -21,7 +19,7 @@ public interface UserRepository extends BaseRepository<InternalUser, Long> {
         WHERE u.deleted = FALSE
           AND u.external_id = :externalId
           AND u.external_provider = :externalProvider""")
-    Optional<InternalUser> findByExternalAttributes(String externalId, String externalProvider);
+    Optional<InternalUser> findByExternalIdAndProvider(String externalId, String externalProvider);
 
     @Override
     @Modifying
@@ -36,9 +34,6 @@ public interface UserRepository extends BaseRepository<InternalUser, Long> {
     @Override
     @Query("SELECT u.* FROM users u WHERE u.deleted = FALSE")
     List<InternalUser> findAll();
-
-    @Query("SELECT u.* FROM users u WHERE u.deleted = FALSE LIMIT :size OFFSET :#{#page * #size}")
-    List<InternalUser> findAll(int page, int size);
 
     @Override
     @Query("SELECT u.* FROM users u WHERE u.id IN (:ids) AND u.deleted = FALSE")
@@ -86,9 +81,4 @@ public interface UserRepository extends BaseRepository<InternalUser, Long> {
           AND u.external_id = :externalId
           AND u.external_provider = :externalProvider""")
     boolean existsByExternalIdAndExternalProvider(String externalId, String externalProvider);
-
-    @Override
-    @Modifying
-    @Query("UPDATE users SET deleted = TRUE WHERE deleted = FALSE")
-    void deleteAll();
 }

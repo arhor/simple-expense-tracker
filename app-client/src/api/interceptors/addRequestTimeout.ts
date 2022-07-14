@@ -4,7 +4,7 @@ import log from 'loglevel';
 const DEFAULT_TIMEOUT = 10_000;
 
 const timeouts: ReadonlyMap<string, number> = new Map([
-    ['/api/users/current', 5_000],
+    ['/api/users?current', 5_000],
 ]);
 
 export default function addRequestTimeout(config: AxiosRequestConfig): AxiosRequestConfig {

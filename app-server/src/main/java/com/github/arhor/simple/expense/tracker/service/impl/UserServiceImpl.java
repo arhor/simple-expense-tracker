@@ -106,7 +106,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
                 var externalId = token.getName();
                 var externalProvider = token.getAuthorizedClientRegistrationId();
 
-                yield userRepository.findByExternalAttributes(externalId, externalProvider).orElseThrow(() ->
+                yield userRepository.findByExternalIdAndProvider(externalId, externalProvider).orElseThrow(() ->
                     new EntityNotFoundException(
                         "User", "externalId=" + externalId + ", externalProvider=" + externalProvider
                     )

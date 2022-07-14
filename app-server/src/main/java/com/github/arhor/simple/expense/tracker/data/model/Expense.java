@@ -9,7 +9,6 @@ import org.springframework.data.relational.core.mapping.Table;
 @Table("expenses")
 @EqualsAndHashCode(callSuper = true)
 public class Expense extends AuditableDomainObject<Long> {
-
     private Long userId;
     private String name;
     private String icon;

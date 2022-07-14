@@ -12,7 +12,6 @@ import org.springframework.data.relational.core.mapping.Table;
 @Table("expense_items")
 @EqualsAndHashCode(callSuper = true)
 public class ExpenseItem extends DomainObject<Long> {
-
     private LocalDate date;
     private BigDecimal amount;
     private String currency;

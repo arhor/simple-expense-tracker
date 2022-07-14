@@ -16,7 +16,6 @@ import org.springframework.data.relational.core.mapping.Table;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Notification extends DomainObject<UUID> {
-
     private Long userId;
     private String message;
     private String severity;

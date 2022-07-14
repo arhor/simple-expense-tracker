@@ -1,5 +1,7 @@
 package com.github.arhor.simple.expense.tracker.data.repository;
 
+import java.util.UUID;
+
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,89 +40,104 @@ class UserRepositoryTest {
         registry.add("spring.datasource.password", db::getPassword);
     }
 
-    //    @Test
-    //    void should_softly_delete_account() {
-    //        // given
-    //        var user = new InternalUser();
-    //
-    //        var savedUser = repository.save(user);
-    //        var userId = savedUser.getId();
-    //
-    //        // when
-    //        repository.delete(savedUser);
-    //        var resultById = repository.findById(userId);
-    //        var deletedAccountsIds = repository.findDeletedIds();
-    //
-    //        // then
-    //        assertThat(userId)
-    //            .isNotNull();
-    //        assertThat(resultById)
-    //            .isEmpty();
-    //        assertThat(deletedAccountsIds)
-    //            .contains(userId);
-    //    }
-
-    //    @Test
-    //    fun `should softly delete account by id`(@RandomParameter account: Account) {
-    //        // given
-    //        account.id = null
-    //
-    //        var savedAccount = repository.save(account)
-    //        var accountId = savedAccount.id
-    //
-    //        // when
-    //        repository.deleteById(accountId!!)
-    //        var resultById = repository.findById(accountId)
-    //        var deletedAccountsIds = repository.findDeletedIds().toList()
-    //
-    //        // then
-    //        assertThat(accountId).isNotNull
-    //        assertThat(resultById).isEmpty
-    //        assertThat(deletedAccountsIds).contains(accountId)
-    //    }
-    //
     @Test
     void should_find_internal_user_by_username() {
         // given
+        var user = repository.save(createInternalUser());
+
+        // when
+        var actualUser = repository.findByUsername(user.getUsername());
+
+        // then
+        assertThat(actualUser)
+            .isNotEmpty()
+            .contains(user);
+    }
+
+    @Test
+    void should_find_internal_user_by_external_id_and_provider() {
+        // given
+        var user = repository.save(createInternalUser());
+
+        // when
+        var actualUser =
+            repository.findByExternalIdAndProvider(
+                user.getExternalId(),
+                user.getExternalProvider()
+            );
+
+        // then
+        assertThat(actualUser)
+            .isNotEmpty()
+            .contains(user);
+    }
+
+    @Test
+    void should_softly_delete_internal_user() {
+        // given
+        var user = repository.save(createInternalUser());
+
+        // when
+        var prevResult = repository.findById(user.getId());
+        repository.delete(user);
+        var currResult = repository.findById(user.getId());
+
+        // then
+        assertThat(prevResult)
+            .contains(user);
+        assertThat(currResult)
+            .isEmpty();
+    }
+
+    @Test
+    void should_softly_delete_internal_user_by_id() {
+        // given
+        var user = repository.save(createInternalUser());
+
+        // when
+        var prevResult = repository.findById(user.getId());
+        repository.deleteById(user.getId());
+        var currResult = repository.findById(user.getId());
+
+        // then
+        assertThat(prevResult)
+            .contains(user);
+        assertThat(currResult)
+            .isEmpty();
+    }
+
+    @Test
+    void should_properly_audit_entity_on_save() {
+        // given
+        var user = createInternalUser();
+
+        // when
+        var createdUser = repository.save(user);
+        var updatedUser = repository.save(createdUser.toBuilder().password("updated").build());
+
+        // then
+        assertThat(createdUser.getCreated())
+            .isNotNull();
+        assertThat(createdUser.getUpdated())
+            .isNull();
+
+        assertThat(updatedUser.getCreated())
+            .isNotNull()
+            .isEqualTo(createdUser.getCreated());
+        assertThat(updatedUser.getUpdated())
+            .isNotNull()
+            .isAfter(updatedUser.getCreated());
+    }
+
+    private InternalUser createInternalUser() {
         var user = new InternalUser();
 
         user.setUsername("username");
         user.setPassword("password");
         user.setCurrency("USD");
+        user.setExternalId(UUID.randomUUID().toString());
+        user.setExternalProvider("test");
 
-        var expectedUser = repository.save(user);
-
-        // when
-        var actualUser = repository.findByUsername(expectedUser.getUsername());
-
-        // then
-        assertThat(actualUser)
-            .isNotEmpty()
-            .contains(expectedUser);
+        return user;
     }
-
-    //    @Test
-    //    fun `should properly audit entity on save`(@RandomParameter account: Account) {
-    //        // given
-    //        account.id = null
-    //
-    //        // when
-    //        var createdAccount = repository.save(account)
-    //        var updatedAccount = repository.save(
-    //            createdAccount.copy(email = "updated email").apply { copyBaseState(createdAccount) }
-    //        )
-    //
-    //        // then
-    //        assertThat(createdAccount.created)
-    //            .isNotNull
-    //        assertThat(createdAccount.updated)
-    //            .isNull()
-    //
-    //        assertThat(updatedAccount.created)
-    //            .isNotNull
-    //            .isEqualTo(createdAccount.created)
-    //        assertThat(updatedAccount.updated)
-    //            .isNotNull
-    //            .isAfter(updatedAccount.created)
-    //    }
 }
