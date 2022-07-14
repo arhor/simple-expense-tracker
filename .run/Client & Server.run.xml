@@ -1,7 +1,7 @@
 <component name="ProjectRunConfigurationManager">
-    <configuration default="false" name="Client &amp; Server" type="CompoundRunConfigurationType">
-        <toRun name="Server" type="GradleRunConfiguration"/>
-        <toRun name="Client" type="js.build_tools.npm"/>
-        <method v="2"/>
-    </configuration>
+  <configuration default="false" name="Client &amp; Server" type="CompoundRunConfigurationType">
+    <toRun name="Client" type="GradleRunConfiguration" />
+    <toRun name="Server" type="GradleRunConfiguration" />
+    <method v="2" />
+  </configuration>
 </component>

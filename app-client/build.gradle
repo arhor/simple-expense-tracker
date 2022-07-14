@@ -1,6 +1,3 @@
-import com.github.gradle.node.npm.task.NpmTask
-import com.github.gradle.node.npm.task.NpxTask
-
 plugins {
     id "com.github.node-gradle.node"
     id "idea"
@@ -37,20 +34,26 @@ task copyGeneratedModel(type: Copy, dependsOn: [clearGeneratedModel, ":app-model
     into "${projectDir}/${generatedSourcesDir}"
 }
 
-task updateBrowserlist(type: NpxTask, dependsOn: npmInstall) {
+task updateBrowserlist(type: com.github.gradle.node.npm.task.NpxTask, dependsOn: npmInstall) {
     workingDir.fileValue(projectDir)
     command.set("browserslist@latest")
     args = ["--update-db"]
 }
 
-task test(type: NpmTask, dependsOn: [updateBrowserlist, copyGeneratedModel]) {
+task test(type: com.github.gradle.node.npm.task.NpmTask, dependsOn: [updateBrowserlist, copyGeneratedModel]) {
     group = "verification"
     workingDir.fileValue(projectDir)
     args = ["run", "test"]
 }
 
-task build(type: NpmTask, dependsOn: test) {
+task build(type: com.github.gradle.node.npm.task.NpmTask, dependsOn: test) {
     group = "build"
     workingDir.fileValue(projectDir)
     args = ["run", "build"]
+}
+
+task start(type: com.github.gradle.node.npm.task.NpmTask, dependsOn: npmInstall) {
+    group = "application"
+    workingDir.fileValue(projectDir)
+    args = ["run", "start"]
 }
