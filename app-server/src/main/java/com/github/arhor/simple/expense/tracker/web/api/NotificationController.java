@@ -20,6 +20,7 @@ import static org.springframework.http.MediaType.TEXT_EVENT_STREAM_VALUE;
 
 @RestController
 @RequestMapping("/notifications")
+@PreAuthorize("isAuthenticated()")
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 public class NotificationController {
 
@@ -27,21 +28,18 @@ public class NotificationController {
     private final UserService userService;
 
     @PostMapping(path = "/subscribe", produces = TEXT_EVENT_STREAM_VALUE)
-    @PreAuthorize("isAuthenticated()")
     public SseEmitter subscribe(final Authentication auth) {
         var currentUserId = userService.determineUserId(auth);
         return notificationService.subscribe(currentUserId);
     }
 
     @PostMapping(path = "/unsubscribe")
-    @PreAuthorize("isAuthenticated()")
     public void unsubscribe(final Authentication auth) {
         var currentUserId = userService.determineUserId(auth);
         notificationService.unsubscribe(currentUserId);
     }
 
     @PostMapping
-    @PreAuthorize("isAuthenticated()")
     public void postNotification(
         @RequestParam final Long userId,
         @RequestBody final NotificationDTO dto,

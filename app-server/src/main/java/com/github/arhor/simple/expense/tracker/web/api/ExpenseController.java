@@ -30,6 +30,7 @@ import com.github.arhor.simple.expense.tracker.service.UserService;
  */
 @RestController
 @RequestMapping("/expenses")
+@PreAuthorize("isAuthenticated()")
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 public class ExpenseController {
 
@@ -45,7 +46,6 @@ public class ExpenseController {
      * @return expenses list
      */
     @GetMapping
-    @PreAuthorize("isAuthenticated()")
     public List<ExpenseResponseDTO> getUserExpenses(
         @RequestParam(required = false) final LocalDate startDate,
         @RequestParam(required = false) final LocalDate endDate,
@@ -59,7 +59,6 @@ public class ExpenseController {
     }
 
     @GetMapping("/{expenseId}")
-    @PreAuthorize("isAuthenticated()")
     public ExpenseResponseDTO getExpenseById(
         @PathVariable final Long expenseId,
         @RequestParam(required = false) final LocalDate startDate,
@@ -74,7 +73,6 @@ public class ExpenseController {
     }
 
     @PostMapping
-    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<ExpenseResponseDTO> createUserExpense(
         @RequestBody final ExpenseRequestDTO requestDTO,
         final Authentication auth
