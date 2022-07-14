@@ -23,8 +23,9 @@ public class MoneyConverterImpl implements MoneyConverter {
     private final ExchangeRateProvider exchangeRateProvider;
 
     @Override
-    public MonetaryAmount convert(
-        final MonetaryAmount amount,
+    @SuppressWarnings("unchecked")
+    public <T extends MonetaryAmount> T convert(
+        final T amount,
         final CurrencyUnit targetCurrency,
         final LocalDate date
     ) {
@@ -41,7 +42,7 @@ public class MoneyConverterImpl implements MoneyConverter {
 
         var currencyConversion = exchangeRateProvider.getCurrencyConversion(query);
 
-        return amount.with(currencyConversion);
+        return (T) amount.with(currencyConversion);
     }
 
     /**

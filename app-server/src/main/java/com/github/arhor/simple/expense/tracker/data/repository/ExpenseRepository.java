@@ -2,6 +2,7 @@ package com.github.arhor.simple.expense.tracker.data.repository;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 import org.springframework.data.jdbc.repository.query.Modifying;
 import org.springframework.data.jdbc.repository.query.Query;
@@ -11,7 +12,7 @@ import com.github.arhor.simple.expense.tracker.data.model.Expense;
 public interface ExpenseRepository extends BaseRepository<Expense, Long> {
 
     @Query("SELECT e.* FROM expenses e WHERE e.deleted = FALSE AND e.user_id = :userId")
-    List<Expense> findByUserId(Long userId);
+    Stream<Expense> findByUserId(Long userId);
 
     @Query("SELECT e.* FROM expenses e WHERE e.deleted = FALSE AND e.user_id = :userId AND e.id = :expenseId")
     Optional<Expense> findByUserIdAndExpenseId(Long userId, Long expenseId);

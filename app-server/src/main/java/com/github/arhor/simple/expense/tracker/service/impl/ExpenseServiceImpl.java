@@ -3,13 +3,10 @@ package com.github.arhor.simple.expense.tracker.service.impl;
 import lombok.RequiredArgsConstructor;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import javax.money.Monetary;
 
-import org.javamoney.moneta.FastMoney;
 import org.javamoney.moneta.Money;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -39,22 +36,11 @@ public class ExpenseServiceImpl implements ExpenseService {
 
     @Override
     public List<ExpenseResponseDTO> getUserExpenses(final Long userId, final TemporalRange<LocalDate> dateRange) {
-        var expenses = expenseRepository.findByUserId(userId);
-
-        if (expenses.isEmpty()) {
-            return Collections.emptyList();
+        try (var expenses = expenseRepository.findByUserId(userId)) {
+            return expenses.map(expenseConverter::mapToDTO)
+                .peek(it -> initializeExpenseTotal(it, userId, dateRange))
+                .toList();
         }
-
-        var result = new ArrayList<ExpenseResponseDTO>(expenses.size());
-
-        for (var expense : expenses) {
-            var responseDTO = expenseConverter.mapToDTO(expense);
-
-            initializeExpenseTotal(responseDTO, userId, dateRange);
-
-            result.add(responseDTO);
-        }
-        return result;
     }
 
     @Override
@@ -96,24 +82,32 @@ public class ExpenseServiceImpl implements ExpenseService {
         final Long userId,
         final TemporalRange<LocalDate> dateRange
     ) {
-        final var targetCurrency = userRepository.findById(userId)
+        var targetCurrency = userRepository.findById(userId)
             .map(InternalUser::getCurrency)
             .map(Monetary::getCurrency)
             .orElseThrow(() -> new EntityNotFoundException("User", "id=" + userId));
 
-        final var expenseItems = expenseItemRepository.findByExpenseIdAndDateRange(
-            expense.getId(),
-            dateRange.start(),
-            dateRange.end()
-        );
+        var id = expense.getId();
+        var start = dateRange.start();
+        var end = dateRange.end();
 
-        var total = Money.zero(targetCurrency);
-        for (final var item : expenseItems) {
-            final var amount = FastMoney.of(item.getAmount(), item.getCurrency());
-            final var convertedAmount = moneyConverter.convert(amount, targetCurrency, item.getDate());
+        try (var items = expenseItemRepository.findByExpenseIdAndDateRange(id, start, end)) {
+            expense.setTotal(
+                items.reduce(
+                    Money.zero(targetCurrency),
+                    (total, item) -> {
+                        var expenseAmount = item.getAmount();
+                        var expenseCurrency = item.getCurrency();
+                        var expenseDate = item.getDate();
 
-            total = total.add(convertedAmount);
+                        var amount = Money.of(expenseAmount, expenseCurrency);
+                        var convertedAmount = moneyConverter.convert(amount, targetCurrency, expenseDate);
+
+                        return total.add(convertedAmount);
+                    },
+                    Money::add
+                ).getNumberStripped()
+            );
         }
-        expense.setTotal(total.getNumberStripped());
     }
 }

@@ -7,5 +7,5 @@ import javax.money.MonetaryAmount;
 
 public interface MoneyConverter {
 
-    MonetaryAmount convert(MonetaryAmount amount, CurrencyUnit targetCurrency, LocalDate date);
+    <T extends MonetaryAmount> T convert(T amount, CurrencyUnit targetCurrency, LocalDate date);
 }
