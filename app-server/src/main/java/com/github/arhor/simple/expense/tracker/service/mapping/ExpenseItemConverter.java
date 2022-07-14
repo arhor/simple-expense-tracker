@@ -13,8 +13,8 @@ public interface ExpenseItemConverter {
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "expenseId", ignore = true)
-    ExpenseItem mapDtoToEntity(ExpenseItemDTO item);
+    ExpenseItem mapToEntity(ExpenseItemDTO dto);
 
     @InheritInverseConfiguration
-    ExpenseItemDTO mapEntityToDto(ExpenseItem item);
+    ExpenseItemDTO mapToDTO(ExpenseItem entity);
 }

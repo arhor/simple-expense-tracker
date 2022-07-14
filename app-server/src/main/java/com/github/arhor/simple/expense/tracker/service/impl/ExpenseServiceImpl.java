@@ -23,6 +23,7 @@ import com.github.arhor.simple.expense.tracker.service.ExpenseService;
 import com.github.arhor.simple.expense.tracker.service.MoneyConverter;
 import com.github.arhor.simple.expense.tracker.service.TimeService.TemporalRange;
 import com.github.arhor.simple.expense.tracker.service.mapping.ExpenseConverter;
+import com.github.arhor.simple.expense.tracker.service.mapping.ExpenseItemConverter;
 
 @Service
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
@@ -32,6 +33,7 @@ public class ExpenseServiceImpl implements ExpenseService {
     private final ExpenseRepository expenseRepository;
     private final ExpenseItemRepository expenseItemRepository;
     private final ExpenseConverter expenseConverter;
+    private final ExpenseItemConverter expenseItemConverter;
     private final MoneyConverter moneyConverter;
 
     @Override
@@ -73,8 +75,15 @@ public class ExpenseServiceImpl implements ExpenseService {
 
     @Override
     public ExpenseItemDTO createExpenseItem(final Long expenseId, final ExpenseItemDTO dto) {
-        // TODO: implement
-        return null;
+        if (!expenseRepository.existsById(expenseId)) {
+            throw new EntityNotFoundException("Expense", "id=" + expenseId);
+        }
+
+        var expenseItem = expenseItemConverter.mapToEntity(dto);
+        expenseItem.setExpenseId(expenseId);
+        var result = expenseItemRepository.save(expenseItem);
+
+        return expenseItemConverter.mapToDTO(result);
     }
 
     private void initializeExpenseTotal(
@@ -91,6 +100,7 @@ public class ExpenseServiceImpl implements ExpenseService {
         var start = dateRange.start();
         var end = dateRange.end();
 
+        // TODO: possible bottleneck, could be improved by moving calculations into the SQL query
         try (var items = expenseItemRepository.findByExpenseIdAndDateRange(id, start, end)) {
             expense.setTotal(
                 items.reduce(

@@ -16,9 +16,9 @@ public interface ExpenseConverter {
     @IgnoreAuditProps
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "userId", ignore = true)
-    Expense mapToEntity(ExpenseRequestDTO item);
+    Expense mapToEntity(ExpenseRequestDTO dto);
 
     @InheritInverseConfiguration
     @Mapping(target = "total", ignore = true)
-    ExpenseResponseDTO mapToDTO(Expense item);
+    ExpenseResponseDTO mapToDTO(Expense entity);
 }
