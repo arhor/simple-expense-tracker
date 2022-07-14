@@ -52,8 +52,8 @@ public class ExpenseController {
         final TimeZone timezone,
         final Authentication auth
     ) {
-        final var currentUserId = userService.determineUserId(auth);
-        final var dateRange = timeService.convertToDateRange(startDate, endDate, timezone);
+        var currentUserId = userService.determineUserId(auth);
+        var dateRange = timeService.convertToDateRange(startDate, endDate, timezone);
 
         return expenseService.getUserExpenses(currentUserId, dateRange);
     }
@@ -66,8 +66,8 @@ public class ExpenseController {
         final TimeZone timezone,
         final Authentication auth
     ) {
-        final var currentUserId = userService.determineUserId(auth);
-        final var dateRange = timeService.convertToDateRange(startDate, endDate, timezone);
+        var currentUserId = userService.determineUserId(auth);
+        var dateRange = timeService.convertToDateRange(startDate, endDate, timezone);
 
         return expenseService.getUserExpenseById(currentUserId, expenseId, dateRange);
     }
@@ -77,10 +77,10 @@ public class ExpenseController {
         @RequestBody final ExpenseRequestDTO requestDTO,
         final Authentication auth
     ) {
-        final var currentUserId = userService.determineUserId(auth);
-        final var createdExpense = expenseService.createUserExpense(currentUserId, requestDTO);
+        var currentUserId = userService.determineUserId(auth);
+        var createdExpense = expenseService.createUserExpense(currentUserId, requestDTO);
 
-        final var location =
+        var location =
             ServletUriComponentsBuilder.fromCurrentRequestUri()
                 .path("/{expenseId}")
                 .build(createdExpense.getId());

@@ -99,8 +99,8 @@ public class LoggingAspect {
     }
 
     private String stringifyJoinPointArgs(final JoinPoint joinPoint) {
-        final var result = new StringJoiner(", ");
-        for (final var arg : joinPoint.getArgs()) {
+        var result = new StringJoiner(", ");
+        for (var arg : joinPoint.getArgs()) {
             result.add(String.valueOf(arg));
         }
         return result.toString();

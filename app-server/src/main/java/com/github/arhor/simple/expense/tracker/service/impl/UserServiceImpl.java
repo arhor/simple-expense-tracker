@@ -51,27 +51,27 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     @Override
     public Long determineUserId(final Authentication auth) {
-        final var user = determineInternalUser(auth);
+        var user = determineInternalUser(auth);
         return user.getId();
     }
 
     @Override
     public UserResponse determineUser(Authentication auth) {
-        final var user = determineInternalUser(auth);
+        var user = determineInternalUser(auth);
         return userConverter.mapToResponse(user);
     }
 
     @Override
     @Transactional
     public UserResponse createNewUser(final UserRequest request) {
-        final var username = request.getUsername();
+        var username = request.getUsername();
 
         if (userRepository.existsByUsername(username)) {
             throw new EntityDuplicateException("InternalUser", "username=" + username);
         }
 
-        final var user = userConverter.mapToUser(request);
-        final var createdUser = userRepository.save(user);
+        var user = userConverter.mapToUser(request);
+        var createdUser = userRepository.save(user);
 
         return userConverter.mapToResponse(createdUser);
     }
@@ -79,11 +79,11 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Override
     public void createNewUserIfNecessary(final Authentication authentication) {
         if (authentication instanceof OAuth2AuthenticationToken authenticationToken) {
-            final var externalId = authenticationToken.getName();
-            final var externalProvider = authenticationToken.getAuthorizedClientRegistrationId();
+            var externalId = authenticationToken.getName();
+            var externalProvider = authenticationToken.getAuthorizedClientRegistrationId();
 
             if (shouldCreateInternalUser(externalId, externalProvider)) {
-                final var user = new InternalUser();
+                var user = new InternalUser();
 
                 user.setExternalId(externalId);
                 user.setExternalProvider(externalProvider);

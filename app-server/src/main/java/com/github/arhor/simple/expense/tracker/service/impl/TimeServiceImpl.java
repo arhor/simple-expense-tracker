@@ -45,17 +45,17 @@ public class TimeServiceImpl implements TimeService {
         final LocalDate endDate,
         final TimeZone timezone
     ) {
-        final var startDatePresent = startDate != null;
-        final var endDatePresent = endDate != null;
+        var startDatePresent = startDate != null;
+        var endDatePresent = endDate != null;
 
-        final ZoneId zoneId = (timezone != null)
+        var zoneId = (timezone != null)
             ? timezone.toZoneId()
             : DEFAULT_TIME_ZONE;
 
-        final var safeStartDate = startDatePresent
+        var safeStartDate = startDatePresent
             ? startDate
             : (endDatePresent ? endDate : LocalDate.now(zoneId)).with(firstDayOfMonth());
-        final var safeEndDate = endDatePresent
+        var safeEndDate = endDatePresent
             ? endDate
             : (startDatePresent ? startDate : LocalDate.now(zoneId)).with(lastDayOfMonth());
 
