@@ -48,7 +48,6 @@ class UserControllerTest extends BaseControllerTest {
 
         // when
         http.perform(get("/api/users?current"))
-            .andDo(print())
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.id", equalTo(response.getId()), long.class))
             .andExpect(jsonPath("$.username", equalTo(response.getUsername())))

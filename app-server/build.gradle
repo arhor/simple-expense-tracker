@@ -85,16 +85,6 @@ dependencyManagement {
     }
 }
 
-tasks.withType(JavaCompile) {
-    options.compilerArgs = [
-        "-Xlint:unchecked",
-        "-Xlint:deprecation",
-        "-Xlint:preview",
-        "--enable-preview",
-        "-parameters"
-    ]
-}
-
 task contractTest(type: Test) {
     group = "verification"
     useJUnitPlatform {
@@ -165,6 +155,38 @@ jacocoTestCoverageVerification {
             exclude: jacocoExclusions
         )
     })
+}
+
+tasks.withType(JavaCompile) {
+    options.compilerArgs = [
+        "-Xlint:unchecked",
+        "-Xlint:deprecation",
+        "-Xlint:preview",
+        "--enable-preview",
+        "-parameters"
+    ]
+}
+
+tasks.withType(Test) {
+    testLogging {
+        events "PASSED", "SKIPPED", "FAILED"
+
+        afterSuite { desc, result ->
+            if (!desc.parent) {
+                def output = "|  Result: %s (%s tests, %s passed, %s failed, %s skipped)  |".formatted(
+                    result.resultType,
+                    result.testCount,
+                    result.successfulTestCount,
+                    result.failedTestCount,
+                    result.skippedTestCount
+                )
+                def line = '-' * output.length()
+                println(line)
+                println(output)
+                println(line)
+            }
+        }
+    }
 }
 
 flyway {

@@ -14,5 +14,8 @@ import java.io.Serializable;
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = true)
 public abstract class DeletableDomainObject<T extends Serializable> extends DomainObject<T> {
+    /**
+     * Indicates that domain object should be considered 'deleted'.
+     */
     private boolean deleted;
 }
