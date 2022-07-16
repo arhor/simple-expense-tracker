@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration scan="true" scanPeriod="30 seconds">
+    <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
+    <include resource="org/springframework/boot/logging/logback/file-appender.xml"/>
+    <include resource="org/springframework/boot/logging/logback/console-appender.xml"/>
 
     <contextListener class="ch.qos.logback.classic.jul.LevelChangePropagator">
         <resetJUL>true</resetJUL>
@@ -30,10 +33,6 @@
             </encoder>
         </appender>
     </springProfile>
-
-    <logger name="javax.activation"        level="WARN"/>
-    <logger name="javax.management.remote" level="WARN"/>
-    <logger name="javax.xml.bind"          level="WARN"/>
 
     <root level="INFO">
         <appender-ref ref="console"/>
