@@ -15,6 +15,7 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -27,17 +28,44 @@ class UserControllerTest extends BaseControllerTest {
     @Test
     void should_return_status_201_user_info_and_location_header_creating_new_user() throws Exception {
         // given
+        var username = "username";
+        var password = "Password1";
+        var currency = "USD";
+
         var requestBody = """
             {
-                "username": "username",
-                "password": "password",
-                "currency": "USD"
+                "username": "%s",
+                "password": "%s",
+                "currency": "%s"
             }
-            """;
+            """.formatted(username, password, currency);
+
+        var response = new UserResponse();
+        response.setId(1L);
+        response.setUsername(username);
+        response.setCurrency(currency);
+
+        given(userService.createNewUser(any()))
+            .willReturn(response);
 
         // when
         http.perform(post("/api/users").content(requestBody).contentType("application/json"))
-            .andExpect(status().isCreated());
+            .andDo(print())
+            .andExpect(status().isCreated())
+            .andExpect(jsonPath("$.id", equalTo(response.getId()), long.class))
+            .andExpect(jsonPath("$.username", equalTo(response.getUsername())))
+            .andExpect(jsonPath("$.currency", equalTo(response.getCurrency())));
+
+        // then
+        then(userService)
+            .should()
+            .createNewUser(
+                argThat(request -> {
+                    return username.equals(request.getUsername())
+                        && password.equals(request.getPassword())
+                        && currency.equals(request.getCurrency());
+                })
+            );
     }
 
     @Test
