@@ -21,7 +21,7 @@ ext {
         "**/error/*",
         "**/model/*",
         "**/dto/*",
-    ].collect { "com/github/arhor/linden/dragon/tavern/$it" }
+    ].collect { "com/github/arhor/simple/expense/tracker/$it" }
 }
 
 repositories {
@@ -181,18 +181,18 @@ tasks.withType(Test) {
                     result.skippedTestCount
                 )
                 def line = '-' * output.length()
-                println(line)
-                println(output)
-                println(line)
+                println line
+                println output
+                println line
             }
         }
     }
 }
 
 flyway {
-    url = env.getRequired("JDBC_DATABASE_URL")
-    user = env.getRequired("JDBC_DATABASE_USERNAME")
-    password = env.getRequired("JDBC_DATABASE_PASSWORD")
+    url = env.getRequired "JDBC_DATABASE_URL"
+    user = env.getRequired "JDBC_DATABASE_USERNAME"
+    password = env.getRequired "JDBC_DATABASE_PASSWORD"
 
     driver = "org.postgresql.Driver"
     encoding = "UTF-8"
