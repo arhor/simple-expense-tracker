@@ -1,29 +1,7 @@
-import com.github.gradle.node.npm.task.NpmTask
-
 plugins {
-    id "idea"
     id "java-library"
     id "org.jsonschema2dataclass"
-    id "com.github.node-gradle.node"
-}
-
-node {
-    version = libs.versions.node.get()
-    download = true
-
-    def rootGradleDir = "${rootDir}/.gradle"
-
-    workDir = file("${rootGradleDir}/nodejs")
-    npmWorkDir = file("${rootGradleDir}/npm")
-    yarnWorkDir = file("${rootGradleDir}/yarn")
-}
-
-idea {
-    module {
-        excludeDirs += files(
-            "$projectDir/node_modules",
-        )
-    }
+    id "simple-expense-tracker.node-conventions"
 }
 
 repositories {
@@ -51,7 +29,7 @@ jsonSchema2Pojo {
     dateType = "java.time.LocalDate"
 }
 
-task generateJsonSchema2TypeScript(type: NpmTask, dependsOn: npmInstall) {
+task generateJsonSchema2TypeScript(type: com.github.gradle.node.npm.task.NpmTask, dependsOn: npmInstall) {
     group = "build"
     description = "Builds d.ts files according to the provided schemas"
     workingDir.fileValue(projectDir)

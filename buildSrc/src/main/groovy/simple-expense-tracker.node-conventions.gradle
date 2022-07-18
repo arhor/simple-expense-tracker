@@ -1,0 +1,23 @@
+plugins {
+    id "com.github.node-gradle.node"
+    id "idea"
+}
+
+node {
+    version = property("app.version.node")
+    download = true
+
+    workDir = file("${rootDir}/.gradle/nodejs")
+    npmWorkDir = file("${rootDir}/.gradle/npm")
+    yarnWorkDir = file("${rootDir}/.gradle/yarn")
+}
+
+idea {
+    module {
+        excludeDirs += files(
+            "$projectDir/node_modules",
+            "$projectDir/dist",
+        )
+    }
+}
+

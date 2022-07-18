@@ -1,22 +1,12 @@
 package com.github.arhor.simple.expense.tracker.web.api;
 
-import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.Import;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
 import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
-import org.springframework.test.web.servlet.MockMvc;
 
-import com.github.arhor.simple.expense.tracker.config.LocalizationConfig;
 import com.github.arhor.simple.expense.tracker.model.UserResponse;
 import com.github.arhor.simple.expense.tracker.service.UserService;
-import com.github.arhor.simple.expense.tracker.service.impl.TimeServiceImpl;
 
 import static org.hamcrest.Matchers.equalTo;
 import static org.mockito.ArgumentMatchers.any;
@@ -24,7 +14,7 @@ import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -33,6 +23,22 @@ class UserControllerTest extends BaseControllerTest {
 
     @MockBean
     private UserService userService;
+
+    @Test
+    void should_return_status_201_user_info_and_location_header_creating_new_user() throws Exception {
+        // given
+        var requestBody = """
+            {
+                "username": "username",
+                "password": "password",
+                "currency": "USD"
+            }
+            """;
+
+        // when
+        http.perform(post("/api/users").content(requestBody).contentType("application/json"))
+            .andExpect(status().isCreated());
+    }
 
     @Test
     @WithMockUser
