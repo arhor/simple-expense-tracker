@@ -6,7 +6,11 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.TimeZone;
 
+import javax.validation.Valid;
+import javax.validation.constraints.PastOrPresent;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -16,11 +20,11 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import com.github.arhor.simple.expense.tracker.model.ExpenseDetailsResponseDTO;
 import com.github.arhor.simple.expense.tracker.model.ExpenseItemDTO;
 import com.github.arhor.simple.expense.tracker.model.ExpenseRequestDTO;
 import com.github.arhor.simple.expense.tracker.model.ExpenseResponseDTO;
@@ -50,27 +54,25 @@ public class ExpenseController {
      */
     @GetMapping
     public List<ExpenseResponseDTO> getUserExpenses(
-        @RequestParam(required = false) @QSDate final LocalDate startDate,
-        @RequestParam(required = false) @QSDate final LocalDate endDate,
+        @Valid final DateRangeCriteria dateRangeCriteria,
         final TimeZone timezone,
         final Authentication auth
     ) {
         var currentUserId = userService.determineUserId(auth);
-        var dateRange = timeService.convertToDateRange(startDate, endDate, timezone);
+        var dateRange = safeConvert(dateRangeCriteria, timezone);
 
         return expenseService.getUserExpenses(currentUserId, dateRange);
     }
 
     @GetMapping("/{expenseId}")
-    public ExpenseResponseDTO getExpenseById(
+    public ExpenseDetailsResponseDTO getExpenseById(
         @PathVariable final Long expenseId,
-        @RequestParam(required = false) @QSDate final LocalDate startDate,
-        @RequestParam(required = false) @QSDate final LocalDate endDate,
+        @Valid final DateRangeCriteria dateRangeCriteria,
         final TimeZone timezone,
         final Authentication auth
     ) {
         var currentUserId = userService.determineUserId(auth);
-        var dateRange = timeService.convertToDateRange(startDate, endDate, timezone);
+        var dateRange = safeConvert(dateRangeCriteria, timezone);
 
         return expenseService.getUserExpenseById(currentUserId, expenseId, dateRange);
     }
@@ -98,5 +100,16 @@ public class ExpenseController {
         @RequestBody final ExpenseItemDTO expenseItemDTO
     ) {
         return expenseService.createExpenseItem(expenseId, expenseItemDTO);
+    }
+
+    private TimeService.TemporalRange<LocalDate> safeConvert(
+        final DateRangeCriteria criteria,
+        final TimeZone timezone
+    ) {
+        return timeService.convertToDateRange(
+            criteria.startDate(),
+            criteria.endDate(),
+            timezone
+        );
     }
 }

@@ -4,18 +4,23 @@ import lombok.RequiredArgsConstructor;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.function.Consumer;
+import java.util.stream.Stream;
 
+import javax.money.CurrencyUnit;
 import javax.money.Monetary;
 
 import org.javamoney.moneta.Money;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.github.arhor.simple.expense.tracker.data.model.ExpenseItem;
 import com.github.arhor.simple.expense.tracker.data.model.InternalUser;
 import com.github.arhor.simple.expense.tracker.data.repository.ExpenseItemRepository;
 import com.github.arhor.simple.expense.tracker.data.repository.ExpenseRepository;
 import com.github.arhor.simple.expense.tracker.data.repository.UserRepository;
 import com.github.arhor.simple.expense.tracker.exception.EntityNotFoundException;
+import com.github.arhor.simple.expense.tracker.model.ExpenseDetailsResponseDTO;
 import com.github.arhor.simple.expense.tracker.model.ExpenseItemDTO;
 import com.github.arhor.simple.expense.tracker.model.ExpenseRequestDTO;
 import com.github.arhor.simple.expense.tracker.model.ExpenseResponseDTO;
@@ -34,28 +39,45 @@ public class ExpenseServiceImpl implements ExpenseService {
     private final ExpenseItemRepository expenseItemRepository;
     private final ExpenseConverter expenseConverter;
     private final ExpenseItemConverter expenseItemConverter;
-    private final MoneyConverter moneyConverter;
+    private final MoneyConverter converter;
 
     @Override
     public List<ExpenseResponseDTO> getUserExpenses(final Long userId, final TemporalRange<LocalDate> dateRange) {
+        var targetCurrency = getUserCurrency(userId);
+
         try (var expenses = expenseRepository.findByUserId(userId)) {
-            return expenses.map(expenseConverter::mapToDTO)
-                .peek(it -> initializeExpenseTotal(it, userId, dateRange))
+            return expenses
+                .map(expenseConverter::mapToDTO)
+                .peek(expense -> {
+                    useExpenseItemsStream(expense.getId(), dateRange, stream -> {
+                        var calculator = new TotalCalculator(targetCurrency);
+                        stream.forEach(calculator::add);
+                        expense.setTotal(calculator.total.getNumberStripped());
+                    });
+                })
                 .toList();
         }
     }
 
     @Override
-    public ExpenseResponseDTO getUserExpenseById(
+    public ExpenseDetailsResponseDTO getUserExpenseById(
         final Long userId,
         final Long expenseId,
         final TemporalRange<LocalDate> dateRange
     ) {
         var responseDTO = expenseRepository.findByUserIdAndExpenseId(userId, expenseId)
-            .map(expenseConverter::mapToDTO)
+            .map(expenseConverter::mapToDetailsDTO)
             .orElseThrow(() -> new EntityNotFoundException("Expense", "userId=" + userId + ", expenseId=" + expenseId));
 
-        initializeExpenseTotal(responseDTO, userId, dateRange);
+        var targetCurrency = getUserCurrency(userId);
+
+        useExpenseItemsStream(expenseId, dateRange, stream -> {
+            var calculator = new TotalCalculator(targetCurrency);
+            var items = stream.peek(calculator::add).map(expenseItemConverter::mapToDTO).toList();
+
+            responseDTO.setItems(items);
+            responseDTO.setTotal(calculator.total.getNumberStripped());
+        });
 
         return responseDTO;
     }
@@ -86,38 +108,43 @@ public class ExpenseServiceImpl implements ExpenseService {
         return expenseItemConverter.mapToDTO(result);
     }
 
-    private void initializeExpenseTotal(
-        final ExpenseResponseDTO expense,
-        final Long userId,
-        final TemporalRange<LocalDate> dateRange
-    ) {
-        var targetCurrency = userRepository.findById(userId)
+    private CurrencyUnit getUserCurrency(final Long userId) {
+        return userRepository.findById(userId)
             .map(InternalUser::getCurrency)
             .map(Monetary::getCurrency)
             .orElseThrow(() -> new EntityNotFoundException("User", "id=" + userId));
+    }
 
-        var id = expense.getId();
-        var start = dateRange.start();
-        var end = dateRange.end();
+    private void useExpenseItemsStream(
+        final Long expenseId,
+        final TemporalRange<LocalDate> dateRange,
+        final Consumer<Stream<ExpenseItem>> action
+    ) {
+        try (
+            var stream = expenseItemRepository.findByExpenseIdAndDateRange(
+                expenseId,
+                dateRange.start(),
+                dateRange.end()
+            )
+        ) {
+            action.accept(stream);
+        }
+    }
 
-        // TODO: possible bottleneck, could be improved by moving calculations into the SQL query
-        try (var items = expenseItemRepository.findByExpenseIdAndDateRange(id, start, end)) {
-            expense.setTotal(
-                items.reduce(
-                    Money.zero(targetCurrency),
-                    (total, item) -> {
-                        var expenseAmount = item.getAmount();
-                        var expenseCurrency = item.getCurrency();
-                        var expenseDate = item.getDate();
+    private final class TotalCalculator {
+        private Money total;
 
-                        var amount = Money.of(expenseAmount, expenseCurrency);
-                        var convertedAmount = moneyConverter.convert(amount, targetCurrency, expenseDate);
+        TotalCalculator(final CurrencyUnit currency) {
+            total = Money.zero(currency);
+        }
 
-                        return total.add(convertedAmount);
-                    },
-                    Money::add
-                ).getNumberStripped()
-            );
+        public void add(final ExpenseItem expense) {
+            var sourceCurrency = expense.getCurrency();
+            var targetCurrency = total.getCurrency();
+            var amount = Money.of(expense.getAmount(), sourceCurrency);
+            var date = expense.getDate();
+
+            total = total.add(converter.convert(amount, targetCurrency, date));
         }
     }
 }
