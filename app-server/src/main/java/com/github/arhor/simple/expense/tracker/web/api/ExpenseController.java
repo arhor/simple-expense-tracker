@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.TimeZone;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -28,8 +27,6 @@ import com.github.arhor.simple.expense.tracker.model.ExpenseResponseDTO;
 import com.github.arhor.simple.expense.tracker.service.ExpenseService;
 import com.github.arhor.simple.expense.tracker.service.TimeService;
 import com.github.arhor.simple.expense.tracker.service.UserService;
-
-import static org.springframework.format.annotation.DateTimeFormat.ISO.DATE;
 
 /**
  * Provides REST-API for the 'expenses' resource.
@@ -53,8 +50,8 @@ public class ExpenseController {
      */
     @GetMapping
     public List<ExpenseResponseDTO> getUserExpenses(
-        @RequestParam(required = false) @DateTimeFormat(iso = DATE) final LocalDate startDate,
-        @RequestParam(required = false) @DateTimeFormat(iso = DATE) final LocalDate endDate,
+        @RequestParam(required = false) @QSDate final LocalDate startDate,
+        @RequestParam(required = false) @QSDate final LocalDate endDate,
         final TimeZone timezone,
         final Authentication auth
     ) {
@@ -67,8 +64,8 @@ public class ExpenseController {
     @GetMapping("/{expenseId}")
     public ExpenseResponseDTO getExpenseById(
         @PathVariable final Long expenseId,
-        @RequestParam(required = false) final LocalDate startDate,
-        @RequestParam(required = false) final LocalDate endDate,
+        @RequestParam(required = false) @QSDate final LocalDate startDate,
+        @RequestParam(required = false) @QSDate final LocalDate endDate,
         final TimeZone timezone,
         final Authentication auth
     ) {
