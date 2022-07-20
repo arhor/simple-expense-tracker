@@ -58,7 +58,8 @@ spring:
     baseline-version: 0.0
 
   autoconfigure:
-    exclude: org.springframework.boot.autoconfigure.web.servlet.error.ErrorMvcAutoConfiguration
+    exclude:
+      - org.springframework.boot.autoconfigure.web.servlet.error.ErrorMvcAutoConfiguration
 
   output:
     ansi:

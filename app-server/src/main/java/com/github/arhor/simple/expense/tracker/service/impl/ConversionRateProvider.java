@@ -86,8 +86,8 @@ public class ConversionRateProvider extends AbstractRateProvider {
 
     @PostConstruct
     public void init() throws IOException {
-        var dataFilePattern = conversionRatesConfigurationProperties.getDataFilePattern();
-        var yearsToLoad = conversionRatesConfigurationProperties.getYearsToLoad();
+        var dataFilePattern = conversionRatesConfigurationProperties.dataFilePattern();
+        var yearsToLoad = conversionRatesConfigurationProperties.yearsToLoad();
         var resources = resourcePatternResolver.getResources(dataFilePattern);
 
         var tasks = new CompletableFuture[yearsToLoad];
@@ -168,7 +168,7 @@ public class ConversionRateProvider extends AbstractRateProvider {
                     return new RateResult(targets);
                 } else if (yearsAvailableLocally.contains(year)) {
                     try {
-                        var dataFilePattern = conversionRatesConfigurationProperties.getDataFilePattern();
+                        var dataFilePattern = conversionRatesConfigurationProperties.dataFilePattern();
                         var resources = resourcePatternResolver.getResources(dataFilePattern);
 
                         for (var resource : resources) {
