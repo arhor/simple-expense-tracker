@@ -10,7 +10,6 @@ import java.util.TimeZone;
 import java.util.function.Function;
 
 import org.apache.commons.collections4.ListUtils;
-import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
@@ -26,10 +25,10 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.NoHandlerFoundException;
 
-import com.github.arhor.simple.expense.tracker.CurrentRequestContext;
 import com.github.arhor.simple.expense.tracker.exception.EntityDuplicateException;
 import com.github.arhor.simple.expense.tracker.exception.EntityNotFoundException;
 import com.github.arhor.simple.expense.tracker.service.TimeService;
+import com.github.arhor.simple.expense.tracker.web.CurrentRequestContext;
 
 import static com.github.arhor.simple.expense.tracker.config.WebServerConfig.apiUrlPath;
 import static com.github.arhor.simple.expense.tracker.web.error.ErrorCode.HANDLER_NOT_FOUND;
@@ -43,7 +42,6 @@ public class GlobalExceptionHandler {
 
     private final MessageSource messages;
     private final TimeService timeService;
-    private final ObjectProvider<CurrentRequestContext> currentRequestContextProvider;
 
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(Exception.class)
@@ -169,13 +167,8 @@ public class GlobalExceptionHandler {
         final List<String> details,
         final Object... args
     ) {
-        var currentRequestContext = currentRequestContextProvider.getIfAvailable();
-        var requestId = (currentRequestContext != null)
-            ? currentRequestContext.getRequestId().toString()
-            : "UNKNOWN";
-
         return new ErrorResponse(
-            requestId,
+            CurrentRequestContext.requestId(),
             messages.getMessage(error.getLabel(), args, locale),
             timeService.now(timeZone),
             error,

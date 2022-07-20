@@ -12,27 +12,21 @@ import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.web.context.request.RequestContextHolder;
 
-import com.github.arhor.simple.expense.tracker.CurrentRequestContext;
+import com.github.arhor.simple.expense.tracker.web.CurrentRequestContext;
 
 @Aspect
 @Component
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 public class LoggingAspect {
 
-    private final ObjectProvider<CurrentRequestContext> currentRequestContextProvider;
-
     @Around("webLayer() || serviceLayer() || persistenceLayer()")
     public Object logMethodExecution(final ProceedingJoinPoint joinPoint) throws Throwable {
         var log = componentLogger(joinPoint);
         if (log.isDebugEnabled()) {
-            var requestId = isRequestAvailable()
-                ? currentRequestContextProvider.getObject().getRequestId().toString()
-                : "UNKNOWN";
+            var requestId = CurrentRequestContext.requestId();
             var signature = joinPoint.getSignature();
             var signatureName = "%s.%s()".formatted(
                 signature.getDeclaringType().getSimpleName(),
@@ -58,18 +52,16 @@ public class LoggingAspect {
 
     @AfterThrowing(pointcut = "webLayer() || serviceLayer() || persistenceLayer()", throwing = "exception")
     public void logException(final JoinPoint joinPoint, final Throwable exception) {
-        if (isRequestAvailable()) {
-            currentRequestContextProvider.ifAvailable(currentRequestContext -> {
-                if (!currentRequestContext.isExceptionLogged(exception)) {
-                    componentLogger(joinPoint).error(
-                        "Request-ID: {}",
-                        currentRequestContext.getRequestId(),
-                        exception
-                    );
-                    currentRequestContext.setExceptionBeenLogged(exception);
-                }
-            });
-        }
+        CurrentRequestContext.get().ifPresent(context -> {
+            if (!context.isExceptionLogged(exception)) {
+                componentLogger(joinPoint).error(
+                    "Request-ID: {}",
+                    context.getRequestId(),
+                    exception
+                );
+                context.setExceptionBeenLogged(exception);
+            }
+        });
     }
 
     @Pointcut(
@@ -92,10 +84,6 @@ public class LoggingAspect {
 
     private Logger componentLogger(final JoinPoint joinPoint) {
         return LoggerFactory.getLogger(joinPoint.getSignature().getDeclaringTypeName());
-    }
-
-    private boolean isRequestAvailable() {
-        return RequestContextHolder.getRequestAttributes() != null;
     }
 
     private String stringifyJoinPointArgs(final JoinPoint joinPoint) {
