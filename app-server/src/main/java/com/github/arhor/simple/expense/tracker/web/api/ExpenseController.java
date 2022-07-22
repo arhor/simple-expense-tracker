@@ -6,15 +6,12 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.TimeZone;
 
-import javax.validation.Valid;
-import javax.validation.constraints.PastOrPresent;
-
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -31,10 +28,12 @@ import com.github.arhor.simple.expense.tracker.model.ExpenseResponseDTO;
 import com.github.arhor.simple.expense.tracker.service.ExpenseService;
 import com.github.arhor.simple.expense.tracker.service.TimeService;
 import com.github.arhor.simple.expense.tracker.service.UserService;
+import com.github.arhor.simple.expense.tracker.validation.ValidDateRange;
 
 /**
  * Provides REST-API for the 'expenses' resource.
  */
+@Validated
 @RestController
 @RequestMapping("/expenses")
 @PreAuthorize("isAuthenticated()")
@@ -54,7 +53,7 @@ public class ExpenseController {
      */
     @GetMapping
     public List<ExpenseResponseDTO> getUserExpenses(
-        @Valid final DateRangeCriteria dateRangeCriteria,
+        @ValidDateRange final DateRangeCriteria dateRangeCriteria,
         final TimeZone timezone,
         final Authentication auth
     ) {
@@ -67,7 +66,7 @@ public class ExpenseController {
     @GetMapping("/{expenseId}")
     public ExpenseDetailsResponseDTO getExpenseById(
         @PathVariable final Long expenseId,
-        @Valid final DateRangeCriteria dateRangeCriteria,
+        @ValidDateRange final DateRangeCriteria dateRangeCriteria,
         final TimeZone timezone,
         final Authentication auth
     ) {
