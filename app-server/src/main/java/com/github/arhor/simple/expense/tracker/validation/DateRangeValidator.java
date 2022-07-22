@@ -13,7 +13,7 @@ public class DateRangeValidator implements ConstraintValidator<ValidDateRange, D
             var startDate = value.startDate();
             var endDate = value.endDate();
 
-            if (startDate != null && endDate != null) {
+            if ((startDate != null) && (endDate != null)) {
                 return startDate.isBefore(endDate)
                     || startDate.isEqual(endDate);
             }
