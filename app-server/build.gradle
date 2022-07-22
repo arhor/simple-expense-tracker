@@ -3,6 +3,7 @@ plugins {
     id "jacoco"
     id "io.freefair.lombok"
     id "org.flywaydb.flyway"
+    id "com.adarshr.test-logger"
     id "org.springframework.boot"
     id "io.spring.dependency-management"
 }
@@ -165,28 +166,6 @@ tasks.withType(JavaCompile) {
         "--enable-preview",
         "-parameters"
     ]
-}
-
-tasks.withType(Test) {
-    testLogging {
-        events "PASSED", "SKIPPED", "FAILED"
-
-        afterSuite { desc, result ->
-            if (!desc.parent) {
-                def output = "|  Result: %s (%s tests, %s passed, %s failed, %s skipped)  |".formatted(
-                    result.resultType,
-                    result.testCount,
-                    result.successfulTestCount,
-                    result.failedTestCount,
-                    result.skippedTestCount
-                )
-                def line = '-' * output.length()
-                println line
-                println output
-                println line
-            }
-        }
-    }
 }
 
 flyway {

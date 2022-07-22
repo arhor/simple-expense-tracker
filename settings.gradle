@@ -7,6 +7,7 @@ pluginManagement {
         id "org.springframework.boot"        version settings["app.version.springBoot"]
         id "io.freefair.lombok"              version settings["app.version.lombok"]
         id "io.spring.dependency-management" version settings["app.version.springDependencyManagement"]
+        id "com.adarshr.test-logger"         version settings["app.version.gradleTestLogger"]
     }
 }
 
