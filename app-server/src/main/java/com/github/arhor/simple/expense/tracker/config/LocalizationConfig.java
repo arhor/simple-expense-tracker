@@ -14,7 +14,7 @@ import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 public class LocalizationConfig {
 
     @Bean
-    public MessageSource messages(final Optional<WebProperties> webProperties) {
+    public MessageSource messageSource(final Optional<WebProperties> webProperties) {
         var messageSource = new ReloadableResourceBundleMessageSource();
 
         messageSource.setBasename("classpath:messages");
@@ -25,7 +25,7 @@ public class LocalizationConfig {
     }
 
     @Bean
-    public LocalValidatorFactoryBean getValidator(final MessageSource messages) {
+    public LocalValidatorFactoryBean localValidatorFactoryBean(final MessageSource messages) {
         var validatorFactoryBean = new LocalValidatorFactoryBean();
 
         validatorFactoryBean.setValidationMessageSource(messages);
