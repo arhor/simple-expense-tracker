@@ -16,7 +16,6 @@ management:
 
 logging:
   level:
-    org.springframework.boot.autoconfigure: DEBUG
     org.springframework.jdbc.core.JdbcTemplate: DEBUG
     com.github.arhor: DEBUG
 
