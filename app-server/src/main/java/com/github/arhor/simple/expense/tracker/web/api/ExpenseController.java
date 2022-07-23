@@ -28,7 +28,7 @@ import com.github.arhor.simple.expense.tracker.model.ExpenseResponseDTO;
 import com.github.arhor.simple.expense.tracker.service.ExpenseService;
 import com.github.arhor.simple.expense.tracker.service.TimeService;
 import com.github.arhor.simple.expense.tracker.service.UserService;
-import com.github.arhor.simple.expense.tracker.validation.ValidDateRange;
+import com.github.arhor.simple.expense.tracker.web.validation.ValidDateRange;
 
 /**
  * Provides REST-API for the 'expenses' resource.

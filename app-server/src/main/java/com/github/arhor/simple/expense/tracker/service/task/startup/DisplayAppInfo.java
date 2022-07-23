@@ -1,4 +1,4 @@
-package com.github.arhor.simple.expense.tracker.task.startup;
+package com.github.arhor.simple.expense.tracker.service.task.startup;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

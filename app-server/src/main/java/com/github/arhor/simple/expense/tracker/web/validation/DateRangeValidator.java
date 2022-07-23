@@ -1,4 +1,4 @@
-package com.github.arhor.simple.expense.tracker.validation;
+package com.github.arhor.simple.expense.tracker.web.validation;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;

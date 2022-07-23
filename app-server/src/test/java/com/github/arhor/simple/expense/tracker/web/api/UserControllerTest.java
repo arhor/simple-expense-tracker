@@ -5,17 +5,16 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.test.context.support.WithMockUser;
 
+import com.github.arhor.simple.expense.tracker.CustomArgumentMatchers;
 import com.github.arhor.simple.expense.tracker.model.UserResponse;
 import com.github.arhor.simple.expense.tracker.service.UserService;
 
-import static org.hamcrest.Matchers.equalTo;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -32,14 +31,6 @@ class UserControllerTest extends BaseControllerTest {
         var password = "Password1";
         var currency = "USD";
 
-        var requestBody = """
-            {
-                "username": "%s",
-                "password": "%s",
-                "currency": "%s"
-            }
-            """.formatted(username, password, currency);
-
         var response = new UserResponse();
         response.setId(1L);
         response.setUsername(username);
@@ -49,12 +40,17 @@ class UserControllerTest extends BaseControllerTest {
             .willReturn(response);
 
         // when
-        http.perform(post("/api/users").content(requestBody).contentType("application/json"))
-            .andDo(print())
-            .andExpect(status().isCreated())
-            .andExpect(jsonPath("$.id", equalTo(response.getId()), long.class))
-            .andExpect(jsonPath("$.username", equalTo(response.getUsername())))
-            .andExpect(jsonPath("$.currency", equalTo(response.getCurrency())));
+        var result = http.perform(
+            post("/api/users")
+                .contentType("application/json")
+                .content("""
+                    {
+                        "username": "%s",
+                        "password": "%s",
+                        "currency": "%s"
+                    }
+                    """.formatted(username, password, currency))
+        );
 
         // then
         then(userService)
@@ -66,6 +62,12 @@ class UserControllerTest extends BaseControllerTest {
                         && currency.equals(request.getCurrency());
                 })
             );
+
+        result
+            .andExpect(status().isCreated())
+            .andExpect(jsonPath("$.id").value(response.getId()))
+            .andExpect(jsonPath("$.username").value(response.getUsername()))
+            .andExpect(jsonPath("$.currency").value(response.getCurrency()));
     }
 
     @Test
@@ -81,15 +83,17 @@ class UserControllerTest extends BaseControllerTest {
             .willReturn(response);
 
         // when
-        http.perform(get("/api/users?current"))
-            .andExpect(status().isOk())
-            .andExpect(jsonPath("$.id", equalTo(response.getId()), long.class))
-            .andExpect(jsonPath("$.username", equalTo(response.getUsername())))
-            .andExpect(jsonPath("$.currency", equalTo(response.getCurrency())));
+        var result = http.perform(get("/api/users?current"));
 
         // then
         then(userService)
             .should()
-            .determineUser(argThat(it -> it.isAuthenticated() && "user".equals(it.getName())));
+            .determineUser(argThat(CustomArgumentMatchers::authenticatedUser));
+
+        result
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.id").value(response.getId()))
+            .andExpect(jsonPath("$.username").value(response.getUsername()))
+            .andExpect(jsonPath("$.currency").value(response.getCurrency()));
     }
 }

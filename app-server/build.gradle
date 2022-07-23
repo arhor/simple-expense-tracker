@@ -102,9 +102,17 @@ task integrationTest(type: Test) {
     shouldRunAfter contractTest
 }
 
+task architectureTest(type: Test) {
+    group = "verification"
+    useJUnitPlatform {
+        includeTags "architecture"
+    }
+    shouldRunAfter integrationTest
+}
+
 test {
     useJUnitPlatform {
-        excludeTags "contract", "integration"
+        excludeTags "contract", "integration", "architecture"
     }
 }
 
@@ -113,6 +121,7 @@ check {
         test,
         contractTest,
         integrationTest,
+        architectureTest,
         jacocoTestReport,
         jacocoTestCoverageVerification,
     ]

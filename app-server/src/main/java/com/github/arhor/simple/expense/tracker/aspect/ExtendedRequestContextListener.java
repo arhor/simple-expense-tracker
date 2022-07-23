@@ -1,4 +1,4 @@
-package com.github.arhor.simple.expense.tracker.web;
+package com.github.arhor.simple.expense.tracker.aspect;
 
 import javax.servlet.ServletRequestEvent;
 

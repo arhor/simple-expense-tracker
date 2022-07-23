@@ -1,4 +1,4 @@
-package com.github.arhor.simple.expense.tracker.task.scheduled;
+package com.github.arhor.simple.expense.tracker.service.task.scheduled;
 
 import lombok.RequiredArgsConstructor;
 

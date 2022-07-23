@@ -28,7 +28,7 @@ import org.springframework.web.servlet.NoHandlerFoundException;
 import com.github.arhor.simple.expense.tracker.exception.EntityDuplicateException;
 import com.github.arhor.simple.expense.tracker.exception.EntityNotFoundException;
 import com.github.arhor.simple.expense.tracker.service.TimeService;
-import com.github.arhor.simple.expense.tracker.web.CurrentRequestContext;
+import com.github.arhor.simple.expense.tracker.aspect.CurrentRequestContext;
 
 import static com.github.arhor.simple.expense.tracker.config.WebServerConfig.apiUrlPath;
 import static com.github.arhor.simple.expense.tracker.web.error.ErrorCode.HANDLER_NOT_FOUND;

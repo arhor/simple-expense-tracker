@@ -1,4 +1,4 @@
-package com.github.arhor.simple.expense.tracker.validation;
+package com.github.arhor.simple.expense.tracker.web.validation;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;

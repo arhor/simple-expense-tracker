@@ -15,8 +15,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.github.arhor.simple.expense.tracker.web.CurrentRequestContext;
-
 @Aspect
 @Component
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
