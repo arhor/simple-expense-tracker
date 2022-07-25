@@ -95,9 +95,8 @@ configuration:
       - classpath:/static/js/
       - classpath:/static/pics/
       - classpath:/static/data/
-  tasks:
-    notifications:
-      enabled: true
+  notifications:
+    enabled: true
   conversion-rates:
     data-file-pattern: classpath*:conversion-rates/defaults/exchange.host/*.json
     years-to-load: 5

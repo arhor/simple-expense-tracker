@@ -12,9 +12,9 @@ import org.springframework.stereotype.Component;
 import com.github.arhor.simple.expense.tracker.service.NotificationService;
 
 @Component
-@ConditionalOnProperty(name = "configuration.tasks.notifications.enabled", havingValue = "true")
+@ConditionalOnProperty(name = "configuration.notifications.enabled", havingValue = "true")
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
-public class TaskExecutor {
+public class ScheduledTasks {
 
     private final NotificationService notificationService;
 

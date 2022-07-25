@@ -20,6 +20,5 @@ logging:
     com.github.arhor: DEBUG
 
 configuration:
-  tasks:
-    notifications:
-      enabled: false
+  notifications:
+    enabled: false

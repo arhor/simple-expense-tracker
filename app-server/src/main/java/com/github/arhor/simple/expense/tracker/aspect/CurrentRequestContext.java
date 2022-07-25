@@ -15,7 +15,7 @@ import static org.springframework.web.context.request.RequestAttributes.SCOPE_RE
 
 public class CurrentRequestContext {
 
-    public static final String ATTR_CURRENT_REQUEST_CONTEXT = "X-ATTR-CURRENT-REQUEST-CONTEXT";
+    public static final String CURRENT_REQUEST_CONTEXT = "X-CURRENT-REQUEST-CONTEXT";
 
     @Getter
     @Setter
@@ -25,7 +25,7 @@ public class CurrentRequestContext {
     public static Optional<CurrentRequestContext> get() {
         try {
             var attributes = RequestContextHolder.currentRequestAttributes();
-            var context = (CurrentRequestContext) attributes.getAttribute(ATTR_CURRENT_REQUEST_CONTEXT, SCOPE_REQUEST);
+            var context = (CurrentRequestContext) attributes.getAttribute(CURRENT_REQUEST_CONTEXT, SCOPE_REQUEST);
             return Optional.ofNullable(context);
         } catch (IllegalStateException e) {
             return Optional.empty();
