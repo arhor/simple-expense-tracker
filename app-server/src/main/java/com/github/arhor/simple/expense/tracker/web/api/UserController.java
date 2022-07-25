@@ -15,8 +15,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import com.github.arhor.simple.expense.tracker.model.UserRequest;
-import com.github.arhor.simple.expense.tracker.model.UserResponse;
+import com.github.arhor.simple.expense.tracker.model.UserRequestDTO;
+import com.github.arhor.simple.expense.tracker.model.UserResponseDTO;
 import com.github.arhor.simple.expense.tracker.service.UserService;
 
 @RestController
@@ -27,7 +27,7 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping
-    public ResponseEntity<UserResponse> createUser(@Valid @RequestBody final UserRequest request) {
+    public ResponseEntity<UserResponseDTO> createUser(@Valid @RequestBody final UserRequestDTO request) {
         var createdUser = userService.createNewUser(request);
 
         var location =
@@ -42,7 +42,7 @@ public class UserController {
 
     @GetMapping(params = "current")
     @PreAuthorize("isAuthenticated()")
-    public UserResponse getCurrentUser(final Authentication auth) {
+    public UserResponseDTO getCurrentUser(final Authentication auth) {
         return userService.determineUser(auth);
     }
 }

@@ -6,7 +6,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.test.context.support.WithMockUser;
 
 import com.github.arhor.simple.expense.tracker.CustomArgumentMatchers;
-import com.github.arhor.simple.expense.tracker.model.UserResponse;
+import com.github.arhor.simple.expense.tracker.model.UserResponseDTO;
 import com.github.arhor.simple.expense.tracker.service.UserService;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -31,7 +31,7 @@ class UserControllerTest extends BaseControllerTest {
         var password = "Password1";
         var currency = "USD";
 
-        var response = new UserResponse();
+        var response = new UserResponseDTO();
         response.setId(1L);
         response.setUsername(username);
         response.setCurrency(currency);
@@ -74,7 +74,7 @@ class UserControllerTest extends BaseControllerTest {
     @WithMockUser
     void should_return_status_200_and_expected_info_for_authenticated_user() throws Exception {
         // given
-        var response = new UserResponse();
+        var response = new UserResponseDTO();
         response.setId(1L);
         response.setUsername("user");
         response.setCurrency("USD");

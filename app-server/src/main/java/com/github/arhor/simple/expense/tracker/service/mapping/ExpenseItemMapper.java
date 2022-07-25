@@ -9,7 +9,7 @@ import com.github.arhor.simple.expense.tracker.data.model.ExpenseItem;
 import com.github.arhor.simple.expense.tracker.model.ExpenseItemDTO;
 
 @Mapper(config = MapStructConfig.class)
-public interface ExpenseItemConverter {
+public interface ExpenseItemMapper {
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "expenseId", ignore = true)

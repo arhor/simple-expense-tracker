@@ -12,7 +12,7 @@ import com.github.arhor.simple.expense.tracker.model.ExpenseRequestDTO;
 import com.github.arhor.simple.expense.tracker.model.ExpenseResponseDTO;
 
 @Mapper(config = MapStructConfig.class)
-public interface ExpenseConverter {
+public interface ExpenseMapper {
 
     @IgnoreAuditProps
     @Mapping(target = "id", ignore = true)

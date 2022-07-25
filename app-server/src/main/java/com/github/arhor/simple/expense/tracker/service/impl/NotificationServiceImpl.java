@@ -18,7 +18,7 @@ import com.github.arhor.simple.expense.tracker.data.repository.NotificationRepos
 import com.github.arhor.simple.expense.tracker.model.NotificationDTO;
 import com.github.arhor.simple.expense.tracker.service.NotificationService;
 import com.github.arhor.simple.expense.tracker.service.event.NotificationEvent;
-import com.github.arhor.simple.expense.tracker.service.mapping.NotificationConverter;
+import com.github.arhor.simple.expense.tracker.service.mapping.NotificationMapper;
 
 @Service
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
@@ -28,7 +28,7 @@ public class NotificationServiceImpl implements NotificationService {
 
     private final ApplicationEventPublisher applicationEventPublisher;
     private final NotificationRepository notificationRepository;
-    private final NotificationConverter notificationConverter;
+    private final NotificationMapper notificationMapper;
 
     private final Map<Long, SseEmitter> subscribers = new ConcurrentHashMap<>();
 
@@ -57,7 +57,7 @@ public class NotificationServiceImpl implements NotificationService {
             sent = sendInternal(userId, dto);
         } finally {
             if (!sent) {
-                var notification = notificationConverter.mapDtoToEntity(dto);
+                var notification = notificationMapper.mapDtoToEntity(dto);
 
                 notification.setUserId(userId);
                 notification.setCreatedBy(senderId);
@@ -77,7 +77,7 @@ public class NotificationServiceImpl implements NotificationService {
 
             for (var notification : notifications) {
                 var userId = notification.getUserId();
-                var sent = sendInternal(userId, () -> notificationConverter.mapEntityToDto(notification));
+                var sent = sendInternal(userId, () -> notificationMapper.mapEntityToDto(notification));
 
                 if (sent) {
                     notificationRepository.delete(notification);

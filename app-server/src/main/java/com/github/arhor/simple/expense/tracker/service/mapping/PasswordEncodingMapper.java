@@ -9,12 +9,12 @@ import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
-public class PasswordEncoderConverter {
+public class PasswordEncodingMapper {
 
     private final PasswordEncoder encoder;
 
-    @Named("encode")
-    public String encode(final String value) {
+    @Named("encodePassword")
+    public String encodePassword(final String value) {
         return encoder.encode(value);
     }
 }

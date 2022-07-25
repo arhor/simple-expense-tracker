@@ -9,7 +9,7 @@ import com.github.arhor.simple.expense.tracker.data.model.Notification;
 import com.github.arhor.simple.expense.tracker.model.NotificationDTO;
 
 @Mapper(config = MapStructConfig.class)
-public interface NotificationConverter {
+public interface NotificationMapper {
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "userId", ignore = true)

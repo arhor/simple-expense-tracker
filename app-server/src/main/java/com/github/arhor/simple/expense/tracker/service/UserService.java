@@ -2,16 +2,16 @@ package com.github.arhor.simple.expense.tracker.service;
 
 import org.springframework.security.core.Authentication;
 
-import com.github.arhor.simple.expense.tracker.model.UserRequest;
-import com.github.arhor.simple.expense.tracker.model.UserResponse;
+import com.github.arhor.simple.expense.tracker.model.UserRequestDTO;
+import com.github.arhor.simple.expense.tracker.model.UserResponseDTO;
 
 public interface UserService {
 
     Long determineUserId(Authentication auth);
 
-    UserResponse determineUser(Authentication auth);
+    UserResponseDTO determineUser(Authentication auth);
 
-    UserResponse createNewUser(UserRequest request);
+    UserResponseDTO createNewUser(UserRequestDTO request);
 
     void createNewUserIfNecessary(Authentication authentication);
 }

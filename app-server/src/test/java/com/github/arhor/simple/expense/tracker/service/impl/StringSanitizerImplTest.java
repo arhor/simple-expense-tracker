@@ -1,10 +1,9 @@
 package com.github.arhor.simple.expense.tracker.service.impl;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 class StringSanitizerImplTest {
 
@@ -16,8 +15,7 @@ class StringSanitizerImplTest {
     }
 
     @Test
-    @DisplayName("sanitize should return safe string for an input containing script injection")
-    void sanitize_stringScriptInjection_safeString() {
+    void sanitize_should_return_safe_string_for_an_input_containing_script_injection() {
         // given
         var initialUserInput = "<script>alert('Hacked!');</script>";
 
@@ -33,8 +31,7 @@ class StringSanitizerImplTest {
     }
 
     @Test
-    @DisplayName("sanitize should return the same string for an input without unsafe elements")
-    void sanitize_safeString_stringEqualsInput() {
+    void sanitize_should_return_the_same_string_for_an_input_without_unsafe_elements() {
         // given
         var initialUserInput = "Just simple text without unsafe elements";
 

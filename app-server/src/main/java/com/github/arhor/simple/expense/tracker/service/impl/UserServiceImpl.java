@@ -18,17 +18,17 @@ import com.github.arhor.simple.expense.tracker.data.repository.UserRepository;
 import com.github.arhor.simple.expense.tracker.exception.EntityDuplicateException;
 import com.github.arhor.simple.expense.tracker.exception.EntityNotFoundException;
 import com.github.arhor.simple.expense.tracker.model.Currency;
-import com.github.arhor.simple.expense.tracker.model.UserRequest;
-import com.github.arhor.simple.expense.tracker.model.UserResponse;
+import com.github.arhor.simple.expense.tracker.model.UserRequestDTO;
+import com.github.arhor.simple.expense.tracker.model.UserResponseDTO;
 import com.github.arhor.simple.expense.tracker.service.UserService;
-import com.github.arhor.simple.expense.tracker.service.mapping.UserConverter;
+import com.github.arhor.simple.expense.tracker.service.mapping.UserMapper;
 
 @Service
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 public class UserServiceImpl implements UserService, UserDetailsService {
 
     private final UserRepository userRepository;
-    private final UserConverter userConverter;
+    private final UserMapper userMapper;
 
     @Override
     public UserDetails loadUserByUsername(final String username) throws UsernameNotFoundException {
@@ -56,24 +56,24 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
-    public UserResponse determineUser(Authentication auth) {
+    public UserResponseDTO determineUser(Authentication auth) {
         var user = determineInternalUser(auth);
-        return userConverter.mapToResponse(user);
+        return userMapper.mapToResponse(user);
     }
 
     @Override
     @Transactional
-    public UserResponse createNewUser(final UserRequest request) {
+    public UserResponseDTO createNewUser(final UserRequestDTO request) {
         var username = request.getUsername();
 
         if (userRepository.existsByUsername(username)) {
             throw new EntityDuplicateException("InternalUser", "username=" + username);
         }
 
-        var user = userConverter.mapToUser(request);
+        var user = userMapper.mapToUser(request);
         var createdUser = userRepository.save(user);
 
-        return userConverter.mapToResponse(createdUser);
+        return userMapper.mapToResponse(createdUser);
     }
 
     @Override

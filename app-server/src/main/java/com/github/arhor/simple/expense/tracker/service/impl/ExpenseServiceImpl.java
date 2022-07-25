@@ -27,8 +27,8 @@ import com.github.arhor.simple.expense.tracker.model.ExpenseResponseDTO;
 import com.github.arhor.simple.expense.tracker.service.ExpenseService;
 import com.github.arhor.simple.expense.tracker.service.MoneyConverter;
 import com.github.arhor.simple.expense.tracker.service.TimeService.TemporalRange;
-import com.github.arhor.simple.expense.tracker.service.mapping.ExpenseConverter;
-import com.github.arhor.simple.expense.tracker.service.mapping.ExpenseItemConverter;
+import com.github.arhor.simple.expense.tracker.service.mapping.ExpenseMapper;
+import com.github.arhor.simple.expense.tracker.service.mapping.ExpenseItemMapper;
 
 @Service
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
@@ -37,8 +37,8 @@ public class ExpenseServiceImpl implements ExpenseService {
     private final UserRepository userRepository;
     private final ExpenseRepository expenseRepository;
     private final ExpenseItemRepository expenseItemRepository;
-    private final ExpenseConverter expenseConverter;
-    private final ExpenseItemConverter expenseItemConverter;
+    private final ExpenseMapper expenseMapper;
+    private final ExpenseItemMapper expenseItemMapper;
     private final MoneyConverter converter;
 
     @Override
@@ -47,7 +47,7 @@ public class ExpenseServiceImpl implements ExpenseService {
 
         try (var expenses = expenseRepository.findByUserId(userId)) {
             return expenses
-                .map(expenseConverter::mapToDTO)
+                .map(expenseMapper::mapToDTO)
                 .peek(expense -> {
                     useExpenseItemsStream(expense.getId(), dateRange, stream -> {
                         var calculator = new TotalCalculator(targetCurrency);
@@ -66,14 +66,14 @@ public class ExpenseServiceImpl implements ExpenseService {
         final TemporalRange<LocalDate> dateRange
     ) {
         var responseDTO = expenseRepository.findByUserIdAndExpenseId(userId, expenseId)
-            .map(expenseConverter::mapToDetailsDTO)
+            .map(expenseMapper::mapToDetailsDTO)
             .orElseThrow(() -> new EntityNotFoundException("Expense", "userId=" + userId + ", expenseId=" + expenseId));
 
         var targetCurrency = getUserCurrency(userId);
 
         useExpenseItemsStream(expenseId, dateRange, stream -> {
             var calculator = new TotalCalculator(targetCurrency);
-            var items = stream.peek(calculator::add).map(expenseItemConverter::mapToDTO).toList();
+            var items = stream.peek(calculator::add).map(expenseItemMapper::mapToDTO).toList();
 
             responseDTO.setItems(items);
             responseDTO.setTotal(calculator.total.getNumberStripped());
@@ -88,11 +88,11 @@ public class ExpenseServiceImpl implements ExpenseService {
             throw new EntityNotFoundException("InternalUser", "id=" + userId);
         }
 
-        var expense = expenseConverter.mapToEntity(requestDTO);
+        var expense = expenseMapper.mapToEntity(requestDTO);
         expense.setUserId(userId);
         var result = expenseRepository.save(expense);
 
-        return expenseConverter.mapToDTO(result);
+        return expenseMapper.mapToDTO(result);
     }
 
     @Override
@@ -101,11 +101,11 @@ public class ExpenseServiceImpl implements ExpenseService {
             throw new EntityNotFoundException("Expense", "id=" + expenseId);
         }
 
-        var expenseItem = expenseItemConverter.mapToEntity(dto);
+        var expenseItem = expenseItemMapper.mapToEntity(dto);
         expenseItem.setExpenseId(expenseId);
         var result = expenseItemRepository.save(expenseItem);
 
-        return expenseItemConverter.mapToDTO(result);
+        return expenseItemMapper.mapToDTO(result);
     }
 
     private CurrencyUnit getUserCurrency(final Long userId) {
