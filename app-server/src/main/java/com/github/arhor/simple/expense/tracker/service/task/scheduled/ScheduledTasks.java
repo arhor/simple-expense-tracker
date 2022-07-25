@@ -5,14 +5,12 @@ import lombok.RequiredArgsConstructor;
 import java.util.concurrent.TimeUnit;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import com.github.arhor.simple.expense.tracker.service.NotificationService;
 
 @Component
-@ConditionalOnProperty(name = "configuration.notifications.enabled", havingValue = "true")
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 public class ScheduledTasks {
 
