@@ -2,7 +2,6 @@ package com.github.arhor.simple.expense.tracker.data.repository;
 
 import java.util.UUID;
 
-import org.junit.jupiter.api.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.data.jdbc.DataJdbcTest;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
@@ -15,7 +14,6 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 import com.github.arhor.simple.expense.tracker.config.DatabaseConfig;
 import com.github.arhor.simple.expense.tracker.data.model.InternalUser;
 
-@Tag("integration")
 @DataJdbcTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @Testcontainers(disabledWithoutDocker = true)

@@ -51,7 +51,7 @@ class NotificationRepositoryTest extends RepositoryTestBase {
     }
 
     private Stream<InternalUser> createUsersStream() {
-        return IntStream.range(0, 5).mapToObj(this::createTestUser);
+        return IntStream.range(0, 5).mapToObj(this::createPersistedTestUser);
     }
 
     private Stream<Notification> createNotificationsStream(final Long userId) {

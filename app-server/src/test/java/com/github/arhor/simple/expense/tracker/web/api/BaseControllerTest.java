@@ -1,6 +1,5 @@
 package com.github.arhor.simple.expense.tracker.web.api;
 
-import org.junit.jupiter.api.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
@@ -13,7 +12,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import com.github.arhor.simple.expense.tracker.config.LocalizationConfig;
 import com.github.arhor.simple.expense.tracker.service.impl.TimeServiceImpl;
 
-@Tag("contract")
 @Import({LocalizationConfig.class, TimeServiceImpl.class})
 abstract class BaseControllerTest {
 

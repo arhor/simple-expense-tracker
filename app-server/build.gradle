@@ -15,6 +15,22 @@ java {
     targetCompatibility = libs.versions.java.get()
 }
 
+jacoco {
+    toolVersion = libs.versions.jacoco.get()
+}
+
+flyway {
+    url = env.getRequired "JDBC_DATABASE_URL"
+    user = env.getRequired "JDBC_DATABASE_USERNAME"
+    password = env.getRequired "JDBC_DATABASE_PASSWORD"
+
+    driver = "org.postgresql.Driver"
+    encoding = "UTF-8"
+    locations = ["classpath:db/migration"]
+    baselineVersion = "0.0"
+    baselineOnMigrate = true
+}
+
 repositories {
     mavenCentral()
 }
@@ -74,42 +90,13 @@ dependencyManagement {
     }
 }
 
-task contractTest(type: Test) {
-    group = "verification"
-    useJUnitPlatform {
-        includeTags "contract"
-    }
-    shouldRunAfter test
-}
-
-task integrationTest(type: Test) {
-    group = "verification"
-    useJUnitPlatform {
-        includeTags "integration"
-    }
-    shouldRunAfter contractTest
-}
-
-task architectureTest(type: Test) {
-    group = "verification"
-    useJUnitPlatform {
-        includeTags "architecture"
-    }
-    shouldRunAfter integrationTest
-}
-
 test {
-    useJUnitPlatform {
-        excludeTags "contract", "integration", "architecture"
-    }
+    useJUnitPlatform()
 }
 
 check {
     dependsOn = [
         test,
-        contractTest,
-        integrationTest,
-        architectureTest,
         jacocoTestReport,
         jacocoTestCoverageVerification,
     ]
@@ -119,46 +106,34 @@ bootRun {
     jvmArgs += "--enable-preview"
 }
 
-jacoco {
-    toolVersion = libs.versions.jacoco.get()
-}
-
-def jacocoExclusions = [
-    "com/github/arhor/simple/expense/tracker/Application.class",
-    "com/github/arhor/simple/expense/tracker/**/config/*",
-    "com/github/arhor/simple/expense/tracker/**/error/*",
-    "com/github/arhor/simple/expense/tracker/**/model/*",
-    "com/github/arhor/simple/expense/tracker/**/dto/*",
-]
-
 jacocoTestReport {
-    dependsOn test
-
-    classDirectories.setFrom files(classDirectories.files.collect {
-        fileTree(
-            dir: it,
-            exclude: jacocoExclusions
-        )
-    })
-    reports {
-        xml.required.set(false)
-        csv.required.set(false)
-        html.required.set(true)
-    }
+    shouldRunAfter test
+    applyJaCoCoExclusions(classDirectories)
 }
 
 jacocoTestCoverageVerification {
+    shouldRunAfter jacocoTestReport
+    applyJaCoCoExclusions(classDirectories)
+
     violationRules {
         rule {
             limit {
-                minimum = 0.0
+                minimum = 0.10
             }
         }
     }
-    classDirectories.setFrom files(classDirectories.files.collect {
+}
+
+void applyJaCoCoExclusions(ConfigurableFileCollection classDirectories) {
+    classDirectories.from = files(classDirectories.files.collect {
         fileTree(
             dir: it,
-            exclude: jacocoExclusions
+            exclude: [
+                "com/github/arhor/simple/expense/tracker/Application.class",
+                "com/github/arhor/simple/expense/tracker/**/config/*",
+                "com/github/arhor/simple/expense/tracker/**/exception/*",
+                "com/github/arhor/simple/expense/tracker/**/model/*",
+            ]
         )
     })
 }
@@ -171,16 +146,4 @@ tasks.withType(JavaCompile) {
         "--enable-preview",
         "-parameters"
     ]
-}
-
-flyway {
-    url = env.getRequired "JDBC_DATABASE_URL"
-    user = env.getRequired "JDBC_DATABASE_USERNAME"
-    password = env.getRequired "JDBC_DATABASE_PASSWORD"
-
-    driver = "org.postgresql.Driver"
-    encoding = "UTF-8"
-    locations = ["classpath:db/migration"]
-    baselineVersion = "0.0"
-    baselineOnMigrate = true
 }
