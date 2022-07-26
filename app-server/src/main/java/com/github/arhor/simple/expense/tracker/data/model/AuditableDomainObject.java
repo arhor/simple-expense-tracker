@@ -13,11 +13,11 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 
 @Data
-@SuperBuilder(toBuilder = true)
 @NoArgsConstructor
 @AllArgsConstructor
+@SuperBuilder(toBuilder = true)
 @EqualsAndHashCode(callSuper = true)
-public abstract class AuditableDomainObject<T extends Serializable> extends DeletableDomainObject<T> {
+public abstract class AuditableDomainObject<T extends Serializable> extends DomainObject<T> {
     @CreatedDate
     private LocalDateTime created;
     @LastModifiedDate

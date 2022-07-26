@@ -15,16 +15,6 @@ java {
     targetCompatibility = libs.versions.java.get()
 }
 
-ext {
-    jacocoExclusions = [
-        "**/config/*",
-        "**/mapper/*",
-        "**/error/*",
-        "**/model/*",
-        "**/dto/*",
-    ].collect { "com/github/arhor/simple/expense/tracker/$it" }
-}
-
 repositories {
     mavenCentral()
 }
@@ -132,6 +122,14 @@ bootRun {
 jacoco {
     toolVersion = libs.versions.jacoco.get()
 }
+
+def jacocoExclusions = [
+    "com/github/arhor/simple/expense/tracker/Application.class",
+    "com/github/arhor/simple/expense/tracker/**/config/*",
+    "com/github/arhor/simple/expense/tracker/**/error/*",
+    "com/github/arhor/simple/expense/tracker/**/model/*",
+    "com/github/arhor/simple/expense/tracker/**/dto/*",
+]
 
 jacocoTestReport {
     dependsOn test

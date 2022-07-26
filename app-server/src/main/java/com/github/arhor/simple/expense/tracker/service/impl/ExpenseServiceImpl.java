@@ -27,8 +27,8 @@ import com.github.arhor.simple.expense.tracker.model.ExpenseResponseDTO;
 import com.github.arhor.simple.expense.tracker.service.ExpenseService;
 import com.github.arhor.simple.expense.tracker.service.MoneyConverter;
 import com.github.arhor.simple.expense.tracker.service.TimeService.TemporalRange;
-import com.github.arhor.simple.expense.tracker.service.mapping.ExpenseMapper;
 import com.github.arhor.simple.expense.tracker.service.mapping.ExpenseItemMapper;
+import com.github.arhor.simple.expense.tracker.service.mapping.ExpenseMapper;
 
 @Service
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
@@ -45,7 +45,7 @@ public class ExpenseServiceImpl implements ExpenseService {
     public List<ExpenseResponseDTO> getUserExpenses(final Long userId, final TemporalRange<LocalDate> dateRange) {
         var targetCurrency = getUserCurrency(userId);
 
-        try (var expenses = expenseRepository.findByUserId(userId)) {
+        try (var expenses = expenseRepository.findAllByUserId(userId)) {
             return expenses
                 .map(expenseMapper::mapToDTO)
                 .peek(expense -> {
@@ -65,9 +65,9 @@ public class ExpenseServiceImpl implements ExpenseService {
         final Long expenseId,
         final TemporalRange<LocalDate> dateRange
     ) {
-        var responseDTO = expenseRepository.findByUserIdAndExpenseId(userId, expenseId)
+        var responseDTO = expenseRepository.findById(expenseId)
             .map(expenseMapper::mapToDetailsDTO)
-            .orElseThrow(() -> new EntityNotFoundException("Expense", "userId=" + userId + ", expenseId=" + expenseId));
+            .orElseThrow(() -> new EntityNotFoundException("Expense", "expenseId = " + expenseId));
 
         var targetCurrency = getUserCurrency(userId);
 
@@ -121,7 +121,7 @@ public class ExpenseServiceImpl implements ExpenseService {
         final Consumer<Stream<ExpenseItem>> action
     ) {
         try (
-            var stream = expenseItemRepository.findByExpenseIdAndDateRange(
+            var stream = expenseItemRepository.findAllByExpenseIdAndDateRange(
                 expenseId,
                 dateRange.start(),
                 dateRange.end()

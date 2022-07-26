@@ -8,7 +8,6 @@ CREATE TABLE IF NOT EXISTS "expenses"
     "user_id"  BIGINT       NOT NULL,
     "created"  TIMESTAMP    NOT NULL,
     "updated"  TIMESTAMP    NULL,
-    "deleted"  BOOLEAN      NOT NULL DEFAULT FALSE,
 
     CONSTRAINT UQ_user_id_name UNIQUE ("user_id", "name"),
 

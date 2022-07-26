@@ -13,7 +13,6 @@ import org.mapstruct.Mappings;
 @Mappings({
     @Mapping(target = "created", ignore = true),
     @Mapping(target = "updated", ignore = true),
-    @Mapping(target = "deleted", ignore = true),
 })
 public @interface IgnoreAuditProps {
 }

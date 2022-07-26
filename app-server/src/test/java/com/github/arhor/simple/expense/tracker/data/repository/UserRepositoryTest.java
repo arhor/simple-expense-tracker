@@ -1,119 +1,147 @@
 package com.github.arhor.simple.expense.tracker.data.repository;
 
-import java.util.UUID;
-
-import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.data.jdbc.DataJdbcTest;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
-import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.testcontainers.containers.JdbcDatabaseContainer;
-import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
-import org.testcontainers.junit.jupiter.Testcontainers;
-
-import com.github.arhor.simple.expense.tracker.config.DatabaseConfig;
-import com.github.arhor.simple.expense.tracker.data.model.InternalUser;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@Tag("integration")
-@DataJdbcTest
-@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-@Testcontainers(disabledWithoutDocker = true)
-@ContextConfiguration(classes = DatabaseConfig.class)
-class UserRepositoryTest {
+class UserRepositoryTest extends RepositoryTestBase {
 
     @Container
-    private static final JdbcDatabaseContainer<?> db = new PostgreSQLContainer<>("postgres:12");
-
-    @Autowired
-    private UserRepository repository;
+    private static final JdbcDatabaseContainer<?> db = createDatabaseContainer();
 
     @DynamicPropertySource
     static void registerDynamicProperties(final DynamicPropertyRegistry registry) {
-        registry.add("spring.datasource.url", db::getJdbcUrl);
-        registry.add("spring.datasource.username", db::getUsername);
-        registry.add("spring.datasource.password", db::getPassword);
+        registerDatasource(registry, db);
     }
 
+    @Autowired
+    private UserRepository userRepository;
+
     @Test
-    void should_find_internal_user_by_username() {
+    void should_return_an_existing_internal_user_by_username() {
         // given
-        var user = repository.save(createInternalUser());
+        var expectedUser = createPersistedTestUser();
 
         // when
-        var actualUser = repository.findByUsername(user.getUsername());
+        var result = userRepository.findByUsername(expectedUser.getUsername());
 
         // then
-        assertThat(actualUser)
+        assertThat(result)
             .isNotEmpty()
-            .contains(user);
+            .contains(expectedUser);
     }
 
     @Test
-    void should_find_internal_user_by_external_id_and_provider() {
+    void should_return_an_empty_optional_by_a_not_existing_user_username() {
         // given
-        var user = repository.save(createInternalUser());
+        var username = "not-exists";
 
         // when
-        var actualUser =
-            repository.findByExternalIdAndProvider(
-                user.getExternalId(),
-                user.getExternalProvider()
-            );
+        var result = userRepository.findByUsername(username);
 
         // then
-        assertThat(actualUser)
-            .isNotEmpty()
-            .contains(user);
-    }
-
-    @Test
-    void should_softly_delete_internal_user() {
-        // given
-        var user = repository.save(createInternalUser());
-
-        // when
-        var prevResult = repository.findById(user.getId());
-        repository.delete(user);
-        var currResult = repository.findById(user.getId());
-
-        // then
-        assertThat(prevResult)
-            .contains(user);
-        assertThat(currResult)
+        assertThat(result)
             .isEmpty();
     }
 
     @Test
-    void should_softly_delete_internal_user_by_id() {
+    void should_return_an_existing_internal_user_by_external_id_and_external_provider() {
         // given
-        var user = repository.save(createInternalUser());
+        var expectedUser = createPersistedTestUser();
+        var externalId = expectedUser.getExternalId();
+        var externalProvider = expectedUser.getExternalProvider();
 
         // when
-        var prevResult = repository.findById(user.getId());
-        repository.deleteById(user.getId());
-        var currResult = repository.findById(user.getId());
+        var result = userRepository.findByExternalIdAndExternalProvider(externalId, externalProvider);
 
         // then
-        assertThat(prevResult)
-            .contains(user);
-        assertThat(currResult)
+        assertThat(result)
+            .isNotEmpty()
+            .contains(expectedUser);
+    }
+
+    @Test
+    void should_return_an_empty_optional_by_a_not_existing_user_external_id_and_external_provider() {
+        // given
+        var externalId = "not-existing-id";
+        var externalProvider = "not-existing-provider";
+
+        // when
+        var result = userRepository.findByExternalIdAndExternalProvider(externalId, externalProvider);
+
+        // then
+        assertThat(result)
             .isEmpty();
+    }
+
+    @Test
+    void should_return_true_for_an_existing_internal_user_by_username() {
+        // given
+        var username = createPersistedTestUser().getUsername();
+
+        // when
+        var result = userRepository.existsByUsername(username);
+
+        // then
+        assertThat(result)
+            .isTrue();
+    }
+
+    @Test
+    void should_return_false_for_a_not_existing_internal_user_by_username() {
+        // given
+        var username = "not-exists";
+
+        // when
+        var result = userRepository.existsByUsername(username);
+
+        // then
+        assertThat(result)
+            .isFalse();
+    }
+
+    @Test
+    void should_return_true_for_an_existing_internal_user_by_external_id_and_external_provider() {
+        // given
+        var expectedUser = createPersistedTestUser();
+        var externalId = expectedUser.getExternalId();
+        var externalProvider = expectedUser.getExternalProvider();
+
+        // when
+        var result = userRepository.existsByExternalIdAndExternalProvider(externalId, externalProvider);
+
+        // then
+        assertThat(result)
+            .isTrue();
+    }
+
+    @Test
+    void should_return_false_for_a_not_existing_user_external_id_and_external_provider() {
+        // given
+        var externalId = "not-existing-id";
+        var externalProvider = "not-existing-provider";
+
+        // when
+        var result = userRepository.existsByExternalIdAndExternalProvider(externalId, externalProvider);
+
+        // then
+        assertThat(result)
+            .isFalse();
     }
 
     @Test
     void should_properly_audit_entity_on_save() {
         // given
-        var user = createInternalUser();
+        var user = createTestUser();
 
         // when
-        var createdUser = repository.save(user);
-        var updatedUser = repository.save(createdUser.toBuilder().password("updated").build());
+        var createdUser = userRepository.save(user);
+        var updatedUser = userRepository.save(createdUser.toBuilder().password("updated").build());
 
         // then
         assertThat(createdUser.getCreated())
@@ -127,17 +155,5 @@ class UserRepositoryTest {
         assertThat(updatedUser.getUpdated())
             .isNotNull()
             .isAfter(updatedUser.getCreated());
-    }
-
-    private InternalUser createInternalUser() {
-        var user = new InternalUser();
-
-        user.setUsername("username");
-        user.setPassword("password");
-        user.setCurrency("USD");
-        user.setExternalId(UUID.randomUUID().toString());
-        user.setExternalProvider("test");
-
-        return user;
     }
 }

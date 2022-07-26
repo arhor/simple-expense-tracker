@@ -8,7 +8,6 @@ CREATE TABLE IF NOT EXISTS "users"
     "external_id"       VARCHAR(64)   NULL,
     "external_provider" VARCHAR(64)   NULL,
     "created"           TIMESTAMP     NOT NULL,
-    "updated"           TIMESTAMP     NULL,
-    "deleted"           BOOLEAN       NOT NULL DEFAULT FALSE
+    "updated"           TIMESTAMP     NULL
 ) WITH (OIDS = FALSE);
 -- table 'users' <<< END

@@ -37,8 +37,6 @@ public class UserServiceImpl implements UserService, UserDetailsService {
                 User.builder()
                     .username(internalUser.getUsername())
                     .password(internalUser.getPassword())
-                    .accountExpired(internalUser.isDeleted())
-                    .accountLocked(internalUser.isDeleted())
                     .authorities("ROLE_USER")
                     .build()
             )
@@ -106,7 +104,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
                 var externalId = token.getName();
                 var externalProvider = token.getAuthorizedClientRegistrationId();
 
-                yield userRepository.findByExternalIdAndProvider(externalId, externalProvider).orElseThrow(() ->
+                yield userRepository.findByExternalIdAndExternalProvider(externalId, externalProvider).orElseThrow(() ->
                     new EntityNotFoundException(
                         "User", "externalId=" + externalId + ", externalProvider=" + externalProvider
                     )
