@@ -1,18 +1,18 @@
-package com.github.arhor.simple.expense.tracker.service.impl;
+package com.github.arhor.simple.expense.tracker.service;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
+
+import com.github.arhor.simple.expense.tracker.service.impl.StringSanitizerImpl;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-class StringSanitizerImplTest {
+@SpringJUnitConfig(StringSanitizerImpl.class)
+public class StringSanitizerTest {
 
-    private StringSanitizerImpl sanitizer;
-
-    @BeforeEach
-    void setup() {
-        sanitizer = new StringSanitizerImpl();
-    }
+    @Autowired
+    private StringSanitizer sanitizer;
 
     @Test
     void sanitize_should_return_safe_string_for_an_input_containing_script_injection() {

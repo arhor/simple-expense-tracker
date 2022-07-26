@@ -3,7 +3,7 @@ package com.github.arhor.simple.expense.tracker.web.validation;
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 
-import com.github.arhor.simple.expense.tracker.web.api.DateRangeCriteria;
+import com.github.arhor.simple.expense.tracker.service.DateRangeCriteria;
 
 public class DateRangeValidator implements ConstraintValidator<ValidDateRange, DateRangeCriteria> {
 

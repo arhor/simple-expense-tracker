@@ -2,7 +2,6 @@ package com.github.arhor.simple.expense.tracker.web.api;
 
 import lombok.RequiredArgsConstructor;
 
-import java.time.LocalDate;
 import java.util.List;
 import java.util.TimeZone;
 
@@ -25,6 +24,7 @@ import com.github.arhor.simple.expense.tracker.model.ExpenseDetailsResponseDTO;
 import com.github.arhor.simple.expense.tracker.model.ExpenseItemDTO;
 import com.github.arhor.simple.expense.tracker.model.ExpenseRequestDTO;
 import com.github.arhor.simple.expense.tracker.model.ExpenseResponseDTO;
+import com.github.arhor.simple.expense.tracker.service.DateRangeCriteria;
 import com.github.arhor.simple.expense.tracker.service.ExpenseService;
 import com.github.arhor.simple.expense.tracker.service.TimeService;
 import com.github.arhor.simple.expense.tracker.service.UserService;
@@ -53,12 +53,12 @@ public class ExpenseController {
      */
     @GetMapping
     public List<ExpenseResponseDTO> getUserExpenses(
-        @ValidDateRange final DateRangeCriteria dateRangeCriteria,
+        @ValidDateRange final DateRangeCriteria criteria,
         final TimeZone timezone,
         final Authentication auth
     ) {
         var currentUserId = userService.determineUserId(auth);
-        var dateRange = safeConvert(dateRangeCriteria, timezone);
+        var dateRange = timeService.convertToDateRange(criteria, timezone);
 
         return expenseService.getUserExpenses(currentUserId, dateRange);
     }
@@ -66,12 +66,12 @@ public class ExpenseController {
     @GetMapping("/{expenseId}")
     public ExpenseDetailsResponseDTO getExpenseById(
         @PathVariable final Long expenseId,
-        @ValidDateRange final DateRangeCriteria dateRangeCriteria,
+        @ValidDateRange final DateRangeCriteria criteria,
         final TimeZone timezone,
         final Authentication auth
     ) {
         var currentUserId = userService.determineUserId(auth);
-        var dateRange = safeConvert(dateRangeCriteria, timezone);
+        var dateRange = timeService.convertToDateRange(criteria, timezone);
 
         return expenseService.getUserExpenseById(currentUserId, expenseId, dateRange);
     }
@@ -99,16 +99,5 @@ public class ExpenseController {
         @RequestBody final ExpenseItemDTO expenseItemDTO
     ) {
         return expenseService.createExpenseItem(expenseId, expenseItemDTO);
-    }
-
-    private TimeService.TemporalRange<LocalDate> safeConvert(
-        final DateRangeCriteria criteria,
-        final TimeZone timezone
-    ) {
-        return timeService.convertToDateRange(
-            criteria.startDate(),
-            criteria.endDate(),
-            timezone
-        );
     }
 }

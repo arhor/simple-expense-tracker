@@ -7,7 +7,7 @@ import com.github.arhor.simple.expense.tracker.model.ExpenseDetailsResponseDTO;
 import com.github.arhor.simple.expense.tracker.model.ExpenseItemDTO;
 import com.github.arhor.simple.expense.tracker.model.ExpenseRequestDTO;
 import com.github.arhor.simple.expense.tracker.model.ExpenseResponseDTO;
-import com.github.arhor.simple.expense.tracker.service.TimeService.TemporalRange;
+import com.github.arhor.simple.expense.tracker.util.TemporalRange;
 
 public interface ExpenseService {
 

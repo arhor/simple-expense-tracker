@@ -9,6 +9,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.test.context.support.WithMockUser;
 
 import com.github.arhor.simple.expense.tracker.CustomArgumentMatchers;
+import com.github.arhor.simple.expense.tracker.service.DateRangeCriteria;
 import com.github.arhor.simple.expense.tracker.service.ExpenseService;
 import com.github.arhor.simple.expense.tracker.service.TimeService;
 import com.github.arhor.simple.expense.tracker.service.UserService;
@@ -35,6 +36,7 @@ class ExpenseControllerTest extends BaseControllerTest {
     @WithMockUser
     void should_return_status_200_and_empty_expense_list() throws Exception {
         // given
+        var expectedCriteria = new DateRangeCriteria(null, null);
         var currentTimeZone = TimeZone.getDefault();
 
         // when
@@ -46,7 +48,7 @@ class ExpenseControllerTest extends BaseControllerTest {
             .determineUserId(argThat(CustomArgumentMatchers::authenticatedUser));
         then(timeService)
             .should()
-            .convertToDateRange(null, null, currentTimeZone);
+            .convertToDateRange(expectedCriteria, currentTimeZone);
 
         result
             .andExpect(status().isOk())
@@ -57,15 +59,15 @@ class ExpenseControllerTest extends BaseControllerTest {
     @WithMockUser
     void should_return_status_200_and_expense_list_with_expected_content() throws Exception {
         // given
-        var startDate = LocalDate.now().minusDays(7);
-        var endDate = LocalDate.now();
+        var today = LocalDate.now();
+        var expectedCriteria = new DateRangeCriteria(today.minusWeeks(1), today);
         var currentTimeZone = TimeZone.getDefault();
 
         // when
         var result = http.perform(
             get("/api/expenses")
-                .queryParam("startDate", String.valueOf(startDate))
-                .queryParam("endDate", String.valueOf(endDate))
+                .queryParam("startDate", String.valueOf(expectedCriteria.startDate()))
+                .queryParam("endDate", String.valueOf(expectedCriteria.endDate()))
         );
 
         // then
@@ -74,7 +76,7 @@ class ExpenseControllerTest extends BaseControllerTest {
             .determineUserId(argThat(CustomArgumentMatchers::authenticatedUser));
         then(timeService)
             .should()
-            .convertToDateRange(startDate, endDate, currentTimeZone);
+            .convertToDateRange(expectedCriteria, currentTimeZone);
 
         result
             .andExpect(status().isOk())

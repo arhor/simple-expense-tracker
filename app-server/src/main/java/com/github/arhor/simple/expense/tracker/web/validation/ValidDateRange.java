@@ -10,10 +10,14 @@ import javax.validation.Payload;
 import static java.lang.annotation.ElementType.PARAMETER;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
-@Target({PARAMETER})
+@Target(PARAMETER)
 @Retention(RUNTIME)
 @Documented
-@Constraint(validatedBy = {})
+@Constraint(
+    validatedBy = {
+        /* @see resources/META-INF/services/javax.validation.ConstraintValidator */
+    }
+)
 public @interface ValidDateRange {
 
     String message() default "{com.acme.constraint.OrderNumber.message}";

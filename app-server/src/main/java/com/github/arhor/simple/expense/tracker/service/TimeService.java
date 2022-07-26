@@ -2,8 +2,9 @@ package com.github.arhor.simple.expense.tracker.service;
 
 import java.time.LocalDate;
 import java.time.ZonedDateTime;
-import java.time.temporal.Temporal;
 import java.util.TimeZone;
+
+import com.github.arhor.simple.expense.tracker.util.TemporalRange;
 
 public interface TimeService {
 
@@ -11,10 +12,5 @@ public interface TimeService {
 
     ZonedDateTime now(TimeZone timezone);
 
-    ZonedDateTime weekAgo();
-
-    TemporalRange<LocalDate> convertToDateRange(LocalDate startDate, LocalDate endDate, TimeZone timezone);
-
-    record TemporalRange<T extends Temporal>(T start, T end) {
-    }
+    TemporalRange<LocalDate> convertToDateRange(DateRangeCriteria criteria, TimeZone timezone);
 }

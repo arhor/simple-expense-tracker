@@ -26,9 +26,9 @@ import com.github.arhor.simple.expense.tracker.model.ExpenseRequestDTO;
 import com.github.arhor.simple.expense.tracker.model.ExpenseResponseDTO;
 import com.github.arhor.simple.expense.tracker.service.ExpenseService;
 import com.github.arhor.simple.expense.tracker.service.MoneyConverter;
-import com.github.arhor.simple.expense.tracker.service.TimeService.TemporalRange;
 import com.github.arhor.simple.expense.tracker.service.mapping.ExpenseItemMapper;
 import com.github.arhor.simple.expense.tracker.service.mapping.ExpenseMapper;
+import com.github.arhor.simple.expense.tracker.util.TemporalRange;
 
 @Service
 @RequiredArgsConstructor(onConstructor_ = @Autowired)

@@ -8,7 +8,6 @@ import com.github.arhor.simple.expense.tracker.data.model.InternalUser;
 import com.github.arhor.simple.expense.tracker.model.UserRequestDTO;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.SoftAssertions.assertSoftly;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
@@ -32,25 +31,28 @@ class UserMapperTest extends MapperTestBase {
             .build();
 
         // when
-        var dto = userMapper.mapToResponse(user);
+        var result = userMapper.mapToResponse(user);
 
         // then
-        assertThat(dto)
-            .isNotNull();
-
-        assertSoftly(soft -> {
-            soft.assertThat(dto.getId())
-                .as("id")
-                .isEqualTo(user.getId());
-
-            soft.assertThat(dto.getUsername())
-                .as("username")
-                .isEqualTo(user.getUsername());
-
-            soft.assertThat(dto.getCurrency())
-                .as("currency")
-                .isEqualTo(user.getCurrency());
-        });
+        assertThat(result)
+            .isNotNull()
+            .satisfies(
+                dto -> {
+                    assertThat(dto.getId())
+                        .as("id")
+                        .isEqualTo(user.getId());
+                },
+                dto -> {
+                    assertThat(dto.getUsername())
+                        .as("username")
+                        .isEqualTo(user.getUsername());
+                },
+                dto -> {
+                    assertThat(dto.getCurrency())
+                        .as("currency")
+                        .isEqualTo(user.getCurrency());
+                }
+            );
     }
 
     @Test
@@ -67,28 +69,31 @@ class UserMapperTest extends MapperTestBase {
             .willReturn(encodedPassword);
 
         // when
-        var user = userMapper.mapToUser(request);
+        var result = userMapper.mapToUser(request);
 
         // then
         then(passwordEncoder)
             .should()
             .encode(request.getPassword());
 
-        assertThat(user)
-            .isNotNull();
-
-        assertSoftly(soft -> {
-            soft.assertThat(user.getUsername())
-                .as("username")
-                .isEqualTo(request.getUsername());
-
-            soft.assertThat(user.getPassword())
-                .as("password")
-                .isEqualTo(encodedPassword);
-
-            soft.assertThat(user.getCurrency())
-                .as("currency")
-                .isEqualTo(request.getCurrency());
-        });
+        assertThat(result)
+            .isNotNull()
+            .satisfies(
+                user -> {
+                    assertThat(user.getUsername())
+                        .as("username")
+                        .isEqualTo(request.getUsername());
+                },
+                user -> {
+                    assertThat(user.getPassword())
+                        .as("password")
+                        .isEqualTo(encodedPassword);
+                },
+                user -> {
+                    assertThat(user.getCurrency())
+                        .as("currency")
+                        .isEqualTo(request.getCurrency());
+                }
+            );
     }
 }
