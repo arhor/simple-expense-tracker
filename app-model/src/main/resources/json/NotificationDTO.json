@@ -6,10 +6,8 @@
     "severity": {
       "type": "string",
       "enum": [
-        "error",
-        "success",
-        "warning",
-        "info"
+        "SUCCESS",
+        "FAILURE"
       ]
     },
     "message": {

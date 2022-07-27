@@ -19,8 +19,8 @@ import org.springframework.data.relational.core.mapping.Table;
 @AllArgsConstructor
 public class Notification extends DomainObject<UUID> {
     private Long userId;
-    private String message;
     private String severity;
+    private String message;
     private LocalDateTime timestamp;
     private Long createdBy;
 }
