@@ -28,6 +28,8 @@ public class TimeServiceImpl implements TimeService {
 
     @Override
     public TemporalRange<LocalDate> convertToDateRange(final DateRangeCriteria criteria, final TimeZone timezone) {
-        return createDateRange(criteria.startDate(), criteria.endDate(), timezone);
+        return (criteria != null)
+            ? createDateRange(criteria.startDate(), criteria.endDate(), timezone)
+            : createDateRange(null, null, timezone);
     }
 }
