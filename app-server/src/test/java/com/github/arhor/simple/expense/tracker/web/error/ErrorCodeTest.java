@@ -19,8 +19,8 @@ class ErrorCodeTest {
     @Autowired
     private MessageSource messages;
 
+    @ParameterizedTest
     @EnumSource(ErrorCode.class)
-    @ParameterizedTest(name = "should have localization for {arguments} error code")
     void each_error_code_label_should_be_translated(final ErrorCode code) {
         // given
         var label = code.getLabel();
@@ -34,8 +34,23 @@ class ErrorCodeTest {
             .isNotBlank();
     }
 
+    @ParameterizedTest
+    @EnumSource(ErrorCode.class)
+    void each_error_code_numeric_value_length_should_be_less_than_or_equal_to_maximum(final ErrorCode code) {
+        // given
+        var value = code.getNumericValue();
+        var limit = ErrorCodeSerializer.CODE_MAX_LENGTH;
+
+        // when
+        var string = String.valueOf(value);
+
+        // then
+        assertThat(string)
+            .hasSizeLessThanOrEqualTo(limit);
+    }
+
+    @ParameterizedTest
     @EnumSource(ErrorCode.Type.class)
-    @ParameterizedTest(name = "should not have duplicate numeric values within {arguments} type")
     void each_error_code_type_should_not_have_numeric_value_duplicates(final ErrorCode.Type type) {
         // when
         var errorCodesByType = stream(ErrorCode.values()).filter(it -> it.getType() == type).toList();

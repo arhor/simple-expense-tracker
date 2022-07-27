@@ -9,18 +9,18 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 @RequiredArgsConstructor
 @JsonSerialize(using = ErrorCodeSerializer.class)
 public enum ErrorCode {
-    UNCATEGORIZED             (Type.GEN, 0, "error.server.internal"),
+    UNCATEGORIZED             (Type.GEN, 0x00000, "error.server.internal"),
 
-    VALIDATION_FAILED         (Type.VAL, 0, "error.entity.validation.failed"),
+    VALIDATION_FAILED         (Type.VAL, 0x00000, "error.entity.validation.failed"),
 
-    UNAUTHORIZED              (Type.SEC, 0, "error.server.unauthorized"),
+    UNAUTHORIZED              (Type.SEC, 0x00000, "error.server.unauthorized"),
 
-    NOT_FOUND                 (Type.DAT, 0, "error.entity.not.found"),
-    DUPLICATE                 (Type.DAT, 1, "error.entity.duplicate"),
+    NOT_FOUND                 (Type.DAT, 0x00000, "error.entity.not.found"),
+    DUPLICATE                 (Type.DAT, 0x00001, "error.entity.duplicate"),
 
-    HANDLER_NOT_FOUND_DEFAULT (Type.SRV, 0, "error.server.handler.not.found.default"),
-    HANDLER_NOT_FOUND         (Type.SRV, 1, "error.server.handler.not.found"),
-    METHOD_ARG_TYPE_MISMATCH  (Type.SRV, 2, "error.value.type.mismatch"),
+    HANDLER_NOT_FOUND_DEFAULT (Type.SRV, 0x00000, "error.server.handler.not.found.default"),
+    HANDLER_NOT_FOUND         (Type.SRV, 0x00001, "error.server.handler.not.found"),
+    METHOD_ARG_TYPE_MISMATCH  (Type.SRV, 0x00002, "error.value.type.mismatch"),
     ;
 
     private final Type type;

@@ -130,6 +130,8 @@ void applyJaCoCoExclusions(ConfigurableFileCollection classDirectories) {
             dir: it,
             exclude: [
                 "com/github/arhor/simple/expense/tracker/Application.class",
+                "com/github/arhor/simple/expense/tracker/web/error/ErrorResponse.class",
+                "com/github/arhor/simple/expense/tracker/web/error/GlobalExceptionHandler.class",
                 "com/github/arhor/simple/expense/tracker/**/config/*",
                 "com/github/arhor/simple/expense/tracker/**/exception/*",
                 "com/github/arhor/simple/expense/tracker/**/model/*",
