@@ -8,7 +8,6 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.test.context.support.WithMockUser;
 
-import com.github.arhor.simple.expense.tracker.CustomArgumentMatchers;
 import com.github.arhor.simple.expense.tracker.service.DateRangeCriteria;
 import com.github.arhor.simple.expense.tracker.service.ExpenseService;
 import com.github.arhor.simple.expense.tracker.service.TimeService;
@@ -45,7 +44,7 @@ class ExpenseControllerTest extends BaseControllerTest {
         // then
         then(userService)
             .should()
-            .determineUserId(argThat(CustomArgumentMatchers::authenticatedUser));
+            .determineUserId(argThat(this::authenticatedUser));
         then(timeService)
             .should()
             .convertToDateRange(expectedCriteria, currentTimeZone);
@@ -73,7 +72,7 @@ class ExpenseControllerTest extends BaseControllerTest {
         // then
         then(userService)
             .should()
-            .determineUserId(argThat(CustomArgumentMatchers::authenticatedUser));
+            .determineUserId(argThat(this::authenticatedUser));
         then(timeService)
             .should()
             .convertToDateRange(expectedCriteria, currentTimeZone);

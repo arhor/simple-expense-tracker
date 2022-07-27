@@ -5,7 +5,6 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.test.context.support.WithMockUser;
 
-import com.github.arhor.simple.expense.tracker.CustomArgumentMatchers;
 import com.github.arhor.simple.expense.tracker.model.UserResponseDTO;
 import com.github.arhor.simple.expense.tracker.service.UserService;
 
@@ -88,7 +87,7 @@ class UserControllerTest extends BaseControllerTest {
         // then
         then(userService)
             .should()
-            .determineUser(argThat(CustomArgumentMatchers::authenticatedUser));
+            .determineUser(argThat(this::authenticatedUser));
 
         result
             .andExpect(status().isOk())

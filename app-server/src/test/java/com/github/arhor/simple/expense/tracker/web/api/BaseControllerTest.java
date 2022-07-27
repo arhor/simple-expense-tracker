@@ -3,6 +3,7 @@ package com.github.arhor.simple.expense.tracker.web.api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
@@ -26,4 +27,8 @@ abstract class BaseControllerTest {
     protected PasswordEncoder passwordEncoder;
     @MockBean
     protected ClientRegistrationRepository clientRegistrationRepository;
+
+    boolean authenticatedUser(final Authentication auth) {
+        return auth.isAuthenticated() && "user".equals(auth.getName());
+    }
 }
