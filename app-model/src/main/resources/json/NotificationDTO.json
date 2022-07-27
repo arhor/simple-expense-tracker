@@ -3,17 +3,17 @@
   "title": "Notification",
   "type": "object",
   "properties": {
+    "message": {
+      "type": "string",
+      "minLength": 3,
+      "maxLength": 50
+    },
     "severity": {
       "type": "string",
       "enum": [
         "SUCCESS",
         "FAILURE"
       ]
-    },
-    "message": {
-      "type": "string",
-      "minLength": 3,
-      "maxLength": 50
     }
   },
   "additionalProperties": false

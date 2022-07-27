@@ -2,22 +2,12 @@ package com.github.arhor.simple.expense.tracker.data.repository;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.DynamicPropertyRegistry;
-import org.springframework.test.context.DynamicPropertySource;
-import org.testcontainers.containers.JdbcDatabaseContainer;
-import org.testcontainers.junit.jupiter.Container;
 
+import static com.github.arhor.simple.expense.tracker.data.repository.TestUtils.createPersistedTestUser;
+import static com.github.arhor.simple.expense.tracker.data.repository.TestUtils.createTestUser;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class UserRepositoryTest extends RepositoryTestBase {
-
-    @Container
-    private static final JdbcDatabaseContainer<?> db = createDatabaseContainer();
-
-    @DynamicPropertySource
-    static void registerDynamicProperties(final DynamicPropertyRegistry registry) {
-        registerDatasource(registry, db);
-    }
 
     @Autowired
     private UserRepository userRepository;
@@ -25,10 +15,10 @@ class UserRepositoryTest extends RepositoryTestBase {
     @Test
     void should_return_an_existing_internal_user_by_username() {
         // given
-        var expectedUser = createPersistedTestUser();
+        var expectedUser = createPersistedTestUser(userRepository);
 
         // when
-        var result = userRepository.findByUsername(expectedUser.getUsername());
+        var result = userRepository.findInternalUserByUsername(expectedUser.getUsername());
 
         // then
         assertThat(result)
@@ -42,7 +32,7 @@ class UserRepositoryTest extends RepositoryTestBase {
         var username = "not-exists";
 
         // when
-        var result = userRepository.findByUsername(username);
+        var result = userRepository.findInternalUserByUsername(username);
 
         // then
         assertThat(result)
@@ -52,17 +42,34 @@ class UserRepositoryTest extends RepositoryTestBase {
     @Test
     void should_return_an_existing_internal_user_by_external_id_and_external_provider() {
         // given
-        var expectedUser = createPersistedTestUser();
+        var expectedUser = createPersistedTestUser(userRepository);
         var externalId = expectedUser.getExternalId();
         var externalProvider = expectedUser.getExternalProvider();
 
         // when
-        var result = userRepository.findByExternalIdAndExternalProvider(externalId, externalProvider);
+        var result = userRepository.findByExternalIdAndProvider(externalId, externalProvider);
 
         // then
         assertThat(result)
             .isNotEmpty()
-            .contains(expectedUser);
+            .get()
+            .satisfies(
+                user -> {
+                    assertThat(user.id())
+                        .as("id")
+                        .isEqualTo(expectedUser.getId());
+                },
+                user -> {
+                    assertThat(user.username())
+                        .as("username")
+                        .isEqualTo(expectedUser.getUsername());
+                },
+                user -> {
+                    assertThat(user.currency())
+                        .as("currency")
+                        .isEqualTo(expectedUser.getCurrency());
+                }
+            );
     }
 
     @Test
@@ -72,7 +79,7 @@ class UserRepositoryTest extends RepositoryTestBase {
         var externalProvider = "not-existing-provider";
 
         // when
-        var result = userRepository.findByExternalIdAndExternalProvider(externalId, externalProvider);
+        var result = userRepository.findByExternalIdAndProvider(externalId, externalProvider);
 
         // then
         assertThat(result)
@@ -82,7 +89,7 @@ class UserRepositoryTest extends RepositoryTestBase {
     @Test
     void should_return_true_for_an_existing_internal_user_by_username() {
         // given
-        var username = createPersistedTestUser().getUsername();
+        var username = createPersistedTestUser(userRepository).getUsername();
 
         // when
         var result = userRepository.existsByUsername(username);
@@ -108,7 +115,7 @@ class UserRepositoryTest extends RepositoryTestBase {
     @Test
     void should_return_true_for_an_existing_internal_user_by_external_id_and_external_provider() {
         // given
-        var expectedUser = createPersistedTestUser();
+        var expectedUser = createPersistedTestUser(userRepository);
         var externalId = expectedUser.getExternalId();
         var externalProvider = expectedUser.getExternalProvider();
 

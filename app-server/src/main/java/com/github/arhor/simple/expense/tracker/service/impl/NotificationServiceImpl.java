@@ -6,7 +6,6 @@ import java.io.IOException;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.function.Supplier;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
@@ -76,21 +75,17 @@ public class NotificationServiceImpl implements NotificationService {
             var notifications = notificationRepository.findAllByUserIdIn(userIds);
 
             for (var notification : notifications) {
-                var userId = notification.getUserId();
-                var sent = sendInternal(userId, () -> notificationMapper.mapEntityToDto(notification));
+                var sent =
+                    sendInternal(
+                        notification.userId(),
+                        notificationMapper.mapProjectionToDto(notification)
+                    );
 
                 if (sent) {
-                    notificationRepository.delete(notification);
+                    notificationRepository.deleteById(notification.id());
                 }
             }
         }
-    }
-
-    private boolean sendInternal(final Long userId, final Supplier<NotificationDTO> source) throws IOException {
-        return sendInternal(
-            userId,
-            source.get()
-        );
     }
 
     private boolean sendInternal(final Long userId, final NotificationDTO notification) throws IOException {

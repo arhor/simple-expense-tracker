@@ -5,32 +5,24 @@ import java.util.stream.Stream;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.DynamicPropertyRegistry;
-import org.springframework.test.context.DynamicPropertySource;
-import org.testcontainers.containers.JdbcDatabaseContainer;
-import org.testcontainers.junit.jupiter.Container;
 
 import com.github.arhor.simple.expense.tracker.data.model.Expense;
 
+import static com.github.arhor.simple.expense.tracker.data.repository.TestUtils.createPersistedTestUser;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class ExpenseRepositoryTest extends RepositoryTestBase {
 
-    @Container
-    private static final JdbcDatabaseContainer<?> db = createDatabaseContainer();
-
-    @DynamicPropertySource
-    static void registerDynamicProperties(final DynamicPropertyRegistry registry) {
-        registerDatasource(registry, db);
-    }
-
     @Autowired
     private ExpenseRepository expenseRepository;
+
+    @Autowired
+    private UserRepository userRepository;
 
     @Test
     void should_pass_findAllByUserId() {
         // given
-        var userId = createPersistedTestUser().getId();
+        var userId = createPersistedTestUser(userRepository).getId();
 
         var expectedExpenses = createExpensesStream(userId)
             .map(expenseRepository::save)

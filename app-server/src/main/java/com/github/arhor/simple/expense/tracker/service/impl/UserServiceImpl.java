@@ -32,7 +32,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(final String username) throws UsernameNotFoundException {
-        return userRepository.findByUsername(username)
+        return userRepository.findInternalUserByUsername(username)
             .map(internalUser ->
                 User.builder()
                     .username(internalUser.getUsername())
@@ -50,7 +50,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Override
     public Long determineUserId(final Authentication auth) {
         var user = determineInternalUser(auth);
-        return user.getId();
+        return user.id();
     }
 
     @Override
@@ -98,13 +98,13 @@ public class UserServiceImpl implements UserService, UserDetailsService {
             && !userRepository.existsByExternalIdAndExternalProvider(externalId, externalProvider);
     }
 
-    private InternalUser determineInternalUser(final Authentication auth) {
+    private InternalUser.CompactProjection determineInternalUser(final Authentication auth) {
         return switch (auth) {
             case final OAuth2AuthenticationToken token -> {
                 var externalId = token.getName();
                 var externalProvider = token.getAuthorizedClientRegistrationId();
 
-                yield userRepository.findByExternalIdAndExternalProvider(externalId, externalProvider).orElseThrow(() ->
+                yield userRepository.findByExternalIdAndProvider(externalId, externalProvider).orElseThrow(() ->
                     new EntityNotFoundException(
                         "User", "externalId=" + externalId + ", externalProvider=" + externalProvider
                     )

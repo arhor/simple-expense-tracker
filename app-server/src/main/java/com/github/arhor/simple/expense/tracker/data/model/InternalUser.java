@@ -10,9 +10,9 @@ import org.springframework.data.relational.core.mapping.Table;
 
 @Data
 @Table("users")
-@SuperBuilder(toBuilder = true)
 @NoArgsConstructor
 @AllArgsConstructor
+@SuperBuilder(toBuilder = true)
 @EqualsAndHashCode(callSuper = true)
 public class InternalUser extends AuditableDomainObject<Long> {
     private String username;
@@ -20,4 +20,10 @@ public class InternalUser extends AuditableDomainObject<Long> {
     private String currency;
     private String externalId;
     private String externalProvider;
+
+    /**
+     * Compact projection of the {@link InternalUser} entity. Main purpose is to load only necessary fields from DB.
+     */
+    public record CompactProjection(Long id, String username, String currency) {
+    }
 }

@@ -19,5 +19,7 @@ public interface UserMapper {
     @Mapping(target = "password", qualifiedByName = "encodePassword")
     InternalUser mapToUser(UserRequestDTO request);
 
-    UserResponseDTO mapToResponse(InternalUser user);
+    UserResponseDTO mapToResponse(InternalUser entity);
+
+    UserResponseDTO mapToResponse(InternalUser.CompactProjection projection);
 }

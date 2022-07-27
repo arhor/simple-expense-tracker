@@ -51,6 +51,39 @@ class UserMapperTest extends MapperTestBase {
                     assertThat(dto.getCurrency())
                         .as("currency")
                         .isEqualTo(user.getCurrency());
+                });
+    }
+
+    @Test
+    void should_correctly_map_user_compact_projectiob_to_response_dto() {
+        // given
+        var id = Long.MAX_VALUE;
+        var username = "test-username";
+        var currency = "test-currency";
+
+        var user = new InternalUser.CompactProjection(id, username, currency);
+
+        // when
+        var result = userMapper.mapToResponse(user);
+
+        // then
+        assertThat(result)
+            .isNotNull()
+            .satisfies(
+                dto -> {
+                    assertThat(dto.getId())
+                        .as("id")
+                        .isEqualTo(id);
+                },
+                dto -> {
+                    assertThat(dto.getUsername())
+                        .as("username")
+                        .isEqualTo(username);
+                },
+                dto -> {
+                    assertThat(dto.getCurrency())
+                        .as("currency")
+                        .isEqualTo(currency);
                 }
             );
     }

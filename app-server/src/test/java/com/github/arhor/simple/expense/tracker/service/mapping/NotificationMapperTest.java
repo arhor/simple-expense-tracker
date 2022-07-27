@@ -1,5 +1,7 @@
 package com.github.arhor.simple.expense.tracker.service.mapping;
 
+import java.util.UUID;
+
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
@@ -20,13 +22,14 @@ class NotificationMapperTest extends MapperTestBase {
     @ValueSource(strings = {"SUCCESS", "FAILURE"})
     void should_correctly_map_notification_entity_to_dto(final String severity) {
         // given
-        var notification = Notification.builder()
-            .severity(severity)
-            .message("test-notification-message")
-            .build();
+        var id = (UUID) null;
+        var userId = (Long) null;
+        var message = "test-notification-message";
+
+        var notification = new Notification.CompactProjection(id, userId, severity, message);
 
         // when
-        var result = notificationMapper.mapEntityToDto(notification);
+        var result = notificationMapper.mapProjectionToDto(notification);
 
         // then
         assertThat(result)
@@ -37,13 +40,13 @@ class NotificationMapperTest extends MapperTestBase {
                         .as("severity")
                         .map(Enum::name)
                         .isNotEmpty()
-                        .contains(notification.getSeverity());
+                        .contains(notification.severity());
                 },
                 dto -> {
                     assertThat(dto.getMessage())
                         .as("message")
                         .isNotEmpty()
-                        .contains(notification.getMessage());
+                        .contains(notification.message());
                 }
             );
     }
@@ -54,7 +57,7 @@ class NotificationMapperTest extends MapperTestBase {
         var expectedDTO = new NotificationDTO();
 
         // when
-        var result = notificationMapper.mapEntityToDto(null);
+        var result = notificationMapper.mapProjectionToDto(null);
 
         // then
         assertThat(result)

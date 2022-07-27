@@ -1,6 +1,5 @@
 package com.github.arhor.simple.expense.tracker.service.mapping;
 
-import org.mapstruct.InheritInverseConfiguration;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
@@ -17,6 +16,5 @@ public interface NotificationMapper {
     @Mapping(target = "createdBy", ignore = true)
     Notification mapDtoToEntity(NotificationDTO dto);
 
-    @InheritInverseConfiguration
-    NotificationDTO mapEntityToDto(Notification entity);
+    NotificationDTO mapProjectionToDto(Notification.CompactProjection projection);
 }

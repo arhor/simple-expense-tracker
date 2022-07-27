@@ -13,14 +13,20 @@ import org.springframework.data.relational.core.mapping.Table;
 
 @Data
 @Table("notifications")
-@SuperBuilder(toBuilder = true)
-@EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
 @AllArgsConstructor
+@SuperBuilder(toBuilder = true)
+@EqualsAndHashCode(callSuper = true)
 public class Notification extends DomainObject<UUID> {
     private Long userId;
-    private String severity;
     private String message;
+    private String severity;
     private LocalDateTime timestamp;
     private Long createdBy;
+
+    /**
+     * Compact projection of the {@link Notification} entity. Main purpose is to load only necessary fields from DB.
+     */
+    public record CompactProjection(UUID id, Long userId, String message, String severity) {
+    }
 }
