@@ -1,4 +1,4 @@
-package com.github.arhor.simple.expense.tracker.aspect;
+package com.github.arhor.simple.expense.tracker.web;
 
 import java.io.IOException;
 import java.util.UUID;
@@ -12,11 +12,13 @@ import org.springframework.boot.web.servlet.filter.OrderedRequestContextFilter;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestContextHolder;
 
+import com.github.arhor.simple.expense.tracker.aspect.CurrentRequestContext;
+
 import static com.github.arhor.simple.expense.tracker.aspect.CurrentRequestContext.CURRENT_REQUEST_CONTEXT;
 import static org.springframework.web.context.request.RequestAttributes.SCOPE_REQUEST;
 
 @Component
-public class ExtendedRequestContextListener extends OrderedRequestContextFilter {
+public class EnrichedRequestContextFilter extends OrderedRequestContextFilter {
 
     private static final String REQUEST_ID = "X-REQUEST-ID";
 
