@@ -22,7 +22,7 @@ class ExpenseRepositoryTest extends RepositoryTestBase {
     @Test
     void should_pass_findAllByUserId() {
         // given
-        var userId = createPersistedTestUser(userRepository).getId();
+        var userId = createPersistedTestUser(userRepository).id();
 
         var expectedExpenses = createExpensesStream(userId)
             .map(expenseRepository::save)

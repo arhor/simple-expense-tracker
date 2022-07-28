@@ -28,23 +28,23 @@ class NotificationRepositoryTest extends RepositoryTestBase {
     void should_return_all_notifications_where_user_id_is_one_of_the_passed_ids() {
         // given
         var usersIds = createUsersStream()
-            .map(InternalUser::getId)
+            .map(InternalUser::id)
             .toList();
 
         var notifications = usersIds.stream()
             .flatMap(this::createNotificationsStream)
             .map(notificationRepository::save)
-            .collect(toMap(Notification::getId, Function.identity()));
+            .collect(toMap(Notification::id, Function.identity()));
 
         // when
-        var result = notificationRepository.findAllByUserIdIn(usersIds);
+        var result = notificationRepository.findAllByTargetUserIdIn(usersIds);
 
         // then
         assertThat(result)
             .isNotEmpty()
             .allSatisfy(projection -> {
                 var currentId = projection.id();
-                var currentUserId = projection.userId();
+                var currentUserId = projection.targetUserId();
 
                 assertThat(notifications.get(currentId))
                     .as(() -> "notification: " + currentId + ", user id: " + currentUserId)
@@ -53,22 +53,22 @@ class NotificationRepositoryTest extends RepositoryTestBase {
                         notification -> {
                             assertThat(projection.id())
                                 .as("id")
-                                .isEqualTo(notification.getId());
+                                .isEqualTo(notification.id());
                         },
                         notification -> {
-                            assertThat(projection.userId())
-                                .as("userId")
-                                .isEqualTo(notification.getUserId());
+                            assertThat(projection.targetUserId())
+                                .as("targetUserId")
+                                .isEqualTo(notification.targetUserId());
                         },
                         notification -> {
                             assertThat(projection.message())
                                 .as("message")
-                                .isEqualTo(notification.getMessage());
+                                .isEqualTo(notification.message());
                         },
                         notification -> {
                             assertThat(projection.severity())
                                 .as("severity")
-                                .isEqualTo(notification.getSeverity());
+                                .isEqualTo(notification.severity());
                         }
                     );
             });
@@ -78,10 +78,10 @@ class NotificationRepositoryTest extends RepositoryTestBase {
         return IntStream.range(0, 5).mapToObj(number -> createPersistedTestUser(userRepository, number));
     }
 
-    private Stream<Notification> createNotificationsStream(final Long userId) {
+    private Stream<Notification> createNotificationsStream(final Long targetUserId) {
         return IntStream.range(0, 3).mapToObj(number ->
             Notification.builder()
-                .userId(userId)
+                .targetUserId(targetUserId)
                 .message("test-message-" + number)
                 .severity("INFO")
                 .timestamp(LocalDateTime.now().truncatedTo(ChronoUnit.MILLIS))

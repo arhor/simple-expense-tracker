@@ -11,9 +11,9 @@ import java.util.TimeZone;
 import static java.time.temporal.TemporalAdjusters.firstDayOfMonth;
 import static java.time.temporal.TemporalAdjusters.lastDayOfMonth;
 
-public final class TimeUtil {
+public final class TimeUtils {
 
-    private TimeUtil() { /* should not be instantiated */ }
+    private TimeUtils() { /* should not be instantiated */ }
 
     public static ZoneId zoneIdOrDefaultUTC(final TimeZone timezone) {
         return (timezone != null) ? timezone.toZoneId() : ZoneOffset.UTC;

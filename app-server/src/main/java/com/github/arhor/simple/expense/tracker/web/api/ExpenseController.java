@@ -25,6 +25,7 @@ import com.github.arhor.simple.expense.tracker.model.ExpenseItemDTO;
 import com.github.arhor.simple.expense.tracker.model.ExpenseRequestDTO;
 import com.github.arhor.simple.expense.tracker.model.ExpenseResponseDTO;
 import com.github.arhor.simple.expense.tracker.service.DateRangeCriteria;
+import com.github.arhor.simple.expense.tracker.service.ExpenseItemService;
 import com.github.arhor.simple.expense.tracker.service.ExpenseService;
 import com.github.arhor.simple.expense.tracker.service.TimeService;
 import com.github.arhor.simple.expense.tracker.service.UserService;
@@ -40,6 +41,7 @@ import com.github.arhor.simple.expense.tracker.web.validation.ValidDateRange;
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 public class ExpenseController {
 
+    private final ExpenseItemService expenseItemService;
     private final ExpenseService expenseService;
     private final TimeService timeService;
     private final UserService userService;
@@ -96,8 +98,8 @@ public class ExpenseController {
     @ResponseStatus(HttpStatus.CREATED)
     public ExpenseItemDTO createUserExpenseItem(
         @PathVariable final Long expenseId,
-        @RequestBody final ExpenseItemDTO expenseItemDTO
+        @RequestBody final ExpenseItemDTO dto
     ) {
-        return expenseService.createExpenseItem(expenseId, expenseItemDTO);
+        return expenseItemService.createExpenseItem(expenseId, dto);
     }
 }

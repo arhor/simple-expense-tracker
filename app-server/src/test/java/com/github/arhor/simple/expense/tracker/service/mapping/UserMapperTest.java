@@ -40,17 +40,17 @@ class UserMapperTest extends MapperTestBase {
                 dto -> {
                     assertThat(dto.getId())
                         .as("id")
-                        .isEqualTo(user.getId());
+                        .isEqualTo(user.id());
                 },
                 dto -> {
                     assertThat(dto.getUsername())
                         .as("username")
-                        .isEqualTo(user.getUsername());
+                        .isEqualTo(user.username());
                 },
                 dto -> {
                     assertThat(dto.getCurrency())
                         .as("currency")
-                        .isEqualTo(user.getCurrency());
+                        .isEqualTo(user.currency());
                 });
     }
 
@@ -113,17 +113,17 @@ class UserMapperTest extends MapperTestBase {
             .isNotNull()
             .satisfies(
                 user -> {
-                    assertThat(user.getUsername())
+                    assertThat(user.username())
                         .as("username")
                         .isEqualTo(request.getUsername());
                 },
                 user -> {
-                    assertThat(user.getPassword())
+                    assertThat(user.password())
                         .as("password")
                         .isEqualTo(encodedPassword);
                 },
                 user -> {
-                    assertThat(user.getCurrency())
+                    assertThat(user.currency())
                         .as("currency")
                         .isEqualTo(request.getCurrency());
                 }

@@ -4,7 +4,6 @@ import java.time.LocalDate;
 import java.util.List;
 
 import com.github.arhor.simple.expense.tracker.model.ExpenseDetailsResponseDTO;
-import com.github.arhor.simple.expense.tracker.model.ExpenseItemDTO;
 import com.github.arhor.simple.expense.tracker.model.ExpenseRequestDTO;
 import com.github.arhor.simple.expense.tracker.model.ExpenseResponseDTO;
 import com.github.arhor.simple.expense.tracker.util.TemporalRange;
@@ -16,6 +15,4 @@ public interface ExpenseService {
     ExpenseDetailsResponseDTO getUserExpenseById(Long userId, Long expenseId, TemporalRange<LocalDate> dateRange);
 
     ExpenseResponseDTO createUserExpense(Long userId, ExpenseRequestDTO requestDTO);
-
-    ExpenseItemDTO createExpenseItem(Long expenseId, ExpenseItemDTO dto);
 }

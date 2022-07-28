@@ -56,11 +56,7 @@ public class NotificationServiceImpl implements NotificationService {
             sent = sendInternal(userId, dto);
         } finally {
             if (!sent) {
-                var notification = notificationMapper.mapDtoToEntity(dto);
-
-                notification.setUserId(userId);
-                notification.setCreatedBy(senderId);
-
+                var notification = notificationMapper.mapDtoToEntity(dto, userId, senderId);
                 notificationRepository.save(notification);
             }
         }
@@ -72,12 +68,12 @@ public class NotificationServiceImpl implements NotificationService {
         var userIds = subscribers.keySet();
 
         if (!userIds.isEmpty()) {
-            var notifications = notificationRepository.findAllByUserIdIn(userIds);
+            var notifications = notificationRepository.findAllByTargetUserIdIn(userIds);
 
             for (var notification : notifications) {
                 var sent =
                     sendInternal(
-                        notification.userId(),
+                        notification.targetUserId(),
                         notificationMapper.mapProjectionToDto(notification)
                     );
 

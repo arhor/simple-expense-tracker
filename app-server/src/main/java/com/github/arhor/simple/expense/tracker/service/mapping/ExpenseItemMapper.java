@@ -12,8 +12,7 @@ import com.github.arhor.simple.expense.tracker.model.ExpenseItemDTO;
 public interface ExpenseItemMapper {
 
     @Mapping(target = "id", ignore = true)
-    @Mapping(target = "expenseId", ignore = true)
-    ExpenseItem mapToEntity(ExpenseItemDTO dto);
+    ExpenseItem mapToEntity(ExpenseItemDTO dto, Long expenseId);
 
     @InheritInverseConfiguration
     ExpenseItemDTO mapToDTO(ExpenseItem entity);

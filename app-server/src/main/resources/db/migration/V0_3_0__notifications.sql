@@ -5,14 +5,14 @@ CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 -- table 'notifications' >>> START
 CREATE TABLE IF NOT EXISTS "notifications"
 (
-    "id"         UUID         NOT NULL PRIMARY KEY DEFAULT UUID_GENERATE_V4(),
-    "severity"   VARCHAR(10)  NOT NULL,
-    "message"    VARCHAR(500) NOT NULL,
-    "timestamp"  TIMESTAMP    NOT NULL,
-    "user_id"    BIGINT       NOT NULL,
-    "created_by" BIGINT       NULL,
+    "id"             UUID         NOT NULL PRIMARY KEY DEFAULT UUID_GENERATE_V4(),
+    "severity"       VARCHAR(10)  NOT NULL,
+    "message"        VARCHAR(500) NOT NULL,
+    "timestamp"      TIMESTAMP    NOT NULL,
+    "target_user_id" BIGINT       NOT NULL,
+    "source_user_id" BIGINT       NULL,
 
-    CONSTRAINT FK_notifications_users FOREIGN KEY ("user_id")
+    CONSTRAINT FK_notifications_users FOREIGN KEY ("target_user_id")
         REFERENCES "users" ("id")
         ON UPDATE CASCADE
         ON DELETE CASCADE

@@ -18,7 +18,7 @@ class UserRepositoryTest extends RepositoryTestBase {
         var expectedUser = createPersistedTestUser(userRepository);
 
         // when
-        var result = userRepository.findInternalUserByUsername(expectedUser.getUsername());
+        var result = userRepository.findInternalUserByUsername(expectedUser.username());
 
         // then
         assertThat(result)
@@ -43,8 +43,8 @@ class UserRepositoryTest extends RepositoryTestBase {
     void should_return_an_existing_internal_user_by_external_id_and_external_provider() {
         // given
         var expectedUser = createPersistedTestUser(userRepository);
-        var externalId = expectedUser.getExternalId();
-        var externalProvider = expectedUser.getExternalProvider();
+        var externalId = expectedUser.externalId();
+        var externalProvider = expectedUser.externalProvider();
 
         // when
         var result = userRepository.findByExternalIdAndProvider(externalId, externalProvider);
@@ -57,17 +57,17 @@ class UserRepositoryTest extends RepositoryTestBase {
                 user -> {
                     assertThat(user.id())
                         .as("id")
-                        .isEqualTo(expectedUser.getId());
+                        .isEqualTo(expectedUser.id());
                 },
                 user -> {
                     assertThat(user.username())
                         .as("username")
-                        .isEqualTo(expectedUser.getUsername());
+                        .isEqualTo(expectedUser.username());
                 },
                 user -> {
                     assertThat(user.currency())
                         .as("currency")
-                        .isEqualTo(expectedUser.getCurrency());
+                        .isEqualTo(expectedUser.currency());
                 }
             );
     }
@@ -89,7 +89,7 @@ class UserRepositoryTest extends RepositoryTestBase {
     @Test
     void should_return_true_for_an_existing_internal_user_by_username() {
         // given
-        var username = createPersistedTestUser(userRepository).getUsername();
+        var username = createPersistedTestUser(userRepository).username();
 
         // when
         var result = userRepository.existsByUsername(username);
@@ -116,8 +116,8 @@ class UserRepositoryTest extends RepositoryTestBase {
     void should_return_true_for_an_existing_internal_user_by_external_id_and_external_provider() {
         // given
         var expectedUser = createPersistedTestUser(userRepository);
-        var externalId = expectedUser.getExternalId();
-        var externalProvider = expectedUser.getExternalProvider();
+        var externalId = expectedUser.externalId();
+        var externalProvider = expectedUser.externalProvider();
 
         // when
         var result = userRepository.existsByExternalIdAndExternalProvider(externalId, externalProvider);
@@ -151,16 +151,16 @@ class UserRepositoryTest extends RepositoryTestBase {
         var updatedUser = userRepository.save(createdUser.toBuilder().password("updated").build());
 
         // then
-        assertThat(createdUser.getCreated())
+        assertThat(createdUser.created())
             .isNotNull();
-        assertThat(createdUser.getUpdated())
+        assertThat(createdUser.updated())
             .isNull();
 
-        assertThat(updatedUser.getCreated())
+        assertThat(updatedUser.created())
             .isNotNull()
-            .isEqualTo(createdUser.getCreated());
-        assertThat(updatedUser.getUpdated())
+            .isEqualTo(createdUser.created());
+        assertThat(updatedUser.updated())
             .isNotNull()
-            .isAfter(updatedUser.getCreated());
+            .isAfter(updatedUser.created());
     }
 }

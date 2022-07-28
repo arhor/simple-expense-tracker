@@ -11,10 +11,8 @@ import com.github.arhor.simple.expense.tracker.model.NotificationDTO;
 public interface NotificationMapper {
 
     @Mapping(target = "id", ignore = true)
-    @Mapping(target = "userId", ignore = true)
     @Mapping(target = "timestamp", ignore = true)
-    @Mapping(target = "createdBy", ignore = true)
-    Notification mapDtoToEntity(NotificationDTO dto);
+    Notification mapDtoToEntity(NotificationDTO dto, Long targetUserId, Long sourceUserId);
 
     NotificationDTO mapProjectionToDto(Notification.CompactProjection projection);
 }

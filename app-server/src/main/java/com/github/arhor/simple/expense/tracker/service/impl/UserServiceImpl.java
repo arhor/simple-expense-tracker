@@ -35,8 +35,8 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         return userRepository.findInternalUserByUsername(username)
             .map(internalUser ->
                 User.builder()
-                    .username(internalUser.getUsername())
-                    .password(internalUser.getPassword())
+                    .username(internalUser.username())
+                    .password(internalUser.password())
                     .authorities("ROLE_USER")
                     .build()
             )
@@ -81,13 +81,13 @@ public class UserServiceImpl implements UserService, UserDetailsService {
             var externalProvider = authenticationToken.getAuthorizedClientRegistrationId();
 
             if (shouldCreateInternalUser(externalId, externalProvider)) {
-                var user = new InternalUser();
-
-                user.setExternalId(externalId);
-                user.setExternalProvider(externalProvider);
-                user.setCurrency(Currency.USD.name());
-
-                userRepository.save(user);
+                userRepository.save(
+                    InternalUser.builder()
+                        .externalId(externalId)
+                        .externalProvider(externalProvider)
+                        .currency(Currency.USD.name())
+                        .build()
+                );
             }
         }
     }

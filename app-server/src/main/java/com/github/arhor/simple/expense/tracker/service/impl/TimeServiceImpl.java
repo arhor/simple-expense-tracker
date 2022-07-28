@@ -10,8 +10,8 @@ import com.github.arhor.simple.expense.tracker.service.DateRangeCriteria;
 import com.github.arhor.simple.expense.tracker.service.TimeService;
 import com.github.arhor.simple.expense.tracker.util.TemporalRange;
 
-import static com.github.arhor.simple.expense.tracker.util.TimeUtil.createDateRange;
-import static com.github.arhor.simple.expense.tracker.util.TimeUtil.currentZonedDateTime;
+import static com.github.arhor.simple.expense.tracker.util.TimeUtils.createDateRange;
+import static com.github.arhor.simple.expense.tracker.util.TimeUtils.currentZonedDateTime;
 
 @Service
 public class TimeServiceImpl implements TimeService {

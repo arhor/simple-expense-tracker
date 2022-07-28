@@ -26,7 +26,7 @@ class NotificationMapperTest extends MapperTestBase {
         var userId = (Long) null;
         var message = "test-notification-message";
 
-        var notification = new Notification.CompactProjection(id, userId, severity, message);
+        var notification = new Notification.CompactProjection(id, userId, message, severity);
 
         // when
         var result = notificationMapper.mapProjectionToDto(notification);
@@ -70,29 +70,41 @@ class NotificationMapperTest extends MapperTestBase {
     void should_correctly_map_notification_dto_to_entity(final NotificationDTO.Severity severity) {
         // given
         var message = "test-notification-message";
+        var userId = -1L;
+        var createdBy = -2L;
 
         var dto = new NotificationDTO();
         dto.setSeverity(severity);
         dto.setMessage(message);
 
         // when
-        var result = notificationMapper.mapDtoToEntity(dto);
+        var result = notificationMapper.mapDtoToEntity(dto, userId, createdBy);
 
         // then
         assertThat(result)
             .isNotNull()
             .satisfies(
                 notification -> {
-                    assertThat(notification.getSeverity())
+                    assertThat(notification.severity())
                         .as("severity")
                         .isNotNull()
                         .isEqualTo(severity.name());
                 },
                 notification -> {
-                    assertThat(notification.getMessage())
+                    assertThat(notification.message())
                         .as("message")
                         .isNotEmpty()
                         .contains(message);
+                },
+                notification -> {
+                    assertThat(notification.targetUserId())
+                        .as("targetUserId")
+                        .isEqualTo(userId);
+                },
+                notification -> {
+                    assertThat(notification.sourceUserId())
+                        .as("sourceUserId")
+                        .isEqualTo(createdBy);
                 }
             );
     }
@@ -100,10 +112,10 @@ class NotificationMapperTest extends MapperTestBase {
     @Test
     void should_map_null_to_an_empty_notification_entity() {
         // given
-        var expectedEntity = new Notification();
+        var expectedEntity = Notification.builder().build();
 
         // when
-        var result = notificationMapper.mapDtoToEntity(null);
+        var result = notificationMapper.mapDtoToEntity(null, null, null);
 
         // then
         assertThat(result)

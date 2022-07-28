@@ -12,7 +12,7 @@ import static java.time.temporal.TemporalAdjusters.firstDayOfMonth;
 import static java.time.temporal.TemporalAdjusters.lastDayOfMonth;
 import static org.assertj.core.api.Assertions.assertThat;
 
-class TimeUtilTest {
+class TimeUtilsTest {
 
     @Test
     void should_return_expected_zone_id_for_a_non_null_input() {
@@ -21,7 +21,7 @@ class TimeUtilTest {
         var expected = timezone.toZoneId();
 
         // when
-        var result = TimeUtil.zoneIdOrDefaultUTC(timezone);
+        var result = TimeUtils.zoneIdOrDefaultUTC(timezone);
 
         // then
         assertThat(result)
@@ -35,7 +35,7 @@ class TimeUtilTest {
         var expected = ZoneOffset.UTC;
 
         // when
-        var result = TimeUtil.zoneIdOrDefaultUTC(null);
+        var result = TimeUtils.zoneIdOrDefaultUTC(null);
 
         // then
         assertThat(result)
@@ -50,7 +50,7 @@ class TimeUtilTest {
         var expected = ZonedDateTime.now(timezone.toZoneId());
 
         // when
-        var result = TimeUtil.currentZonedDateTime(timezone);
+        var result = TimeUtils.currentZonedDateTime(timezone);
 
         // then
         assertThat(result)
@@ -65,7 +65,7 @@ class TimeUtilTest {
         var expected = ZonedDateTime.now(timezone.toZoneId());
 
         // when
-        var result = TimeUtil.currentZonedDateTime(null);
+        var result = TimeUtils.currentZonedDateTime(null);
 
         // then
         assertThat(result)
@@ -80,7 +80,7 @@ class TimeUtilTest {
         var expected = LocalDateTime.now(timezone.toZoneId());
 
         // when
-        var result = TimeUtil.currentLocalDateTime(timezone);
+        var result = TimeUtils.currentLocalDateTime(timezone);
 
         // then
         assertThat(result)
@@ -95,7 +95,7 @@ class TimeUtilTest {
         var expected = LocalDateTime.now(timezone.toZoneId());
 
         // when
-        var result = TimeUtil.currentLocalDateTime(null);
+        var result = TimeUtils.currentLocalDateTime(null);
 
         // then
         assertThat(result)
@@ -112,7 +112,7 @@ class TimeUtilTest {
         var expectedDateRangeEnd = today.with(lastDayOfMonth());
 
         // when
-        var result = TimeUtil.createDateRange(null, null, timezone);
+        var result = TimeUtils.createDateRange(null, null, timezone);
 
         // then
         assertThat(result)
@@ -144,7 +144,7 @@ class TimeUtilTest {
         var lastDayOfCurrentMonth = today.with(lastDayOfMonth());
 
         // when
-        var result = TimeUtil.createDateRange(startDate, null, timezone);
+        var result = TimeUtils.createDateRange(startDate, null, timezone);
 
         // then
         assertThat(result)
@@ -174,7 +174,7 @@ class TimeUtilTest {
         var endDate = today.plusWeeks(1);
 
         // when
-        var result = TimeUtil.createDateRange(startDate, endDate, timezone);
+        var result = TimeUtils.createDateRange(startDate, endDate, timezone);
 
         // then
         assertThat(result)
@@ -203,7 +203,7 @@ class TimeUtilTest {
         var lastDayOfCurrentMonth = today.with(lastDayOfMonth());
 
         // when
-        var result = TimeUtil.createDateRange(null, null, null);
+        var result = TimeUtils.createDateRange(null, null, null);
 
         // then
         assertThat(result)
