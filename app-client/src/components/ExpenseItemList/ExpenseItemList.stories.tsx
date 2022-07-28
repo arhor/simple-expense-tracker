@@ -1,5 +1,4 @@
 import { ComponentStoryObj, ComponentMeta } from '@storybook/react';
-
 import log from 'loglevel';
 
 import ExpenseItemList from '@/components/ExpenseItemList';

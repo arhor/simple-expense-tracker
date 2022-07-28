@@ -32,9 +32,7 @@ describe('isEmptyArray', () => {
         [[true, false]],
         [Array.of('one', 'two', 'three')],
         [Array.from('array')],
-    ])(
-        'should return false for the array: %s',
-        (array) => {
+    ])('should return false for the array: %s', (array) => {
             // when
             const result = arrayUtils.isEmptyArray(array);
 

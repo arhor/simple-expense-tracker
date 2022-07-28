@@ -11,7 +11,7 @@ import Link from '@mui/material/Link';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 
-import { UserRequest } from '@/generated/UserRequest';
+import { UserRequestDTO } from '@/generated/UserRequestDTO';
 import { useStore } from '@/store';
 import { Optional } from '@/utils/core-utils';
 import { defineValidator } from '@/utils/validation-utils';
@@ -19,7 +19,7 @@ import { defineValidator } from '@/utils/validation-utils';
 const USERNAME_REG_EXP = /^.+$/;
 const PASSWORD_REG_EXP = /^.+$/;
 
-const validator = defineValidator<UserRequest>({
+const validator = defineValidator<UserRequestDTO>({
     username: [
         (v) => !!v
             || 'Username is required',
@@ -45,7 +45,7 @@ const validator = defineValidator<UserRequest>({
 const SignUpForm = () => {
     const { user } = useStore();
     const navigate = useNavigate();
-    const [ errors, setErrors ] = useState<Partial<UserRequest>>({})
+    const [ errors, setErrors ] = useState<Partial<UserRequestDTO>>({})
 
     const formIsValid = () => {
         for (const error in Object.values(errors)) {
