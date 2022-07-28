@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration scan="true" scanPeriod="30 seconds">
-    <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
-    <include resource="org/springframework/boot/logging/logback/console-appender.xml"/>
 
     <contextListener class="ch.qos.logback.classic.jul.LevelChangePropagator">
         <resetJUL>true</resetJUL>
@@ -9,32 +7,26 @@
 
     <shutdownHook class="ch.qos.logback.core.hook.DelayingShutdownHook"/>
 
-    <springProfile name="dev,test">
-        <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
-            <withJansi>false</withJansi>
-            <encoder>
-                <pattern>
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <withJansi>false</withJansi>
+        <encoder>
+            <pattern>
+                <springProfile name="heroku">
+                    %d{HH:mm:ss.SSS} [%thread] %-5level %-36logger{36} - %msg%n
+                </springProfile>
+                <springProfile name="!heroku">
                     %cyan(%d{HH:mm:ss.SSS}) %gray([%thread]) %highlight(%-5level) %magenta(%-36logger{36}) - %msg%n
-                </pattern>
-            </encoder>
-        </appender>
+                </springProfile>
+            </pattern>
+        </encoder>
+    </appender>
 
+    <springProfile name="dev">
         <logger name="com.github.arhor.simple.expense.tracker" level="DEBUG"/>
     </springProfile>
 
-    <springProfile name="heroku">
-        <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
-            <withJansi>false</withJansi>
-            <encoder>
-                <pattern>
-                    %d{HH:mm:ss.SSS} [%thread] %-5level %-36logger{36} - %msg%n
-                </pattern>
-            </encoder>
-        </appender>
-    </springProfile>
-
     <root level="INFO">
-        <appender-ref ref="console"/>
+        <appender-ref ref="CONSOLE"/>
     </root>
 
 </configuration>

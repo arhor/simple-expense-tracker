@@ -4,11 +4,10 @@ import org.mapstruct.InheritInverseConfiguration;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
-import com.github.arhor.simple.expense.tracker.config.mapping.MapStructConfig;
 import com.github.arhor.simple.expense.tracker.data.model.ExpenseItem;
 import com.github.arhor.simple.expense.tracker.model.ExpenseItemDTO;
 
-@Mapper(config = MapStructConfig.class)
+@Mapper(config = SharedMappingConfig.class)
 public interface ExpenseItemMapper {
 
     @Mapping(target = "id", ignore = true)

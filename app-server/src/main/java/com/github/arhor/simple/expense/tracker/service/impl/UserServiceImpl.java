@@ -21,14 +21,14 @@ import com.github.arhor.simple.expense.tracker.model.Currency;
 import com.github.arhor.simple.expense.tracker.model.UserRequestDTO;
 import com.github.arhor.simple.expense.tracker.model.UserResponseDTO;
 import com.github.arhor.simple.expense.tracker.service.UserService;
-import com.github.arhor.simple.expense.tracker.service.mapping.UserMapper;
+import com.github.arhor.simple.expense.tracker.service.mapping.InternalUserMapper;
 
 @Service
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 public class UserServiceImpl implements UserService, UserDetailsService {
 
     private final UserRepository userRepository;
-    private final UserMapper userMapper;
+    private final InternalUserMapper userMapper;
 
     @Override
     public UserDetails loadUserByUsername(final String username) throws UsernameNotFoundException {

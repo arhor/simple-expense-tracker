@@ -3,11 +3,10 @@ package com.github.arhor.simple.expense.tracker.service.mapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
-import com.github.arhor.simple.expense.tracker.config.mapping.MapStructConfig;
 import com.github.arhor.simple.expense.tracker.data.model.Notification;
 import com.github.arhor.simple.expense.tracker.model.NotificationDTO;
 
-@Mapper(config = MapStructConfig.class)
+@Mapper(config = SharedMappingConfig.class)
 public interface NotificationMapper {
 
     @Mapping(target = "id", ignore = true)

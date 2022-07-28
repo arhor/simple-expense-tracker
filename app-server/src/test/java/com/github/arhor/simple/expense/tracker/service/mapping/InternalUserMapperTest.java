@@ -12,10 +12,10 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
 
-class UserMapperTest extends MapperTestBase {
+class InternalUserMapperTest extends MapperTestBase {
 
     @Autowired
-    private UserMapper userMapper;
+    private InternalUserMapper userMapper;
 
     @Autowired
     private PasswordEncoder passwordEncoder;

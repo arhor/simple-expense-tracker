@@ -19,8 +19,16 @@ public final class TimeUtils {
         return (timezone != null) ? timezone.toZoneId() : ZoneOffset.UTC;
     }
 
+    public static ZonedDateTime currentZonedDateTime() {
+        return currentZonedDateTime(null);
+    }
+
     public static ZonedDateTime currentZonedDateTime(final TimeZone timezone) {
         return ZonedDateTime.now(zoneIdOrDefaultUTC(timezone)).truncatedTo(ChronoUnit.MILLIS);
+    }
+
+    public static LocalDateTime currentLocalDateTime() {
+        return currentLocalDateTime(null);
     }
 
     public static LocalDateTime currentLocalDateTime(final TimeZone timezone) {

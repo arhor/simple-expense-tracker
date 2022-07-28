@@ -2,9 +2,6 @@ package com.github.arhor.simple.expense.tracker.config;
 
 import lombok.extern.slf4j.Slf4j;
 
-import java.time.Clock;
-import java.time.ZonedDateTime;
-import java.time.temporal.ChronoUnit;
 import java.util.Optional;
 
 import org.flywaydb.core.Flyway;
@@ -17,6 +14,8 @@ import org.springframework.data.jdbc.repository.config.EnableJdbcAuditing;
 import org.springframework.data.jdbc.repository.config.EnableJdbcRepositories;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
+import static com.github.arhor.simple.expense.tracker.util.TimeUtils.currentZonedDateTime;
+
 @Slf4j
 @Configuration(proxyBeanMethods = false)
 @EnableJdbcAuditing(modifyOnCreate = false, dateTimeProviderRef = "instantDateTimeProviderUTC")
@@ -26,7 +25,7 @@ public class DatabaseConfig {
 
     @Bean
     public DateTimeProvider instantDateTimeProviderUTC() {
-        return () -> Optional.of(ZonedDateTime.now(Clock.systemUTC()).truncatedTo(ChronoUnit.MILLIS));
+        return () -> Optional.of(currentZonedDateTime());
     }
 
     @Bean(initMethod = "migrate")

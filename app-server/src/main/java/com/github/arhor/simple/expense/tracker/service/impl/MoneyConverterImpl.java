@@ -15,6 +15,8 @@ import org.springframework.stereotype.Service;
 
 import com.github.arhor.simple.expense.tracker.service.MoneyConverter;
 
+import static com.github.arhor.simple.expense.tracker.util.TimeUtils.currentZonedDateTime;
+
 @Slf4j
 @Service
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
@@ -73,7 +75,7 @@ public class MoneyConverterImpl implements MoneyConverter {
      * </p>
      */
     private String determineProviderName(final LocalDate conversionDate) {
-        var currentDate = LocalDate.now();
+        var currentDate = currentZonedDateTime().toLocalDate();
         var period = conversionDate.until(currentDate);
         var daysPassedFromConversion = period.getDays();
 
