@@ -10,9 +10,11 @@ import org.springframework.security.oauth2.client.registration.ClientRegistratio
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.test.web.servlet.MockMvc;
 
+import com.github.arhor.simple.expense.tracker.ContractTest;
 import com.github.arhor.simple.expense.tracker.config.LocalizationConfig;
 import com.github.arhor.simple.expense.tracker.service.impl.TimeServiceImpl;
 
+@ContractTest
 @Import({LocalizationConfig.class, TimeServiceImpl.class})
 abstract class BaseControllerTest {
 

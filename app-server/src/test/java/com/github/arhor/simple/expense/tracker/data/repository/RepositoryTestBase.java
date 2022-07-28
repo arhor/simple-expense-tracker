@@ -11,10 +11,12 @@ import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
+import com.github.arhor.simple.expense.tracker.IntegrationTest;
 import com.github.arhor.simple.expense.tracker.config.DatabaseConfig;
 
 @DataJdbcTest
 @DirtiesContext
+@IntegrationTest
 @Testcontainers(disabledWithoutDocker = true)
 @ContextConfiguration(classes = DatabaseConfig.class)
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
