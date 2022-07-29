@@ -9,7 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.github.arhor.simple.expense.tracker.data.repository.ExpenseRepository;
-import com.github.arhor.simple.expense.tracker.data.repository.UserRepository;
+import com.github.arhor.simple.expense.tracker.data.repository.InternalUserRepository;
 import com.github.arhor.simple.expense.tracker.exception.EntityNotFoundException;
 import com.github.arhor.simple.expense.tracker.model.ExpenseDetailsResponseDTO;
 import com.github.arhor.simple.expense.tracker.model.ExpenseRequestDTO;
@@ -26,7 +26,7 @@ public class ExpenseServiceImpl implements ExpenseService {
     private final ExpenseItemService expenseItemService;
     private final ExpenseRepository expenseRepository;
     private final ExpenseMapper expenseMapper;
-    private final UserRepository userRepository;
+    private final InternalUserRepository userRepository;
 
     @Override
     public List<ExpenseResponseDTO> getUserExpenses(final Long userId, final TemporalRange<LocalDate> dateRange) {

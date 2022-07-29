@@ -17,7 +17,7 @@ import org.springframework.stereotype.Service;
 import com.github.arhor.simple.expense.tracker.data.model.ExpenseItem;
 import com.github.arhor.simple.expense.tracker.data.model.InternalUser;
 import com.github.arhor.simple.expense.tracker.data.repository.ExpenseItemRepository;
-import com.github.arhor.simple.expense.tracker.data.repository.UserRepository;
+import com.github.arhor.simple.expense.tracker.data.repository.InternalUserRepository;
 import com.github.arhor.simple.expense.tracker.exception.EntityNotFoundException;
 import com.github.arhor.simple.expense.tracker.model.ExpenseItemDTO;
 import com.github.arhor.simple.expense.tracker.service.ExpenseItemService;
@@ -33,7 +33,7 @@ public class ExpenseItemServiceImpl implements ExpenseItemService {
 
     private final ExpenseItemRepository expenseItemRepository;
     private final ExpenseItemMapper expenseItemMapper;
-    private final UserRepository userRepository;
+    private final InternalUserRepository userRepository;
     private final MoneyConverter converter;
 
     @Override

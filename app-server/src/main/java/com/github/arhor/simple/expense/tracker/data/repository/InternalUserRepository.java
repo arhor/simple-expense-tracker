@@ -7,27 +7,14 @@ import org.springframework.data.repository.CrudRepository;
 
 import com.github.arhor.simple.expense.tracker.data.model.InternalUser;
 
-public interface UserRepository extends CrudRepository<InternalUser, Long> {
+public interface InternalUserRepository extends CrudRepository<InternalUser, Long> {
 
     Optional<InternalUser> findInternalUserByUsername(String username);
 
-    @Query("""
-        SELECT u.id
-             , u.username
-             , u.currency
-        FROM users u
-        WHERE u.username = :username
-        """)
+    @Query(name = "InternalUser.findByUsername")
     Optional<InternalUser.CompactProjection> findByUsername(String username);
 
-    @Query("""
-        SELECT u.id
-             , u.username
-             , u.currency
-        FROM users u
-        WHERE u.external_id = :externalId
-          AND u.external_provider = :externalProvider
-        """)
+    @Query(name = "InternalUser.findByExternalIdAndProvider")
     Optional<InternalUser.CompactProjection> findByExternalIdAndProvider(String externalId, String externalProvider);
 
     boolean existsByUsername(String username);

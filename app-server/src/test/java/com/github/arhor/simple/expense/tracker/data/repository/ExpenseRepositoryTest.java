@@ -17,7 +17,7 @@ class ExpenseRepositoryTest extends RepositoryTestBase {
     private ExpenseRepository expenseRepository;
 
     @Autowired
-    private UserRepository userRepository;
+    private InternalUserRepository userRepository;
 
     @Test
     void should_pass_findAllByUserId() {

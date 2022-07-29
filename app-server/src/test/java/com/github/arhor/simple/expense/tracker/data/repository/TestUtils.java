@@ -22,11 +22,11 @@ final class TestUtils {
             .build();
     }
 
-    static InternalUser createPersistedTestUser(final UserRepository userRepository) {
+    static InternalUser createPersistedTestUser(final InternalUserRepository userRepository) {
         return createPersistedTestUser(userRepository, 0);
     }
 
-    static InternalUser createPersistedTestUser(final UserRepository userRepository, final Number number) {
+    static InternalUser createPersistedTestUser(final InternalUserRepository userRepository, final Number number) {
         return userRepository.save(createTestUser(number));
     }
 }

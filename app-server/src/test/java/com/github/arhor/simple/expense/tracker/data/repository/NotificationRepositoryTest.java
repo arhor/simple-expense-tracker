@@ -22,7 +22,7 @@ class NotificationRepositoryTest extends RepositoryTestBase {
     private NotificationRepository notificationRepository;
 
     @Autowired
-    private UserRepository userRepository;
+    private InternalUserRepository userRepository;
 
     @Test
     void should_return_all_notifications_where_user_id_is_one_of_the_passed_ids() {

@@ -7,10 +7,10 @@ import static com.github.arhor.simple.expense.tracker.data.repository.TestUtils.
 import static com.github.arhor.simple.expense.tracker.data.repository.TestUtils.createTestUser;
 import static org.assertj.core.api.Assertions.assertThat;
 
-class UserRepositoryTest extends RepositoryTestBase {
+class InternalUserRepositoryTest extends RepositoryTestBase {
 
     @Autowired
-    private UserRepository userRepository;
+    private InternalUserRepository userRepository;
 
     @Test
     void should_return_an_existing_internal_user_by_username() {

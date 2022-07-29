@@ -13,10 +13,6 @@ public interface ExpenseItemRepository extends CrudRepository<ExpenseItem, Long>
 
     List<ExpenseItem> findAllByExpenseId(Long expenseId);
 
-    @Query("""
-        SELECT ei.*
-        FROM expense_items ei
-        WHERE ei.expense_id = :expenseId
-          AND ei.date BETWEEN :startDate AND :endDate""")
+    @Query(name = "ExpenseItem.findAllByExpenseIdAndDateRange")
     Stream<ExpenseItem> findAllByExpenseIdAndDateRange(Long expenseId, LocalDate startDate, LocalDate endDate);
 }

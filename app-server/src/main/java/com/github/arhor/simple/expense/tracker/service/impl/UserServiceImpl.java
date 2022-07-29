@@ -14,7 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.github.arhor.simple.expense.tracker.data.model.InternalUser;
-import com.github.arhor.simple.expense.tracker.data.repository.UserRepository;
+import com.github.arhor.simple.expense.tracker.data.repository.InternalUserRepository;
 import com.github.arhor.simple.expense.tracker.exception.EntityDuplicateException;
 import com.github.arhor.simple.expense.tracker.exception.EntityNotFoundException;
 import com.github.arhor.simple.expense.tracker.model.Currency;
@@ -27,7 +27,7 @@ import com.github.arhor.simple.expense.tracker.service.mapping.InternalUserMappe
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 public class UserServiceImpl implements UserService, UserDetailsService {
 
-    private final UserRepository userRepository;
+    private final InternalUserRepository userRepository;
     private final InternalUserMapper userMapper;
 
     @Override
