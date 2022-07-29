@@ -26,7 +26,7 @@ class NotificationMapperTest extends MapperTestBase {
         var userId = (Long) null;
         var message = "test-notification-message";
 
-        var notification = new Notification.CompactProjection(id, userId, message, severity);
+        var notification = new Notification.Projection(id, userId, message, severity);
 
         // when
         var result = notificationMapper.mapProjectionToDto(notification);

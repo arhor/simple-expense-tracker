@@ -30,6 +30,6 @@ public record InternalUser(
     /**
      * Compact projection of the {@link InternalUser} entity. Main purpose is to load only necessary fields from DB.
      */
-    public record CompactProjection(Long id, String username, String currency) {
+    public record Projection(Long id, String username, String currency) {
     }
 }

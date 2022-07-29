@@ -24,5 +24,5 @@ public abstract class InternalUserMapper {
 
     public abstract UserResponseDTO mapToResponse(InternalUser entity);
 
-    public abstract UserResponseDTO mapToResponse(InternalUser.CompactProjection projection);
+    public abstract UserResponseDTO mapToResponse(InternalUser.Projection projection);
 }

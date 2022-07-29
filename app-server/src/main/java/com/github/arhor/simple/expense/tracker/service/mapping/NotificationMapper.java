@@ -13,5 +13,5 @@ public interface NotificationMapper {
     @Mapping(target = "timestamp", ignore = true)
     Notification mapDtoToEntity(NotificationDTO dto, Long targetUserId, Long sourceUserId);
 
-    NotificationDTO mapProjectionToDto(Notification.CompactProjection projection);
+    NotificationDTO mapProjectionToDto(Notification.Projection projection);
 }

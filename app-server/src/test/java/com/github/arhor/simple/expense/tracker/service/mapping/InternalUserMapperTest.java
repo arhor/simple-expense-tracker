@@ -61,7 +61,7 @@ class InternalUserMapperTest extends MapperTestBase {
         var username = "test-username";
         var currency = "test-currency";
 
-        var user = new InternalUser.CompactProjection(id, username, currency);
+        var user = new InternalUser.Projection(id, username, currency);
 
         // when
         var result = userMapper.mapToResponse(user);

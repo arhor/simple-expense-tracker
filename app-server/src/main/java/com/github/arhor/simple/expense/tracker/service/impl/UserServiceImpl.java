@@ -98,7 +98,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
             && !userRepository.existsByExternalIdAndExternalProvider(externalId, externalProvider);
     }
 
-    private InternalUser.CompactProjection determineInternalUser(final Authentication auth) {
+    private InternalUser.Projection determineInternalUser(final Authentication auth) {
         return switch (auth) {
             case final OAuth2AuthenticationToken token -> {
                 var externalId = token.getName();

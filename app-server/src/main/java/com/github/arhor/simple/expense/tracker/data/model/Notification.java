@@ -25,6 +25,6 @@ public record Notification(
     /**
      * Compact projection of the {@link Notification} entity. Main purpose is to load only necessary fields from DB.
      */
-    public record CompactProjection(UUID id, Long targetUserId, String message, String severity) {
+    public record Projection(UUID id, Long targetUserId, String message, String severity) {
     }
 }

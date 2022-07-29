@@ -10,5 +10,5 @@ import com.github.arhor.simple.expense.tracker.data.model.Notification;
 
 public interface NotificationRepository extends CrudRepository<Notification, UUID> {
 
-    List<Notification.CompactProjection> findAllByTargetUserIdIn(Collection<Long> targetUserIds);
+    List<Notification.Projection> findAllByTargetUserIdIn(Collection<Long> targetUserIds);
 }

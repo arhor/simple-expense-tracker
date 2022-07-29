@@ -12,10 +12,10 @@ public interface InternalUserRepository extends CrudRepository<InternalUser, Lon
     Optional<InternalUser> findInternalUserByUsername(String username);
 
     @Query(name = "InternalUser.findByUsername")
-    Optional<InternalUser.CompactProjection> findByUsername(String username);
+    Optional<InternalUser.Projection> findByUsername(String username);
 
     @Query(name = "InternalUser.findByExternalIdAndProvider")
-    Optional<InternalUser.CompactProjection> findByExternalIdAndProvider(String externalId, String externalProvider);
+    Optional<InternalUser.Projection> findByExternalIdAndProvider(String externalId, String externalProvider);
 
     boolean existsByUsername(String username);
 
