@@ -1,11 +1,8 @@
-import { observer } from 'mobx-react';
+import ExpenseCreateForm from '@/components/ExpenseCreateForm';
 
-import Box from '@mui/material/Box';
 
 const ExpenseCreate = () => (
-    <Box>
-        {'create new expense'}
-    </Box>
+    <ExpenseCreateForm />
 );
 
-export default observer(ExpenseCreate);
+export default ExpenseCreate;

@@ -1,13 +1,13 @@
 -- table 'expenses' >>> START
 CREATE TABLE IF NOT EXISTS "expenses"
 (
-    "id"       BIGSERIAL    NOT NULL PRIMARY KEY,
-    "name"     VARCHAR(128) NOT NULL,
-    "icon"     VARCHAR(64)  NULL,
-    "color"    VARCHAR(64)  NULL,
-    "user_id"  BIGINT       NOT NULL,
-    "created"  TIMESTAMP    NOT NULL,
-    "updated"  TIMESTAMP    NULL,
+    "id"       BIGSERIAL   NOT NULL PRIMARY KEY,
+    "name"     VARCHAR(30) NOT NULL,
+    "icon"     VARCHAR(20) NULL,
+    "color"    VARCHAR(20) NULL,
+    "user_id"  BIGINT      NOT NULL,
+    "created"  TIMESTAMP   NOT NULL,
+    "updated"  TIMESTAMP   NULL,
 
     CONSTRAINT UQ_user_id_name UNIQUE ("user_id", "name"),
 

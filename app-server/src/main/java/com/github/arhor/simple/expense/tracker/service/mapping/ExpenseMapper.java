@@ -1,6 +1,7 @@
 package com.github.arhor.simple.expense.tracker.service.mapping;
 
-import org.mapstruct.InheritInverseConfiguration;
+import java.math.BigDecimal;
+
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
@@ -16,9 +17,7 @@ public interface ExpenseMapper {
     @Mapping(target = "id", ignore = true)
     Expense mapToEntity(ExpenseRequestDTO dto, Long userId);
 
-    @InheritInverseConfiguration
-    @Mapping(target = "total", ignore = true)
-    ExpenseResponseDTO mapToDTO(Expense entity);
+    ExpenseResponseDTO mapToDTO(Expense entity, BigDecimal total);
 
     @Mapping(target = "total", ignore = true)
     @Mapping(target = "items", ignore = true)

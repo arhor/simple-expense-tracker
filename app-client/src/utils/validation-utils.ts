@@ -32,3 +32,12 @@ export function defineValidator<T>(rules: ValidationRules<T>): ValidationFunctio
         return errors;
     };
 }
+
+export function formIsValid(errors: object): boolean {
+    for (const error in Object.values(errors)) {
+        if (error) {
+            return false;
+        }
+    }
+    return true;
+}

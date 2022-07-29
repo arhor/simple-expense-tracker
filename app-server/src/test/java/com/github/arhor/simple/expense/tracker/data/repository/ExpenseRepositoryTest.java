@@ -40,8 +40,8 @@ class ExpenseRepositoryTest extends RepositoryTestBase {
         return IntStream.range(0, 3).mapToObj(number ->
             Expense.builder()
                 .userId(userId)
-                .name("test-expense-name-" + number)
-                .icon("test-expense-icon-" + number)
+                .name("test-name-" + number)
+                .icon("test-icon-" + number)
                 .color("success")
                 .build()
         );

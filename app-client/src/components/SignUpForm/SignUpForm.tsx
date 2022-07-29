@@ -1,5 +1,6 @@
 import { FormEvent, useState } from 'react';
 
+import { observer } from 'mobx-react';
 import { Link as RouterLink, Navigate, useNavigate } from 'react-router-dom';
 
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
@@ -14,7 +15,7 @@ import Typography from '@mui/material/Typography';
 import { UserRequestDTO } from '@/generated/UserRequestDTO';
 import { useStore } from '@/store';
 import { Optional } from '@/utils/core-utils';
-import { defineValidator } from '@/utils/validation-utils';
+import { defineValidator, formIsValid } from '@/utils/validation-utils';
 
 const USERNAME_REG_EXP = /^.+$/;
 const PASSWORD_REG_EXP = /^.+$/;
@@ -45,16 +46,7 @@ const validator = defineValidator<UserRequestDTO>({
 const SignUpForm = () => {
     const { user } = useStore();
     const navigate = useNavigate();
-    const [ errors, setErrors ] = useState<Partial<UserRequestDTO>>({})
-
-    const formIsValid = () => {
-        for (const error in Object.values(errors)) {
-            if (error) {
-                return false;
-            }
-        }
-        return true;
-    };
+    const [ errors, setErrors ] = useState<Partial<UserRequestDTO>>({});
 
     const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -68,10 +60,12 @@ const SignUpForm = () => {
 
         setErrors(currentErrors);
 
-        if (formIsValid()) {
-            user.signUp(username as string, password as string).then(() => {
-                navigate('/');
-            });
+        if (formIsValid(errors)) {
+            await user.signUp(
+                username as string,
+                password as string,
+            );
+            navigate('/');
         }
     };
 
@@ -143,4 +137,4 @@ const SignUpForm = () => {
     );
 };
 
-export default SignUpForm;
+export default observer(SignUpForm);

@@ -2,6 +2,7 @@ package com.github.arhor.simple.expense.tracker.service.impl;
 
 import lombok.RequiredArgsConstructor;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -31,10 +32,16 @@ public class ExpenseServiceImpl implements ExpenseService {
     @Override
     public List<ExpenseResponseDTO> getUserExpenses(final Long userId, final TemporalRange<LocalDate> dateRange) {
         try (var expenses = expenseRepository.findAllByUserId(userId)) {
-            return expenses
-                .map(expenseMapper::mapToDTO)
-                .peek(dto -> dto.setTotal(expenseItemService.getExpenseItemsTotal(dto.getId(), userId, dateRange)))
-                .toList();
+            return expenses.map(expense ->
+                expenseMapper.mapToDTO(
+                    expense,
+                    expenseItemService.getExpenseItemsTotal(
+                        expense.id(),
+                        userId,
+                        dateRange
+                    )
+                )
+            ).toList();
         }
     }
 
@@ -65,6 +72,6 @@ public class ExpenseServiceImpl implements ExpenseService {
         var expense = expenseMapper.mapToEntity(requestDTO, userId);
         var result = expenseRepository.save(expense);
 
-        return expenseMapper.mapToDTO(result);
+        return expenseMapper.mapToDTO(result, BigDecimal.ZERO);
     }
 }
