@@ -6,10 +6,6 @@ plugins {
 node {
     version = property("app.version.node")
     download = true
-
-    workDir = file("${rootDir}/.gradle/nodejs")
-    npmWorkDir = file("${rootDir}/.gradle/npm")
-    yarnWorkDir = file("${rootDir}/.gradle/yarn")
 }
 
 idea {
