@@ -9,11 +9,11 @@ import com.github.arhor.simple.expense.tracker.util.TemporalRange;
 
 public interface ExpenseItemService {
 
-    ExpenseItemDTO createExpenseItem(Long expenseId, ExpenseItemDTO dto);
+    List<ExpenseItemDTO> getExpenseItems(Long expenseId, TemporalRange<LocalDate> dateRange);
 
     BigDecimal getExpenseItemsTotal(Long expenseId, Long userId, TemporalRange<LocalDate> dateRange);
 
-    ExpenseItems getExpenseItemsTotalWithDTOs(Long expenseId, Long userId, TemporalRange<LocalDate> dateRange);
+    ExpenseItemDTO createExpenseItem(Long expenseId, ExpenseItemDTO dto);
 
     record ExpenseItems(List<ExpenseItemDTO> items, BigDecimal total) {
     }

@@ -20,7 +20,6 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import com.github.arhor.simple.expense.tracker.model.ExpenseDetailsResponseDTO;
 import com.github.arhor.simple.expense.tracker.model.ExpenseItemDTO;
 import com.github.arhor.simple.expense.tracker.model.ExpenseRequestDTO;
 import com.github.arhor.simple.expense.tracker.model.ExpenseResponseDTO;
@@ -66,7 +65,7 @@ public class ExpenseController {
     }
 
     @GetMapping("/{expenseId}")
-    public ExpenseDetailsResponseDTO getExpenseById(
+    public ExpenseResponseDTO getExpenseById(
         @PathVariable final Long expenseId,
         @ValidDateRange final DateRangeCriteria criteria,
         final TimeZone timezone,
@@ -101,5 +100,20 @@ public class ExpenseController {
         @RequestBody final ExpenseItemDTO dto
     ) {
         return expenseItemService.createExpenseItem(expenseId, dto);
+    }
+
+    @GetMapping("/{expenseId}/items")
+    public List<ExpenseItemDTO> getUserExpenseItems(
+        @PathVariable final Long expenseId,
+        @ValidDateRange final DateRangeCriteria criteria,
+        final TimeZone timezone
+    ) {
+        return expenseItemService.getExpenseItems(
+            expenseId,
+            timeService.convertToDateRange(
+                criteria,
+                timezone
+            )
+        );
     }
 }

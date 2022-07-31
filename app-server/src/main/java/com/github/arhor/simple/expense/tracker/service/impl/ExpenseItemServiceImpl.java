@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
@@ -13,6 +14,7 @@ import javax.money.Monetary;
 import org.javamoney.moneta.Money;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.github.arhor.simple.expense.tracker.data.model.ExpenseItem;
 import com.github.arhor.simple.expense.tracker.data.model.InternalUser;
@@ -37,14 +39,17 @@ public class ExpenseItemServiceImpl implements ExpenseItemService {
     private final MoneyConverter converter;
 
     @Override
-    public ExpenseItemDTO createExpenseItem(final Long expenseId, final ExpenseItemDTO dto) {
-        var expenseItem = expenseItemMapper.mapToEntity(dto, expenseId);
-        var result = expenseItemRepository.save(expenseItem);
-
-        return expenseItemMapper.mapToDTO(result);
+    @Transactional(readOnly = true)
+    public List<ExpenseItemDTO> getExpenseItems(final Long expenseId, final TemporalRange<LocalDate> dateRange) {
+        return useExpenseItemsStream(expenseId, dateRange, stream -> {
+            return stream
+                .map(expenseItemMapper::mapToDTO)
+                .toList();
+        });
     }
 
     @Override
+    @Transactional(readOnly = true)
     public BigDecimal getExpenseItemsTotal(
         final Long expenseId,
         final Long userId,
@@ -60,19 +65,12 @@ public class ExpenseItemServiceImpl implements ExpenseItemService {
     }
 
     @Override
-    public ExpenseItems getExpenseItemsTotalWithDTOs(
-        final Long expenseId,
-        final Long userId,
-        final TemporalRange<LocalDate> dateRange
-    ) {
-        var targetCurrency = getUserCurrency(userId);
+    @Transactional
+    public ExpenseItemDTO createExpenseItem(final Long expenseId, final ExpenseItemDTO dto) {
+        var expenseItem = expenseItemMapper.mapToEntity(dto, expenseId);
+        var result = expenseItemRepository.save(expenseItem);
 
-        return useExpenseItemsStream(expenseId, dateRange, stream -> {
-            var calculator = new TotalCalculationContext(targetCurrency);
-            var items = stream.peek(calculator::add).map(expenseItemMapper::mapToDTO).toList();
-
-            return new ExpenseItems(items, calculator.total.getNumberStripped());
-        });
+        return expenseItemMapper.mapToDTO(result);
     }
 
     private <R> R useExpenseItemsStream(

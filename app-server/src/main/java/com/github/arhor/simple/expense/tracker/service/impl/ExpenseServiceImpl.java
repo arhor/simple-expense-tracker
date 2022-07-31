@@ -12,7 +12,6 @@ import org.springframework.stereotype.Service;
 import com.github.arhor.simple.expense.tracker.data.repository.ExpenseRepository;
 import com.github.arhor.simple.expense.tracker.data.repository.InternalUserRepository;
 import com.github.arhor.simple.expense.tracker.exception.EntityNotFoundException;
-import com.github.arhor.simple.expense.tracker.model.ExpenseDetailsResponseDTO;
 import com.github.arhor.simple.expense.tracker.model.ExpenseRequestDTO;
 import com.github.arhor.simple.expense.tracker.model.ExpenseResponseDTO;
 import com.github.arhor.simple.expense.tracker.service.ExpenseItemService;
@@ -46,21 +45,21 @@ public class ExpenseServiceImpl implements ExpenseService {
     }
 
     @Override
-    public ExpenseDetailsResponseDTO getUserExpenseById(
+    public ExpenseResponseDTO getUserExpenseById(
         final Long userId,
         final Long expenseId,
         final TemporalRange<LocalDate> dateRange
     ) {
-        var responseDTO = expenseRepository.findById(expenseId)
-            .map(expenseMapper::mapToDetailsDTO)
-            .orElseThrow(() -> new EntityNotFoundException("Expense", "expenseId = " + expenseId));
-
-        var result = expenseItemService.getExpenseItemsTotalWithDTOs(expenseId, userId, dateRange);
-
-        responseDTO.setItems(result.items());
-        responseDTO.setTotal(result.total());
-
-        return responseDTO;
+        return expenseRepository.findById(expenseId).map(entity ->
+            expenseMapper.mapToDTO(
+                entity,
+                expenseItemService.getExpenseItemsTotal(
+                    expenseId,
+                    userId,
+                    dateRange
+                )
+            )
+        ).orElseThrow(() -> new EntityNotFoundException("Expense", "expenseId = " + expenseId));
     }
 
     @Override
