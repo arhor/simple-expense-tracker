@@ -23,10 +23,10 @@ import org.springframework.session.config.annotation.web.http.EnableSpringHttpSe
 import static com.github.arhor.simple.expense.tracker.config.WebServerConfig.apiUrlPath;
 import static org.springframework.security.oauth2.client.web.OAuth2AuthorizationRequestRedirectFilter.DEFAULT_AUTHORIZATION_REQUEST_BASE_URI;
 
+@Configuration
 @EnableWebSecurity
 @EnableSpringHttpSession
 @EnableGlobalMethodSecurity(prePostEnabled = true)
-@Configuration(proxyBeanMethods = false)
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
@@ -34,6 +34,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     private final UserDetailsService userDetailsService;
     private final PasswordEncoder passwordEncoder;
 
+    // TODO: is it necessary?
     @Override
     public void configure(final AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService(userDetailsService)
@@ -69,13 +70,13 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
             .contentSecurityPolicy("script-src 'self' 'unsafe-inline'");
     }
 
-    @Bean
-    public SessionRepository<?> sessionRepository() {
-        return new MapSessionRepository(new ConcurrentHashMap<>());
-    }
-
     @Configuration(proxyBeanMethods = false)
     public static class Beans {
+
+        @Bean
+        public SessionRepository<?> sessionRepository() {
+            return new MapSessionRepository(new ConcurrentHashMap<>());
+        }
 
         @Bean
         public PasswordEncoder passwordEncoder() {

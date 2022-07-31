@@ -25,27 +25,10 @@ import com.github.arhor.simple.expense.tracker.service.mapping.InternalUserMappe
 
 @Service
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
-public class UserServiceImpl implements UserService, UserDetailsService {
+public class UserServiceImpl implements UserService {
 
     private final InternalUserRepository userRepository;
     private final InternalUserMapper userMapper;
-
-    @Override
-    public UserDetails loadUserByUsername(final String username) throws UsernameNotFoundException {
-        return userRepository.findInternalUserByUsername(username)
-            .map(internalUser ->
-                User.builder()
-                    .username(internalUser.username())
-                    .password(internalUser.password())
-                    .authorities("ROLE_USER")
-                    .build()
-            )
-            .orElseThrow(() ->
-                new UsernameNotFoundException(
-                    "InternalUser with username '" + username + "' is not found."
-                )
-            );
-    }
 
     @Override
     public Long determineUserId(final Authentication auth) {
