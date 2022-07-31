@@ -25,12 +25,12 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.NoHandlerFoundException;
 
+import com.github.arhor.simple.expense.tracker.aspect.CurrentRequestContext;
 import com.github.arhor.simple.expense.tracker.exception.EntityDuplicateException;
 import com.github.arhor.simple.expense.tracker.exception.EntityNotFoundException;
-import com.github.arhor.simple.expense.tracker.service.TimeService;
-import com.github.arhor.simple.expense.tracker.aspect.CurrentRequestContext;
 
 import static com.github.arhor.simple.expense.tracker.config.WebServerConfig.apiUrlPath;
+import static com.github.arhor.simple.expense.tracker.util.TimeUtils.currentZonedDateTime;
 import static com.github.arhor.simple.expense.tracker.web.error.ErrorCode.HANDLER_NOT_FOUND;
 import static com.github.arhor.simple.expense.tracker.web.error.ErrorCode.HANDLER_NOT_FOUND_DEFAULT;
 import static java.util.Collections.emptyList;
@@ -41,7 +41,6 @@ import static java.util.Collections.emptyList;
 public class GlobalExceptionHandler {
 
     private final MessageSource messages;
-    private final TimeService timeService;
 
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(Exception.class)
@@ -170,7 +169,7 @@ public class GlobalExceptionHandler {
         return new ErrorResponse(
             CurrentRequestContext.requestId(),
             messages.getMessage(error.getLabel(), args, locale),
-            timeService.now(timeZone),
+            currentZonedDateTime(timeZone),
             error,
             details
         );
