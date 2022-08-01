@@ -32,15 +32,16 @@ public class ExpenseServiceImpl implements ExpenseService {
     public List<ExpenseResponseDTO> getUserExpenses(final Long userId, final TemporalRange<LocalDate> dateRange) {
         try (var expenses = expenseRepository.findAllByUserId(userId)) {
             return expenses.map(expense ->
-                expenseMapper.mapToDTO(
-                    expense,
-                    expenseItemService.getExpenseItemsTotal(
-                        expense.id(),
-                        userId,
-                        dateRange
+                    expenseMapper.mapToDTO(
+                        expense,
+                        expenseItemService.getExpenseItemsTotal(
+                            expense.id(),
+                            userId,
+                            dateRange
+                        )
                     )
                 )
-            ).toList();
+                .toList();
         }
     }
 
@@ -50,16 +51,18 @@ public class ExpenseServiceImpl implements ExpenseService {
         final Long expenseId,
         final TemporalRange<LocalDate> dateRange
     ) {
-        return expenseRepository.findById(expenseId).map(entity ->
-            expenseMapper.mapToDTO(
-                entity,
-                expenseItemService.getExpenseItemsTotal(
-                    expenseId,
-                    userId,
-                    dateRange
+        return expenseRepository.findById(expenseId)
+            .map(entity ->
+                expenseMapper.mapToDTO(
+                    entity,
+                    expenseItemService.getExpenseItemsTotal(
+                        expenseId,
+                        userId,
+                        dateRange
+                    )
                 )
             )
-        ).orElseThrow(() -> new EntityNotFoundException("Expense", "expenseId = " + expenseId));
+            .orElseThrow(() -> new EntityNotFoundException("Expense", "expenseId = " + expenseId));
     }
 
     @Override

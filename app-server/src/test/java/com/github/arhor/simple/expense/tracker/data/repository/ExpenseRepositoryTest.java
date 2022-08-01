@@ -5,16 +5,22 @@ import java.util.stream.Stream;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Import;
 
 import com.github.arhor.simple.expense.tracker.data.model.Expense;
+import com.github.arhor.simple.expense.tracker.data.repository.support.AggregatedExpenseExtractor;
 
 import static com.github.arhor.simple.expense.tracker.data.repository.TestUtils.createPersistedTestUser;
 import static org.assertj.core.api.Assertions.assertThat;
 
+@Import(AggregatedExpenseExtractor.class)
 class ExpenseRepositoryTest extends RepositoryTestBase {
 
     @Autowired
     private ExpenseRepository expenseRepository;
+
+    @Autowired
+    private ExpenseItemRepository expenseItemRepository;
 
     @Autowired
     private InternalUserRepository userRepository;

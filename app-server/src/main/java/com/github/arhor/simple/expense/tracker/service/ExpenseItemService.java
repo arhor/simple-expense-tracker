@@ -14,7 +14,4 @@ public interface ExpenseItemService {
     BigDecimal getExpenseItemsTotal(Long expenseId, Long userId, TemporalRange<LocalDate> dateRange);
 
     ExpenseItemDTO createExpenseItem(Long expenseId, ExpenseItemDTO dto);
-
-    record ExpenseItems(List<ExpenseItemDTO> items, BigDecimal total) {
-    }
 }

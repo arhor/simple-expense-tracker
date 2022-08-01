@@ -79,7 +79,7 @@ public class ExpenseItemServiceImpl implements ExpenseItemService {
         final Function<Stream<ExpenseItem>, R> action
     ) {
         return useStream(
-            () -> expenseItemRepository.findAllByExpenseIdAndDateRange(
+            expenseItemRepository.findAllByExpenseIdAndDateRange(
                 expenseId,
                 dateRange.start(),
                 dateRange.end()
