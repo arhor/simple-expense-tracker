@@ -15,7 +15,7 @@
     "test": "vitest",
     "test:ui": "vitest --ui",
     "coverage": "vitest run --coverage",
-    "storybook:start": "start-storybook -p 6006",
+    "storybook:start": "start-storybook --disable-telemetry",
     "storybook:build": "build-storybook"
   },
   "dependencies": {

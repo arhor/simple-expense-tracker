@@ -13,7 +13,7 @@ const Home = () => {
     const navigate = useNavigate();
 
     useEffect(() => {
-        expense.fetchData().finally(() => {
+        expense.fetchExpenses().finally(() => {
             setLoading(false);
         });
     }, []);
@@ -27,7 +27,7 @@ const Home = () => {
 
     return loading
         ? <Loading />
-        : <ExpenseItemList expenses={expense.items} onCreate={handleCreate} onUpdate={handleUpdate} />;
+        : <ExpenseItemList expenses={expense.expenses} onCreate={handleCreate} onUpdate={handleUpdate} />;
 };
 
 export default observer(Home);

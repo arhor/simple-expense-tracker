@@ -16,13 +16,13 @@ export function defineValidator<T>(rules: ValidationRules<T>): ValidationFunctio
             for (const field in values) {
                 const fieldRules = rules[field] as Optional<ValidationRule<T[keyof T]>[]>;
 
-                if (fieldRules) {
+                if ((fieldRules !== null) && (fieldRules !== undefined)) {
                     for (const rule of fieldRules) {
                         const value = values[field];
-                        const result = rule(value);
+                        const success = rule(value);
 
-                        if (result !== true) {
-                            errors[field] = result;
+                        if (success !== true) {
+                            errors[field] = success;
                             break;
                         }
                     }
@@ -33,7 +33,7 @@ export function defineValidator<T>(rules: ValidationRules<T>): ValidationFunctio
     };
 }
 
-export function formIsValid(errors: object): boolean {
+export function formIsValid<T>(errors: ValidationErrors<T>): boolean {
     for (const error in Object.values(errors)) {
         if (error) {
             return false;
