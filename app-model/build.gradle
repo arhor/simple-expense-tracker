@@ -4,6 +4,8 @@ plugins {
     id "simple-expense-tracker.node-conventions"
 }
 
+description = "Application model described via JSON Schema, used to generate sources for the Client/Server communication"
+
 repositories {
     mavenCentral()
 }
@@ -15,7 +17,7 @@ dependencies {
 }
 
 jsonSchema2Pojo {
-    targetVersion = "17"
+    targetVersion = project.property("app.version.java")
     targetPackage = "com.github.arhor.simple.expense.tracker.model"
     removeOldOutput = true
     includeJsr303Annotations = true
