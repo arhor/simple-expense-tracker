@@ -137,11 +137,9 @@ class TimeUtilsTest {
     void should_return_current_month_date_range_with_provided_timezone_and_start_date_provided_end_date_null() {
         // given
         var timezone = TimeZone.getTimeZone("PST");
-        var today = LocalDate.now(timezone.toZoneId());
-        var startDate = today.minusWeeks(1);
 
-        var firstDayOfCurrentMonth = today.with(firstDayOfMonth());
-        var lastDayOfCurrentMonth = today.with(lastDayOfMonth());
+        var startDate = LocalDate.of(2022, 7, 15);
+        var expectedDateRangeEnd = LocalDate.of(2022, 7, 31);
 
         // when
         var result = TimeUtils.createDateRange(startDate, null, timezone);
@@ -160,7 +158,7 @@ class TimeUtilsTest {
                     assertThat(dateRange.end())
                         .as("date range end")
                         .isNotNull()
-                        .isEqualTo(lastDayOfCurrentMonth);
+                        .isEqualTo(expectedDateRangeEnd);
                 }
             );
     }
@@ -169,9 +167,8 @@ class TimeUtilsTest {
     void should_return_current_month_date_range_with_provided_timezone_start_date_and_end_date() {
         // given
         var timezone = TimeZone.getTimeZone("PST");
-        var today = LocalDate.now(timezone.toZoneId());
-        var startDate = today.minusWeeks(1);
-        var endDate = today.plusWeeks(1);
+        var startDate = LocalDate.of(2022, 7, 1);
+        var endDate = LocalDate.of(2022, 9, 30);
 
         // when
         var result = TimeUtils.createDateRange(startDate, endDate, timezone);
