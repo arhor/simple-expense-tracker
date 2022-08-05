@@ -4,6 +4,7 @@
     <option name="VM_PARAMETERS" value="--enable-preview" />
     <option name="ALTERNATIVE_JRE_PATH" />
     <method v="2">
+      <option name="Gradle.BeforeRunTask" enabled="true" tasks="clean" externalProjectPath="$PROJECT_DIR$" vmOptions="" scriptParameters="" />
       <option name="Gradle.BeforeRunTask" enabled="true" tasks="stage" externalProjectPath="$PROJECT_DIR$" vmOptions="" scriptParameters="" />
     </method>
   </configuration>
