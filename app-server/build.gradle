@@ -14,12 +14,12 @@ description = "Server-side application based on Spring Boot %s and Java %s".form
 )
 
 java {
-    sourceCompatibility = libs.versions.java.get()
-    targetCompatibility = libs.versions.java.get()
+    sourceCompatibility = project.property("app.version.java")
+    targetCompatibility = project.property("app.version.java")
 }
 
 jacoco {
-    toolVersion = libs.versions.jacoco.get()
+    toolVersion = project.property("app.version.jacoco")
 }
 
 flyway {
@@ -64,10 +64,10 @@ dependencies {
     developmentOnly "org.springframework.boot:spring-boot-devtools"
 
     implementation project(":app-model")
-    implementation "org.apache.commons:commons-lang3:${libs.versions.apacheCommonsLang.get()}"
-    implementation "org.apache.commons:commons-collections4:${libs.versions.apacheCommonsCollections.get()}"
+    implementation "org.apache.commons:commons-lang3:${property("app.version.apacheCommonsLang")}"
+    implementation "org.apache.commons:commons-collections4:${property("app.version.apacheCommonsCollections")}"
     implementation "org.flywaydb:flyway-core"
-    implementation "org.javamoney:moneta:${libs.versions.javamoneyMoneta.get()}"
+    implementation "org.javamoney:moneta:${property("app.version.javamoneyMoneta")}"
 
     implementation "org.springframework.boot:spring-boot-starter-aop"
     implementation "org.springframework.boot:spring-boot-starter-data-jdbc"
@@ -80,7 +80,7 @@ dependencies {
 
     testRuntimeOnly "org.postgresql:postgresql"
 
-    testImplementation "com.tngtech.archunit:archunit-junit5:${libs.versions.archunit.get()}"
+    testImplementation "com.tngtech.archunit:archunit-junit5:${property("app.version.archunit")}"
     testImplementation "org.springframework.boot:spring-boot-starter-test"
     testImplementation "org.springframework.security:spring-security-test"
     testImplementation "org.testcontainers:junit-jupiter"
@@ -145,10 +145,10 @@ void applyJaCoCoExclusions(ConfigurableFileCollection classDirectories) {
 
 tasks.withType(JavaCompile) {
     options.compilerArgs = [
-        "-Xlint:unchecked",
         "-Xlint:deprecation",
+        "-Xlint:unchecked",
         "-Xlint:preview",
+        "-parameters",
         "--enable-preview",
-        "-parameters"
     ]
 }
