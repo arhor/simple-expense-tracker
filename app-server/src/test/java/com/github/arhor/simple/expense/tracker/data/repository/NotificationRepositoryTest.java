@@ -7,22 +7,14 @@ import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import com.github.arhor.simple.expense.tracker.data.model.InternalUser;
 import com.github.arhor.simple.expense.tracker.data.model.Notification;
 
-import static com.github.arhor.simple.expense.tracker.data.repository.TestUtils.createPersistedTestUser;
 import static java.util.stream.Collectors.toMap;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class NotificationRepositoryTest extends RepositoryTestBase {
-
-    @Autowired
-    private NotificationRepository notificationRepository;
-
-    @Autowired
-    private InternalUserRepository userRepository;
 
     @Test
     void should_return_all_notifications_where_user_id_is_one_of_the_passed_ids() {
@@ -75,7 +67,7 @@ class NotificationRepositoryTest extends RepositoryTestBase {
     }
 
     private Stream<InternalUser> createUsersStream() {
-        return IntStream.range(0, 5).mapToObj(number -> createPersistedTestUser(userRepository, number));
+        return IntStream.range(0, 5).mapToObj(this::createPersistedTestUser);
     }
 
     private Stream<Notification> createNotificationsStream(final Long targetUserId) {

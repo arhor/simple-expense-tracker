@@ -1,21 +1,15 @@
 package com.github.arhor.simple.expense.tracker.data.repository;
 
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 
-import static com.github.arhor.simple.expense.tracker.data.repository.TestUtils.createPersistedTestUser;
-import static com.github.arhor.simple.expense.tracker.data.repository.TestUtils.createTestUser;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class InternalUserRepositoryTest extends RepositoryTestBase {
 
-    @Autowired
-    private InternalUserRepository userRepository;
-
     @Test
     void should_return_an_existing_internal_user_by_username() {
         // given
-        var expectedUser = createPersistedTestUser(userRepository);
+        var expectedUser = createPersistedTestUser();
 
         // when
         var result = userRepository.findInternalUserByUsername(expectedUser.username());
@@ -42,7 +36,7 @@ class InternalUserRepositoryTest extends RepositoryTestBase {
     @Test
     void should_return_an_existing_internal_user_by_external_id_and_external_provider() {
         // given
-        var expectedUser = createPersistedTestUser(userRepository);
+        var expectedUser = createPersistedTestUser();
         var externalId = expectedUser.externalId();
         var externalProvider = expectedUser.externalProvider();
 
@@ -89,7 +83,7 @@ class InternalUserRepositoryTest extends RepositoryTestBase {
     @Test
     void should_return_true_for_an_existing_internal_user_by_username() {
         // given
-        var username = createPersistedTestUser(userRepository).username();
+        var username = createPersistedTestUser().username();
 
         // when
         var result = userRepository.existsByUsername(username);
@@ -115,7 +109,7 @@ class InternalUserRepositoryTest extends RepositoryTestBase {
     @Test
     void should_return_true_for_an_existing_internal_user_by_external_id_and_external_provider() {
         // given
-        var expectedUser = createPersistedTestUser(userRepository);
+        var expectedUser = createPersistedTestUser();
         var externalId = expectedUser.externalId();
         var externalProvider = expectedUser.externalProvider();
 
@@ -151,16 +145,31 @@ class InternalUserRepositoryTest extends RepositoryTestBase {
         var updatedUser = userRepository.save(createdUser.toBuilder().password("updated").build());
 
         // then
-        assertThat(createdUser.created())
-            .isNotNull();
-        assertThat(createdUser.updated())
-            .isNull();
-
-        assertThat(updatedUser.created())
+        assertThat(createdUser)
             .isNotNull()
-            .isEqualTo(createdUser.created());
-        assertThat(updatedUser.updated())
+            .satisfies(
+                it -> {
+                    assertThat(it.created())
+                        .isNotNull();
+                },
+                it -> {
+                    assertThat(it.updated())
+                        .isNull();
+                }
+            );
+        assertThat(updatedUser)
             .isNotNull()
-            .isAfter(updatedUser.created());
+            .satisfies(
+                it -> {
+                    assertThat(it.created())
+                        .isNotNull()
+                        .isEqualTo(createdUser.created());
+                },
+                it -> {
+                    assertThat(it.updated())
+                        .isNotNull()
+                        .isAfter(it.created());
+                }
+            );
     }
 }

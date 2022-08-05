@@ -1,13 +1,11 @@
+version: "3.8"
+
 services:
   simple-expense-tracker-db:
     image: postgres:12
-    volumes:
-      - db-data:/var/lib/postgresql/data
     ports:
-      - "${POSTGRES_PORT}:${POSTGRES_PORT}"
+      - "5432:5432"
+    tmpfs:
+      - "/var/lib/postgresql/data"
     env_file:
-      - .env
-
-volumes:
-  db-data:
-    driver: local
+      - ".env"

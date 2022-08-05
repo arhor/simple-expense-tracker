@@ -8,14 +8,14 @@
     "name": {
       "type": "string"
     },
-    "total": {
-      "type": "number"
-    },
     "icon": {
       "type": "string"
     },
     "color": {
       "type": "string"
+    },
+    "total": {
+      "type": "number"
     }
   },
   "required": [

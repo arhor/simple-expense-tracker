@@ -68,13 +68,11 @@ public class ExpenseController {
     public ExpenseResponseDTO getExpenseById(
         @PathVariable final Long expenseId,
         @ValidDateRange final DateRangeCriteria criteria,
-        final TimeZone timezone,
-        final Authentication auth
+        final TimeZone timezone
     ) {
-        var currentUserId = userService.determineUserId(auth);
         var dateRange = timeService.convertToDateRange(criteria, timezone);
 
-        return expenseService.getUserExpenseById(currentUserId, expenseId, dateRange);
+        return expenseService.getExpenseById(expenseId, dateRange);
     }
 
     @PostMapping

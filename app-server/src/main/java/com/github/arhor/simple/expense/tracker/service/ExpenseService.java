@@ -11,7 +11,7 @@ public interface ExpenseService {
 
     List<ExpenseResponseDTO> getUserExpenses(Long userId, TemporalRange<LocalDate> dateRange);
 
-    ExpenseResponseDTO getUserExpenseById(Long userId, Long expenseId, TemporalRange<LocalDate> dateRange);
+    ExpenseResponseDTO getExpenseById(Long expenseId, TemporalRange<LocalDate> dateRange);
 
     ExpenseResponseDTO createUserExpense(Long userId, ExpenseRequestDTO requestDTO);
 }

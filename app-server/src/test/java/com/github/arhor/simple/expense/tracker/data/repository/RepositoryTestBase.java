@@ -1,5 +1,13 @@
 package com.github.arhor.simple.expense.tracker.data.repository;
 
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+import java.util.stream.Stream;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.data.jdbc.DataJdbcTest;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.test.annotation.DirtiesContext;
@@ -13,6 +21,9 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 
 import com.github.arhor.simple.expense.tracker.IntegrationTest;
 import com.github.arhor.simple.expense.tracker.config.DatabaseConfig;
+import com.github.arhor.simple.expense.tracker.data.model.Expense;
+import com.github.arhor.simple.expense.tracker.data.model.ExpenseItem;
+import com.github.arhor.simple.expense.tracker.data.model.InternalUser;
 
 @DataJdbcTest
 @DirtiesContext
@@ -30,5 +41,86 @@ abstract class RepositoryTestBase {
         registry.add("spring.datasource.url", db::getJdbcUrl);
         registry.add("spring.datasource.username", db::getUsername);
         registry.add("spring.datasource.password", db::getPassword);
+    }
+
+    @Autowired
+    protected ExpenseRepository expenseRepository;
+
+    @Autowired
+    protected ExpenseItemRepository expenseItemRepository;
+
+    @Autowired
+    protected InternalUserRepository userRepository;
+
+    @Autowired
+    protected NotificationRepository notificationRepository;
+
+    protected InternalUser createTestUser() {
+        return createTestUser(0);
+    }
+
+    protected InternalUser createTestUser(final Number number) {
+        return InternalUser.builder()
+            .username("test-user-username-" + number)
+            .password("test-user-password-" + number)
+            .currency("USD")
+            .externalId(UUID.randomUUID().toString())
+            .externalProvider("test")
+            .build();
+    }
+
+    protected Expense createTestExpense(final Long userId) {
+        return createTestExpense(userId, 0);
+    }
+
+    protected Expense createTestExpense(final Long userId, final Number number) {
+        return Expense.builder()
+            .userId(userId)
+            .name("test-name-" + number)
+            .icon("test-icon-" + number)
+            .color("success")
+            .build();
+    }
+
+    protected InternalUser createPersistedTestUser() {
+        return createPersistedTestUser(0);
+    }
+
+    protected InternalUser createPersistedTestUser(final Number number) {
+        return userRepository.save(createTestUser(number));
+    }
+
+    protected Expense createPersistedTestExpense(final Long userId) {
+        return createPersistedTestExpense(userId, 0);
+    }
+
+    protected Expense createPersistedTestExpense(final Long userId, final Number number) {
+        return expenseRepository.save(createTestExpense(userId, number));
+    }
+
+    protected List<ExpenseItem> createPersistedTestExpenseItems(
+        final int number,
+        final Long expenseId,
+        final String currency,
+        final BigDecimal amount,
+        final LocalDate date
+    ) {
+        var expenseItemsToCreate = Stream.generate(() -> {
+                return ExpenseItem.builder()
+                    .expenseId(expenseId)
+                    .currency(currency)
+                    .amount(amount)
+                    .date(date)
+                    .build();
+            })
+            .limit(number)
+            .toList();
+
+        var result = new ArrayList<ExpenseItem>(number);
+
+        for (var expenseItem : expenseItemRepository.saveAll(expenseItemsToCreate)) {
+            result.add(expenseItem);
+        }
+        return result;
     }
 }
