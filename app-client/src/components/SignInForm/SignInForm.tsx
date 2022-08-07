@@ -1,17 +1,7 @@
 import { Link as RouterLink, Navigate } from 'react-router-dom';
 
-import GitHubIcon from '@mui/icons-material/GitHub';
-import GoogleIcon from '@mui/icons-material/Google';    
-import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
-import Avatar from '@mui/material/Avatar';
-import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
-import Grid from '@mui/material/Grid';
-import IconButton from '@mui/material/IconButton';
-import Link from '@mui/material/Link';
-import Stack from '@mui/material/Stack';
-import TextField from '@mui/material/TextField';
-import Typography from '@mui/material/Typography';
+import { GitHub, Google, LockOutlined } from '@mui/icons-material';
+import { Avatar, Box, Button, Grid, IconButton, Link, Stack, TextField, Typography } from '@mui/material';
 
 import { useStore } from '@/store';
 
@@ -31,7 +21,7 @@ const SignInForm = () => {
             }}
         >
             <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
-                <LockOutlinedIcon />
+                <LockOutlined />
             </Avatar>
             <Typography component="h1" variant="h5">
                 Sign in
@@ -80,10 +70,10 @@ const SignInForm = () => {
             </Box>
             <Stack direction="row" alignItems="center" spacing={2} sx={{ padding: 2 }}>
                 <IconButton href="/api/oauth2/authorization/github">
-                    <GitHubIcon />
+                    <GitHub />
                 </IconButton>
                 <IconButton href="/api/oauth2/authorization/google">
-                    <GoogleIcon />
+                    <Google />
                 </IconButton>
             </Stack>
         </Box>

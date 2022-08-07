@@ -1,8 +1,4 @@
-import { Box } from '@mui/material';
-import Fade from '@mui/material/Fade';
-import IconButton from '@mui/material/IconButton';
-import Tooltip from '@mui/material/Tooltip';
-import Typography from '@mui/material/Typography';
+import { Box, Fade, IconButton, Tooltip, Typography } from '@mui/material';
 
 import ExpenseItemIcon from '@/components/ExpenseItemIcon';
 

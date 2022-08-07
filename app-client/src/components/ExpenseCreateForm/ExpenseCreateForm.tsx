@@ -3,12 +3,10 @@ import { FormEvent, useState } from 'react';
 import { observer } from 'mobx-react';
 import { useNavigate } from 'react-router-dom';
 
-import { Box } from '@mui/material';
-import Button from '@mui/material/Button';
-import Grid from '@mui/material/Grid';
-import TextField from '@mui/material/TextField';
+import { Box, Button, Grid, IconButton, TextField } from '@mui/material';
 
 import { ExpenseRequestDTO } from '@/generated/ExpenseRequestDTO';
+import { getIconByName } from '@/services/icon-component-service';
 import { useStore } from '@/store';
 import { Optional } from '@/utils/core-utils';
 import { defineValidator, formIsValid } from '@/utils/validation-utils';
@@ -24,10 +22,14 @@ const validator = defineValidator<ExpenseRequestDTO>({
     ],
 });
 
+type IconButtonColor = 'inherit' | 'default' | 'primary' | 'secondary' | 'error' | 'info' | 'success' | 'warning';
+
 const ExpenseCreateForm = () => {
     const { expense } = useStore();
     const navigate = useNavigate();
     const [ errors, setErrors ] = useState<Partial<ExpenseRequestDTO>>({});
+    const [ icon, setIcon ] = useState<string>();
+    const [ color, setColor ] = useState<IconButtonColor>();
 
     const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -35,8 +37,6 @@ const ExpenseCreateForm = () => {
         const formData = new FormData(e.currentTarget);
 
         const name = formData.get('name') as Optional<string>;
-        const icon = formData.get('icon') as Optional<string>;
-        const color = formData.get('color') as Optional<string>;
 
         const currentErrors = validator({ name, icon, color });
 
@@ -45,12 +45,14 @@ const ExpenseCreateForm = () => {
         if (formIsValid(errors)) {
             await expense.createExpense({ 
                 name: name as string,
-                icon: icon as string | undefined,
+                icon: icon,
                 color: color as string | undefined,
             });
             navigate('/');
         }
     };
+
+    const IconComponent = getIconByName(icon);
 
     return (
         <Box
@@ -64,6 +66,13 @@ const ExpenseCreateForm = () => {
         >
             <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
                 <Grid container justifyContent="center">
+                    <Grid item xs={10}>
+                        <IconButton size="large" color={color} style={{
+                            border: '1px solid',
+                        }}>
+                            <IconComponent />
+                        </IconButton>
+                    </Grid>
                     <Grid item xs={10}>
                         <TextField
                             id="name"

@@ -1,6 +1,6 @@
 import { SnackbarProvider } from 'notistack';
 
-import CssBaseline from '@mui/material/CssBaseline';
+import { CssBaseline } from '@mui/material';
 
 import AppRouter from '@/AppRouter';
 import AppThemeProvider from '@/AppThemeProvider';

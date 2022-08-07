@@ -1,10 +1,8 @@
 import { observer } from 'mobx-react';
 import { useTranslation } from 'react-i18next';
 
-import MUIAppBar from '@mui/material/AppBar';
+import { AppBar as MUIAppBar, Toolbar, Typography } from '@mui/material';
 import { styled } from '@mui/material/styles';
-import Toolbar from '@mui/material/Toolbar';
-import Typography from '@mui/material/Typography'
 
 import { useStore } from '@/store';
 

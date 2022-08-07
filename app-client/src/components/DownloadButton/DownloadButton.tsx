@@ -1,6 +1,6 @@
-import React, { MouseEventHandler } from 'react';
+import { MouseEventHandler } from 'react';
 
-import Button from '@mui/material/Button';
+import { Button } from '@mui/material';
 
 import client from '@/api/client';
 import { useObjectURL } from '@/utils/core-utils';

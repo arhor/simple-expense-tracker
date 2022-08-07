@@ -4,7 +4,7 @@ import { autorun } from 'mobx';
 import { observer } from 'mobx-react';
 import { useSnackbar } from 'notistack';
 
-import Container from '@mui/material/Container';
+import { Container } from '@mui/material';
 
 import AppBar from '@/components/AppBar';
 import AppNav from '@/components/AppNav';
