@@ -1,5 +1,7 @@
 package com.github.arhor.simple.expense.tracker.data.repository;
 
+import lombok.val;
+
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -9,10 +11,10 @@ class InternalUserRepositoryTest extends RepositoryTestBase {
     @Test
     void should_return_an_existing_internal_user_by_username() {
         // given
-        var expectedUser = createPersistedTestUser();
+        val expectedUser = createPersistedTestUser();
 
         // when
-        var result = userRepository.findInternalUserByUsername(expectedUser.username());
+        val result = userRepository.findInternalUserByUsername(expectedUser.username());
 
         // then
         assertThat(result)
@@ -23,10 +25,10 @@ class InternalUserRepositoryTest extends RepositoryTestBase {
     @Test
     void should_return_an_empty_optional_by_a_not_existing_user_username() {
         // given
-        var username = "not-exists";
+        val username = "not-exists";
 
         // when
-        var result = userRepository.findInternalUserByUsername(username);
+        val result = userRepository.findInternalUserByUsername(username);
 
         // then
         assertThat(result)
@@ -36,12 +38,12 @@ class InternalUserRepositoryTest extends RepositoryTestBase {
     @Test
     void should_return_an_existing_internal_user_by_external_id_and_external_provider() {
         // given
-        var expectedUser = createPersistedTestUser();
-        var externalId = expectedUser.externalId();
-        var externalProvider = expectedUser.externalProvider();
+        val expectedUser = createPersistedTestUser();
+        val externalId = expectedUser.externalId();
+        val externalProvider = expectedUser.externalProvider();
 
         // when
-        var result = userRepository.findByExternalIdAndProvider(externalId, externalProvider);
+        val result = userRepository.findByExternalIdAndProvider(externalId, externalProvider);
 
         // then
         assertThat(result)
@@ -69,11 +71,11 @@ class InternalUserRepositoryTest extends RepositoryTestBase {
     @Test
     void should_return_an_empty_optional_by_a_not_existing_user_external_id_and_external_provider() {
         // given
-        var externalId = "not-existing-id";
-        var externalProvider = "not-existing-provider";
+        val externalId = "not-existing-id";
+        val externalProvider = "not-existing-provider";
 
         // when
-        var result = userRepository.findByExternalIdAndProvider(externalId, externalProvider);
+        val result = userRepository.findByExternalIdAndProvider(externalId, externalProvider);
 
         // then
         assertThat(result)
@@ -83,10 +85,10 @@ class InternalUserRepositoryTest extends RepositoryTestBase {
     @Test
     void should_return_true_for_an_existing_internal_user_by_username() {
         // given
-        var username = createPersistedTestUser().username();
+        val username = createPersistedTestUser().username();
 
         // when
-        var result = userRepository.existsByUsername(username);
+        val result = userRepository.existsByUsername(username);
 
         // then
         assertThat(result)
@@ -96,10 +98,10 @@ class InternalUserRepositoryTest extends RepositoryTestBase {
     @Test
     void should_return_false_for_a_not_existing_internal_user_by_username() {
         // given
-        var username = "not-exists";
+        val username = "not-exists";
 
         // when
-        var result = userRepository.existsByUsername(username);
+        val result = userRepository.existsByUsername(username);
 
         // then
         assertThat(result)
@@ -109,12 +111,12 @@ class InternalUserRepositoryTest extends RepositoryTestBase {
     @Test
     void should_return_true_for_an_existing_internal_user_by_external_id_and_external_provider() {
         // given
-        var expectedUser = createPersistedTestUser();
-        var externalId = expectedUser.externalId();
-        var externalProvider = expectedUser.externalProvider();
+        val expectedUser = createPersistedTestUser();
+        val externalId = expectedUser.externalId();
+        val externalProvider = expectedUser.externalProvider();
 
         // when
-        var result = userRepository.existsByExternalIdAndExternalProvider(externalId, externalProvider);
+        val result = userRepository.existsByExternalIdAndExternalProvider(externalId, externalProvider);
 
         // then
         assertThat(result)
@@ -124,11 +126,11 @@ class InternalUserRepositoryTest extends RepositoryTestBase {
     @Test
     void should_return_false_for_a_not_existing_user_external_id_and_external_provider() {
         // given
-        var externalId = "not-existing-id";
-        var externalProvider = "not-existing-provider";
+        val externalId = "not-existing-id";
+        val externalProvider = "not-existing-provider";
 
         // when
-        var result = userRepository.existsByExternalIdAndExternalProvider(externalId, externalProvider);
+        val result = userRepository.existsByExternalIdAndExternalProvider(externalId, externalProvider);
 
         // then
         assertThat(result)
@@ -138,11 +140,11 @@ class InternalUserRepositoryTest extends RepositoryTestBase {
     @Test
     void should_properly_audit_entity_on_save() {
         // given
-        var user = createTestUser();
+        val user = createTestUser();
 
         // when
-        var createdUser = userRepository.save(user);
-        var updatedUser = userRepository.save(createdUser.toBuilder().password("updated").build());
+        val createdUser = userRepository.save(user);
+        val updatedUser = userRepository.save(createdUser.toBuilder().password("updated").build());
 
         // then
         assertThat(createdUser)

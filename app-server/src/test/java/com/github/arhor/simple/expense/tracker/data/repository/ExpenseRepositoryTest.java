@@ -1,5 +1,7 @@
 package com.github.arhor.simple.expense.tracker.data.repository;
 
+import lombok.val;
+
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
@@ -14,14 +16,14 @@ class ExpenseRepositoryTest extends RepositoryTestBase {
     @Test
     void should_pass_findAllByUserId() {
         // given
-        var userId = createPersistedTestUser().id();
+        val userId = createPersistedTestUser().id();
 
-        var expectedExpenses = createExpensesStream(userId)
+        val expectedExpenses = createExpensesStream(userId)
             .map(expenseRepository::save)
             .toList();
 
         // when
-        var result = expenseRepository.findAllByUserId(userId);
+        val result = expenseRepository.findAllByUserId(userId);
 
         // then
         assertThat(result)

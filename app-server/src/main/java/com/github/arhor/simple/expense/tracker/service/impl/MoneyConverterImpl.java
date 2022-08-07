@@ -2,6 +2,7 @@ package com.github.arhor.simple.expense.tracker.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import lombok.val;
 
 import java.time.LocalDate;
 
@@ -31,18 +32,18 @@ public class MoneyConverterImpl implements MoneyConverter {
         final CurrencyUnit targetCurrency,
         final LocalDate date
     ) {
-        var sourceCurrency = amount.getCurrency();
-        var conversionDate = determineConversionDate(date);
-        var providerName = determineProviderName(conversionDate);
+        val sourceCurrency = amount.getCurrency();
+        val conversionDate = determineConversionDate(date);
+        val providerName = determineProviderName(conversionDate);
 
-        var query = ConversionQueryBuilder.of()
+        val query = ConversionQueryBuilder.of()
             .setBaseCurrency(sourceCurrency)
             .setTermCurrency(targetCurrency)
             .setProviderName(providerName)
             .set(conversionDate)
             .build();
 
-        var currencyConversion = exchangeRateProvider.getCurrencyConversion(query);
+        val currencyConversion = exchangeRateProvider.getCurrencyConversion(query);
 
         return (T) amount.with(currencyConversion);
     }
@@ -75,9 +76,9 @@ public class MoneyConverterImpl implements MoneyConverter {
      * </p>
      */
     private String determineProviderName(final LocalDate conversionDate) {
-        var currentDate = currentZonedDateTime().toLocalDate();
-        var period = conversionDate.until(currentDate);
-        var daysPassedFromConversion = period.getDays();
+        val currentDate = currentZonedDateTime().toLocalDate();
+        val period = conversionDate.until(currentDate);
+        val daysPassedFromConversion = period.getDays();
 
         String provider;
         if (daysPassedFromConversion <= 0) {

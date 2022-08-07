@@ -1,5 +1,7 @@
 package com.github.arhor.simple.expense.tracker.util;
 
+import lombok.val;
+
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -18,13 +20,13 @@ public final class StreamUtils {
     }
 
     public static <T, R> R useStream(final Stream<T> stream, final Function<Stream<T>, R> action) {
-        try (var s = stream) {
+        try (val s = stream) {
             return action.apply(s);
         }
     }
 
     public static <T> void useStream(final Stream<T> stream, final Consumer<Stream<T>> action) {
-        try (var s = stream) {
+        try (val s = stream) {
             action.accept(s);
         }
     }

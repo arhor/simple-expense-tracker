@@ -1,5 +1,7 @@
 package com.github.arhor.simple.expense.tracker.service.impl;
 
+import lombok.val;
+
 import java.util.Map;
 
 import org.springframework.stereotype.Service;
@@ -21,9 +23,9 @@ public class StringSanitizerImpl implements StringSanitizer {
     public String sanitize(final String input) {
         if (input != null) {
             var result = input;
-            for (var entry : MAPPINGS.entrySet()) {
-                var unsafeElement = entry.getKey();
-                var replacement = entry.getValue();
+            for (val entry : MAPPINGS.entrySet()) {
+                val unsafeElement = entry.getKey();
+                val replacement = entry.getValue();
 
                 result = result.replace(unsafeElement, replacement);
             }

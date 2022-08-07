@@ -2,6 +2,7 @@ package com.github.arhor.simple.expense.tracker.web.error;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import lombok.val;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -103,7 +104,7 @@ public class GlobalExceptionHandler {
         final Locale locale,
         final TimeZone timeZone
     ) {
-        var requestURL = exception.getRequestURL();
+        val requestURL = exception.getRequestURL();
 
         Object result;
         if (requestURL.equals("/")) {
@@ -129,14 +130,14 @@ public class GlobalExceptionHandler {
         final Locale locale,
         final TimeZone timeZone
     ) {
-        var bindingResult = exception.getBindingResult();
+        val bindingResult = exception.getBindingResult();
 
-        var fieldErrors = handleObjectErrors(
+        val fieldErrors = handleObjectErrors(
             bindingResult.getFieldErrors(),
             FieldError::getField,
             FieldError::getDefaultMessage
         );
-        var globalErrors = handleObjectErrors(
+        val globalErrors = handleObjectErrors(
             bindingResult.getGlobalErrors(),
             ObjectError::getObjectName,
             ObjectError::getDefaultMessage
@@ -180,11 +181,11 @@ public class GlobalExceptionHandler {
         final Function<T, String> nameProvider,
         final Function<T, String> messageProvider
     ) {
-        var result = new ArrayList<String>(errors.size());
+        val result = new ArrayList<String>(errors.size());
 
-        for (var error : errors) {
-            var name = nameProvider.apply(error);
-            var message = messageProvider.apply(error);
+        for (val error : errors) {
+            val name = nameProvider.apply(error);
+            val message = messageProvider.apply(error);
 
             result.add(name + ": " + message);
         }

@@ -1,5 +1,7 @@
 package com.github.arhor.simple.expense.tracker.web.validation;
 
+import lombok.val;
+
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 
@@ -10,8 +12,8 @@ public class DateRangeValidator implements ConstraintValidator<ValidDateRange, D
     @Override
     public boolean isValid(final DateRangeCriteria value, final ConstraintValidatorContext context) {
         if (value != null) {
-            var startDate = value.startDate();
-            var endDate = value.endDate();
+            val startDate = value.startDate();
+            val endDate = value.endDate();
 
             if ((startDate != null) && (endDate != null)) {
                 return startDate.isBefore(endDate)

@@ -1,5 +1,7 @@
 package com.github.arhor.simple.expense.tracker.web.api;
 
+import lombok.val;
+
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -26,11 +28,11 @@ class UserControllerTest extends BaseControllerTest {
     @Test
     void should_return_status_201_user_info_and_location_header_creating_new_user() throws Exception {
         // given
-        var username = "username";
-        var password = "Password1";
-        var currency = "USD";
+        val username = "username";
+        val password = "Password1";
+        val currency = "USD";
 
-        var response = new UserResponseDTO();
+        val response = new UserResponseDTO();
         response.setId(1L);
         response.setUsername(username);
         response.setCurrency(currency);
@@ -39,7 +41,7 @@ class UserControllerTest extends BaseControllerTest {
             .willReturn(response);
 
         // when
-        var result = http.perform(
+        val result = http.perform(
             post("/api/users")
                 .contentType("application/json")
                 .content("""
@@ -73,7 +75,7 @@ class UserControllerTest extends BaseControllerTest {
     @WithMockUser
     void should_return_status_200_and_expected_info_for_authenticated_user() throws Exception {
         // given
-        var response = new UserResponseDTO();
+        val response = new UserResponseDTO();
         response.setId(1L);
         response.setUsername("user");
         response.setCurrency("USD");
@@ -82,7 +84,7 @@ class UserControllerTest extends BaseControllerTest {
             .willReturn(response);
 
         // when
-        var result = http.perform(get("/api/users?current"));
+        val result = http.perform(get("/api/users?current"));
 
         // then
         then(userService)

@@ -1,6 +1,7 @@
 package com.github.arhor.simple.expense.tracker.service.event;
 
 import lombok.RequiredArgsConstructor;
+import lombok.val;
 
 import java.util.List;
 
@@ -19,7 +20,7 @@ public class StartupTaskExecutor implements ApplicationListener<ContextRefreshed
 
     @Override
     public void onApplicationEvent(final ContextRefreshedEvent event) {
-        for (var task : startupTasks) {
+        for (val task : startupTasks) {
             task.execute();
         }
     }

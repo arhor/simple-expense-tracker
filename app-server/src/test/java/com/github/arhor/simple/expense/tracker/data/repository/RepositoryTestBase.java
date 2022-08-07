@@ -1,5 +1,7 @@
 package com.github.arhor.simple.expense.tracker.data.repository;
 
+import lombok.val;
+
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -105,7 +107,7 @@ abstract class RepositoryTestBase {
         final BigDecimal amount,
         final LocalDate date
     ) {
-        var expenseItemsToCreate = Stream.generate(() -> {
+        val expenseItemsToCreate = Stream.generate(() -> {
                 return ExpenseItem.builder()
                     .expenseId(expenseId)
                     .currency(currency)
@@ -116,9 +118,9 @@ abstract class RepositoryTestBase {
             .limit(number)
             .toList();
 
-        var result = new ArrayList<ExpenseItem>(number);
+        val result = new ArrayList<ExpenseItem>(number);
 
-        for (var expenseItem : expenseItemRepository.saveAll(expenseItemsToCreate)) {
+        for (val expenseItem : expenseItemRepository.saveAll(expenseItemsToCreate)) {
             result.add(expenseItem);
         }
         return result;

@@ -1,5 +1,7 @@
 package com.github.arhor.simple.expense.tracker.service.mapping;
 
+import lombok.val;
+
 import java.util.UUID;
 
 import org.junit.jupiter.api.Test;
@@ -22,14 +24,14 @@ class NotificationMapperTest extends MapperTestBase {
     @ValueSource(strings = {"SUCCESS", "FAILURE"})
     void should_correctly_map_notification_entity_to_dto(final String severity) {
         // given
-        var id = (UUID) null;
-        var userId = (Long) null;
-        var message = "test-notification-message";
+        val id = (UUID) null;
+        val userId = (Long) null;
+        val message = "test-notification-message";
 
-        var notification = new Notification.Projection(id, userId, message, severity);
+        val notification = new Notification.Projection(id, userId, message, severity);
 
         // when
-        var result = notificationMapper.mapProjectionToDto(notification);
+        val result = notificationMapper.mapProjectionToDto(notification);
 
         // then
         assertThat(result)
@@ -54,10 +56,10 @@ class NotificationMapperTest extends MapperTestBase {
     @Test
     void should_map_null_to_an_empty_notification_dto() {
         // given
-        var expectedDTO = new NotificationDTO();
+        val expectedDTO = new NotificationDTO();
 
         // when
-        var result = notificationMapper.mapProjectionToDto(null);
+        val result = notificationMapper.mapProjectionToDto(null);
 
         // then
         assertThat(result)
@@ -69,16 +71,16 @@ class NotificationMapperTest extends MapperTestBase {
     @EnumSource(NotificationDTO.Severity.class)
     void should_correctly_map_notification_dto_to_entity(final NotificationDTO.Severity severity) {
         // given
-        var message = "test-notification-message";
-        var userId = -1L;
-        var createdBy = -2L;
+        val message = "test-notification-message";
+        val userId = -1L;
+        val createdBy = -2L;
 
-        var dto = new NotificationDTO();
+        val dto = new NotificationDTO();
         dto.setSeverity(severity);
         dto.setMessage(message);
 
         // when
-        var result = notificationMapper.mapDtoToEntity(dto, userId, createdBy);
+        val result = notificationMapper.mapDtoToEntity(dto, userId, createdBy);
 
         // then
         assertThat(result)
@@ -112,10 +114,10 @@ class NotificationMapperTest extends MapperTestBase {
     @Test
     void should_map_null_to_an_empty_notification_entity() {
         // given
-        var expectedEntity = Notification.builder().build();
+        val expectedEntity = Notification.builder().build();
 
         // when
-        var result = notificationMapper.mapDtoToEntity(null, null, null);
+        val result = notificationMapper.mapDtoToEntity(null, null, null);
 
         // then
         assertThat(result)

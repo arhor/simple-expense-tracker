@@ -1,5 +1,7 @@
 package com.github.arhor.simple.expense.tracker.service.mapping;
 
+import lombok.val;
+
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -23,7 +25,7 @@ class InternalUserMapperTest extends MapperTestBase {
     @Test
     void should_correctly_map_user_entity_to_response_dto() {
         // given
-        var user = InternalUser.builder()
+        val user = InternalUser.builder()
             .id(Long.MAX_VALUE)
             .username("test-username")
             .password("test-password")
@@ -31,7 +33,7 @@ class InternalUserMapperTest extends MapperTestBase {
             .build();
 
         // when
-        var result = userMapper.mapToResponse(user);
+        val result = userMapper.mapToResponse(user);
 
         // then
         assertThat(result)
@@ -57,14 +59,14 @@ class InternalUserMapperTest extends MapperTestBase {
     @Test
     void should_correctly_map_user_compact_projectiob_to_response_dto() {
         // given
-        var id = Long.MAX_VALUE;
-        var username = "test-username";
-        var currency = "test-currency";
+        val id = Long.MAX_VALUE;
+        val username = "test-username";
+        val currency = "test-currency";
 
-        var user = new InternalUser.Projection(id, username, currency);
+        val user = new InternalUser.Projection(id, username, currency);
 
         // when
-        var result = userMapper.mapToResponse(user);
+        val result = userMapper.mapToResponse(user);
 
         // then
         assertThat(result)
@@ -91,18 +93,18 @@ class InternalUserMapperTest extends MapperTestBase {
     @Test
     void should_correctly_map_user_request_dto_to_entity_also_encoding_password() {
         // given
-        var request = new UserRequestDTO();
+        val request = new UserRequestDTO();
         request.setUsername("test-username");
         request.setPassword("test-password");
         request.setCurrency("test-currency");
 
-        var encodedPassword = "encoded-test-password";
+        val encodedPassword = "encoded-test-password";
 
         given(passwordEncoder.encode(anyString()))
             .willReturn(encodedPassword);
 
         // when
-        var result = userMapper.mapToUser(request);
+        val result = userMapper.mapToUser(request);
 
         // then
         then(passwordEncoder)

@@ -1,6 +1,7 @@
 package com.github.arhor.simple.expense.tracker.service.impl;
 
 import lombok.RequiredArgsConstructor;
+import lombok.val;
 
 import java.io.IOException;
 import java.util.Map;
@@ -56,7 +57,7 @@ public class NotificationServiceImpl implements NotificationService {
             sent = sendInternal(userId, dto);
         } finally {
             if (!sent) {
-                var notification = notificationMapper.mapDtoToEntity(dto, userId, senderId);
+                val notification = notificationMapper.mapDtoToEntity(dto, userId, senderId);
                 notificationRepository.save(notification);
             }
         }
@@ -65,13 +66,13 @@ public class NotificationServiceImpl implements NotificationService {
     @Override
     @Transactional
     public void sendNotifications() throws IOException {
-        var userIds = subscribers.keySet();
+        val userIds = subscribers.keySet();
 
         if (!userIds.isEmpty()) {
-            var notifications = notificationRepository.findAllByTargetUserIdIn(userIds);
+            val notifications = notificationRepository.findAllByTargetUserIdIn(userIds);
 
-            for (var notification : notifications) {
-                var sent =
+            for (val notification : notifications) {
+                val sent =
                     sendInternal(
                         notification.targetUserId(),
                         notificationMapper.mapProjectionToDto(notification)
@@ -85,10 +86,10 @@ public class NotificationServiceImpl implements NotificationService {
     }
 
     private boolean sendInternal(final Long userId, final NotificationDTO notification) throws IOException {
-        var emitter = subscribers.get(userId);
+        val emitter = subscribers.get(userId);
 
         if (emitter != null) {
-            var eventId = UUID.randomUUID().toString();
+            val eventId = UUID.randomUUID().toString();
 
             emitter.send(
                 SseEmitter.event()

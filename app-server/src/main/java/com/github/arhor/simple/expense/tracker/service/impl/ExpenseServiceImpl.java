@@ -1,6 +1,7 @@
 package com.github.arhor.simple.expense.tracker.service.impl;
 
 import lombok.RequiredArgsConstructor;
+import lombok.val;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -43,8 +44,8 @@ public class ExpenseServiceImpl implements ExpenseService {
 
     @Override
     public List<ExpenseResponseDTO> getUserExpenses(final Long userId, final TemporalRange<LocalDate> dateRange) {
-        var expenses = expenseRepository.findAllByUserId(userId);
-        var expenseTotalsById = getExpenseItemsTotal(userId, expenses.stream().map(Expense::id).toList(), dateRange);
+        val expenses = expenseRepository.findAllByUserId(userId);
+        val expenseTotalsById = getExpenseItemsTotal(userId, expenses.stream().map(Expense::id).toList(), dateRange);
 
         return expenses
             .stream()
@@ -79,8 +80,8 @@ public class ExpenseServiceImpl implements ExpenseService {
             throw new EntityNotFoundException("InternalUser", "id=" + userId);
         }
 
-        var expense = expenseMapper.mapToEntity(requestDTO, userId);
-        var result = expenseRepository.save(expense);
+        val expense = expenseMapper.mapToEntity(requestDTO, userId);
+        val result = expenseRepository.save(expense);
 
         return expenseMapper.mapToDTO(result, BigDecimal.ZERO);
     }
@@ -100,24 +101,24 @@ public class ExpenseServiceImpl implements ExpenseService {
         if (expenseIds.isEmpty()) {
             return Collections.emptyMap();
         }
-        var targetCurrency = getUserCurrency(userId);
-        var totalByExpense = new HashMap<Long, TotalCalculationContext>();
+        val targetCurrency = getUserCurrency(userId);
+        val totalByExpense = new HashMap<Long, TotalCalculationContext>();
 
-        var aggregatedExpenseItems = expenseItemRepository.findAllAggregatedByExpenseIdsAndDateRange(
+        val aggregatedExpenseItems = expenseItemRepository.findAllAggregatedByExpenseIdsAndDateRange(
             expenseIds,
             dateRange.start(),
             dateRange.end()
         );
 
-        for (var expenseItem : aggregatedExpenseItems) {
-            var expenseTotalCalculator = totalByExpense.computeIfAbsent(
+        for (val expenseItem : aggregatedExpenseItems) {
+            val expenseTotalCalculator = totalByExpense.computeIfAbsent(
                 expenseItem.expenseId(),
                 key -> new TotalCalculationContext(targetCurrency)
             );
             expenseTotalCalculator.add(expenseItem);
         }
 
-        var result = new HashMap<Long, BigDecimal>();
+        val result = new HashMap<Long, BigDecimal>();
         totalByExpense.forEach((expenseId, context) -> {
             result.put(expenseId, context.total.getNumberStripped());
         });
@@ -135,11 +136,11 @@ public class ExpenseServiceImpl implements ExpenseService {
         }
 
         void add(final AggregatedExpenseItemProjection expenseItem) {
-            var sourceCurrency = expenseItem.currency();
-            var targetCurrency = total.getCurrency();
+            val sourceCurrency = expenseItem.currency();
+            val targetCurrency = total.getCurrency();
 
-            var amount = Money.of(expenseItem.totalAmount(), sourceCurrency);
-            var result = converter.convert(amount, targetCurrency, expenseItem.date());
+            val amount = Money.of(expenseItem.totalAmount(), sourceCurrency);
+            val result = converter.convert(amount, targetCurrency, expenseItem.date());
 
             total = total.add(result);
         }

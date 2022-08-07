@@ -2,6 +2,7 @@ package com.github.arhor.simple.expense.tracker.service.event;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import lombok.val;
 
 import java.io.IOException;
 
@@ -24,9 +25,9 @@ public class NotificationEventListener {
     @Transactional
     @EventListener(NotificationEvent.class)
     public void handleNotificationEvent(final NotificationEvent event) throws IOException {
-        var userId = event.userId();
-        var senderId = event.senderId();
-        var notification = event.notification();
+        val userId = event.userId();
+        val senderId = event.senderId();
+        val notification = event.notification();
 
         log.debug("Handled notification event: {}, for the user: {}, from user: {}", notification, userId, senderId);
 

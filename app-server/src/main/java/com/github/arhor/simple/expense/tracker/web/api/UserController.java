@@ -1,6 +1,7 @@
 package com.github.arhor.simple.expense.tracker.web.api;
 
 import lombok.RequiredArgsConstructor;
+import lombok.val;
 
 import javax.validation.Valid;
 
@@ -28,9 +29,9 @@ public class UserController {
 
     @PostMapping
     public ResponseEntity<UserResponseDTO> createUser(@Valid @RequestBody final UserRequestDTO request) {
-        var createdUser = userService.createNewUser(request);
+        val createdUser = userService.createNewUser(request);
 
-        var location =
+        val location =
             ServletUriComponentsBuilder.fromCurrentRequestUri()
                 .path("/")
                 .queryParam("current")

@@ -1,5 +1,7 @@
 package com.github.arhor.simple.expense.tracker.service;
 
+import lombok.val;
+
 import java.time.LocalDate;
 import java.util.TimeZone;
 
@@ -20,7 +22,7 @@ class TimeServiceTest {
     @Test
     void should_return_non_null_date_time_with_default_timezone() {
         // when
-        var result = timeService.now();
+        val result = timeService.now();
 
         // then
         assertThat(result)
@@ -30,10 +32,10 @@ class TimeServiceTest {
     @Test
     void should_return_non_null_date_time_with_provided_null_timezone() {
         // given
-        var timezone = (TimeZone) null;
+        val timezone = (TimeZone) null;
 
         // when
-        var result = timeService.now(timezone);
+        val result = timeService.now(timezone);
 
         // then
         assertThat(result)
@@ -43,10 +45,10 @@ class TimeServiceTest {
     @Test
     void should_return_non_null_date_time_with_provided_non_null_timezone() {
         // given
-        var timezone = TimeZone.getTimeZone("PST");
+        val timezone = TimeZone.getTimeZone("PST");
 
         // when
-        var result = timeService.now(timezone);
+        val result = timeService.now(timezone);
 
         // then
         assertThat(result)
@@ -56,13 +58,13 @@ class TimeServiceTest {
     @Test
     void should_return_non_null_date_range_for_non_null_criteria_and_timezone() {
         // given
-        var today = LocalDate.now();
-        var start = today.minusWeeks(1);
-        var criteria = new DateRangeCriteria(start, today);
-        var timezone = TimeZone.getTimeZone("PST");
+        val today = LocalDate.now();
+        val start = today.minusWeeks(1);
+        val criteria = new DateRangeCriteria(start, today);
+        val timezone = TimeZone.getTimeZone("PST");
 
         // when
-        var result = timeService.convertToDateRange(criteria, timezone);
+        val result = timeService.convertToDateRange(criteria, timezone);
 
         // then
         assertThat(result)
@@ -82,11 +84,11 @@ class TimeServiceTest {
     @Test
     void should_return_non_null_date_range_for_null_criteria_and_timezone() {
         // given
-        var criteria = (DateRangeCriteria) null;
-        var timezone = (TimeZone) null;
+        val criteria = (DateRangeCriteria) null;
+        val timezone = (TimeZone) null;
 
         // when
-        var result = timeService.convertToDateRange(criteria, timezone);
+        val result = timeService.convertToDateRange(criteria, timezone);
 
         // then
         assertThat(result)

@@ -1,6 +1,7 @@
 package com.github.arhor.simple.expense.tracker.service.impl;
 
 import lombok.RequiredArgsConstructor;
+import lombok.val;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -32,27 +33,27 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Long determineUserId(final Authentication auth) {
-        var user = determineInternalUser(auth);
+        val user = determineInternalUser(auth);
         return user.id();
     }
 
     @Override
     public UserResponseDTO determineUser(Authentication auth) {
-        var user = determineInternalUser(auth);
+        val user = determineInternalUser(auth);
         return userMapper.mapToResponse(user);
     }
 
     @Override
     @Transactional
     public UserResponseDTO createNewUser(final UserRequestDTO request) {
-        var username = request.getUsername();
+        val username = request.getUsername();
 
         if (userRepository.existsByUsername(username)) {
             throw new EntityDuplicateException("InternalUser", "username=" + username);
         }
 
-        var user = userMapper.mapToUser(request);
-        var createdUser = userRepository.save(user);
+        val user = userMapper.mapToUser(request);
+        val createdUser = userRepository.save(user);
 
         return userMapper.mapToResponse(createdUser);
     }
@@ -60,8 +61,8 @@ public class UserServiceImpl implements UserService {
     @Override
     public void createNewUserIfNecessary(final Authentication authentication) {
         if (authentication instanceof OAuth2AuthenticationToken authenticationToken) {
-            var externalId = authenticationToken.getName();
-            var externalProvider = authenticationToken.getAuthorizedClientRegistrationId();
+            val externalId = authenticationToken.getName();
+            val externalProvider = authenticationToken.getAuthorizedClientRegistrationId();
 
             if (shouldCreateInternalUser(externalId, externalProvider)) {
                 userRepository.save(
@@ -84,8 +85,8 @@ public class UserServiceImpl implements UserService {
     private InternalUser.Projection determineInternalUser(final Authentication auth) {
         return switch (auth) {
             case final OAuth2AuthenticationToken token -> {
-                var externalId = token.getName();
-                var externalProvider = token.getAuthorizedClientRegistrationId();
+                val externalId = token.getName();
+                val externalProvider = token.getAuthorizedClientRegistrationId();
 
                 yield userRepository.findByExternalIdAndProvider(externalId, externalProvider).orElseThrow(() ->
                     new EntityNotFoundException(
@@ -94,7 +95,7 @@ public class UserServiceImpl implements UserService {
                 );
             }
             case final UsernamePasswordAuthenticationToken token -> {
-                var username = token.getName();
+                val username = token.getName();
 
                 yield userRepository.findByUsername(username).orElseThrow(() ->
                     new EntityNotFoundException(

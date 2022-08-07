@@ -1,6 +1,7 @@
 package com.github.arhor.simple.expense.tracker.service.impl;
 
 import lombok.RequiredArgsConstructor;
+import lombok.val;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -44,8 +45,8 @@ public class ExpenseItemServiceImpl implements ExpenseItemService {
     @Override
     @Transactional
     public ExpenseItemDTO createExpenseItem(final Long expenseId, final ExpenseItemDTO dto) {
-        var entity = expenseItemMapper.mapToEntity(dto, expenseId);
-        var result = expenseItemRepository.save(entity);
+        val entity = expenseItemMapper.mapToEntity(dto, expenseId);
+        val result = expenseItemRepository.save(entity);
 
         return expenseItemMapper.mapToDTO(result);
     }

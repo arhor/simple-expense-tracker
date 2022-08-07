@@ -1,6 +1,7 @@
 package com.github.arhor.simple.expense.tracker.aspect;
 
 import lombok.RequiredArgsConstructor;
+import lombok.val;
 
 import java.util.StringJoiner;
 
@@ -22,11 +23,11 @@ public class LoggingAspect {
 
     @Around("webLayer() || serviceLayer() || persistenceLayer()")
     public Object logMethodExecution(final ProceedingJoinPoint joinPoint) throws Throwable {
-        var log = componentLogger(joinPoint);
+        val log = componentLogger(joinPoint);
         if (log.isDebugEnabled()) {
-            var requestId = CurrentRequestContext.requestId();
-            var signature = joinPoint.getSignature();
-            var signatureName = "%s.%s()".formatted(
+            val requestId = CurrentRequestContext.requestId();
+            val signature = joinPoint.getSignature();
+            val signatureName = "%s.%s()".formatted(
                 signature.getDeclaringType().getSimpleName(),
                 signature.getName()
             );
@@ -36,7 +37,7 @@ public class LoggingAspect {
                 signatureName,
                 stringifyJoinPointArgs(joinPoint)
             );
-            var result = joinPoint.proceed();
+            val result = joinPoint.proceed();
             log.debug(
                 "Request-ID: {}, Method: {}, Result: {}",
                 requestId,
@@ -85,8 +86,8 @@ public class LoggingAspect {
     }
 
     private String stringifyJoinPointArgs(final JoinPoint joinPoint) {
-        var result = new StringJoiner(", ");
-        for (var arg : joinPoint.getArgs()) {
+        val result = new StringJoiner(", ");
+        for (val arg : joinPoint.getArgs()) {
             result.add(String.valueOf(arg));
         }
         return result.toString();

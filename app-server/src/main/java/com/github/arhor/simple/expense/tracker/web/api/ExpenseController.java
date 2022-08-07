@@ -1,6 +1,7 @@
 package com.github.arhor.simple.expense.tracker.web.api;
 
 import lombok.RequiredArgsConstructor;
+import lombok.val;
 
 import java.util.List;
 import java.util.TimeZone;
@@ -58,8 +59,8 @@ public class ExpenseController {
         final TimeZone timezone,
         final Authentication auth
     ) {
-        var currentUserId = userService.determineUserId(auth);
-        var dateRange = timeService.convertToDateRange(criteria, timezone);
+        val currentUserId = userService.determineUserId(auth);
+        val dateRange = timeService.convertToDateRange(criteria, timezone);
 
         return expenseService.getUserExpenses(currentUserId, dateRange);
     }
@@ -70,7 +71,7 @@ public class ExpenseController {
         @ValidDateRange final DateRangeCriteria criteria,
         final TimeZone timezone
     ) {
-        var dateRange = timeService.convertToDateRange(criteria, timezone);
+        val dateRange = timeService.convertToDateRange(criteria, timezone);
 
         return expenseService.getExpenseById(expenseId, dateRange);
     }
@@ -80,10 +81,10 @@ public class ExpenseController {
         @RequestBody final ExpenseRequestDTO requestDTO,
         final Authentication auth
     ) {
-        var currentUserId = userService.determineUserId(auth);
-        var createdExpense = expenseService.createUserExpense(currentUserId, requestDTO);
+        val currentUserId = userService.determineUserId(auth);
+        val createdExpense = expenseService.createUserExpense(currentUserId, requestDTO);
 
-        var location =
+        val location =
             ServletUriComponentsBuilder.fromCurrentRequestUri()
                 .path("/{expenseId}")
                 .build(createdExpense.getId());

@@ -1,5 +1,7 @@
 package com.github.arhor.simple.expense.tracker.data.repository;
 
+import lombok.val;
+
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Collection;
@@ -18,24 +20,24 @@ class ExpenseItemRepositoryTest extends RepositoryTestBase {
     @Test
     void should_return_aggregated_expense_items_grouped_by_date_and_currency() {
         // given
-        var userId = createPersistedTestUser().id();
-        var expense = createPersistedTestExpense(userId);
-        var expenseDate = LocalDate.of(2022, 7, 1);
-        var usdCurrency = "USD";
-        var jpyCurrency = "JPY";
+        val userId = createPersistedTestUser().id();
+        val expense = createPersistedTestExpense(userId);
+        val expenseDate = LocalDate.of(2022, 7, 1);
+        val usdCurrency = "USD";
+        val jpyCurrency = "JPY";
 
-        var usdExpenseItems =
+        val usdExpenseItems =
             createPersistedTestExpenseItems(3, expense.id(), usdCurrency, BigDecimal.TEN, expenseDate);
-        var jpyExpenseItems =
+        val jpyExpenseItems =
             createPersistedTestExpenseItems(2, expense.id(), jpyCurrency, BigDecimal.TEN, expenseDate);
 
-        var expectedUsdAggregatedExpenseItem = new AggregatedExpenseItemProjection(
+        val expectedUsdAggregatedExpenseItem = new AggregatedExpenseItemProjection(
             expense.id(),
             expenseDate,
             usdCurrency,
             totalFrom(usdExpenseItems)
         );
-        var expectedJpyAggregatedExpenseItem = new AggregatedExpenseItemProjection(
+        val expectedJpyAggregatedExpenseItem = new AggregatedExpenseItemProjection(
             expense.id(),
             expenseDate,
             jpyCurrency,
@@ -43,7 +45,7 @@ class ExpenseItemRepositoryTest extends RepositoryTestBase {
         );
 
         // when
-        var result =
+        val result =
             expenseItemRepository.findAllAggregatedByExpenseIdsAndDateRange(
                 List.of(expense.id()),
                 expenseDate,
@@ -118,7 +120,7 @@ class ExpenseItemRepositoryTest extends RepositoryTestBase {
         final Collection<T> data,
         final String currency
     ) {
-        var aggregatedExpenseItem =
+        val aggregatedExpenseItem =
             data.stream()
                 .filter(it -> currency.equals(it.currency()))
                 .findFirst();

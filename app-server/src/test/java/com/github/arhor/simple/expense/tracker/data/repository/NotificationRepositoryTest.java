@@ -1,5 +1,7 @@
 package com.github.arhor.simple.expense.tracker.data.repository;
 
+import lombok.val;
+
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.function.Function;
@@ -19,24 +21,24 @@ class NotificationRepositoryTest extends RepositoryTestBase {
     @Test
     void should_return_all_notifications_where_user_id_is_one_of_the_passed_ids() {
         // given
-        var usersIds = createUsersStream()
+        val usersIds = createUsersStream()
             .map(InternalUser::id)
             .toList();
 
-        var notifications = usersIds.stream()
+        val notifications = usersIds.stream()
             .flatMap(this::createNotificationsStream)
             .map(notificationRepository::save)
             .collect(toMap(Notification::id, Function.identity()));
 
         // when
-        var result = notificationRepository.findAllByTargetUserIdIn(usersIds);
+        val result = notificationRepository.findAllByTargetUserIdIn(usersIds);
 
         // then
         assertThat(result)
             .isNotEmpty()
             .allSatisfy(projection -> {
-                var currentId = projection.id();
-                var currentUserId = projection.targetUserId();
+                val currentId = projection.id();
+                val currentUserId = projection.targetUserId();
 
                 assertThat(notifications.get(currentId))
                     .as(() -> "notification: " + currentId + ", user id: " + currentUserId)

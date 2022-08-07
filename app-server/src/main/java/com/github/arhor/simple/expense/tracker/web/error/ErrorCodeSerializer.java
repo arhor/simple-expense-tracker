@@ -1,5 +1,7 @@
 package com.github.arhor.simple.expense.tracker.web.error;
 
+import lombok.val;
+
 import java.io.IOException;
 
 import org.apache.commons.lang3.StringUtils;
@@ -21,10 +23,10 @@ public class ErrorCodeSerializer extends StdSerializer<ErrorCode> {
     public void serialize(final ErrorCode value, final JsonGenerator generator, final SerializerProvider provider)
         throws IOException {
 
-        var type = value.getType();
-        var code = StringUtils.leftPad(Integer.toHexString(value.getNumericValue()), CODE_MAX_LENGTH, CODE_PAD_SYMBOL);
+        val type = value.getType();
+        val code = StringUtils.leftPad(Integer.toHexString(value.getNumericValue()), CODE_MAX_LENGTH, CODE_PAD_SYMBOL);
 
-        var result = (type + "-" + code).toUpperCase();
+        val result = (type + "-" + code).toUpperCase();
 
         generator.writeString(result);
     }

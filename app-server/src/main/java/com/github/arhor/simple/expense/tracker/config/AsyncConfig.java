@@ -1,6 +1,7 @@
 package com.github.arhor.simple.expense.tracker.config;
 
 import lombok.RequiredArgsConstructor;
+import lombok.val;
 
 import java.util.concurrent.Callable;
 import java.util.concurrent.Executor;
@@ -23,13 +24,15 @@ import org.springframework.web.context.request.RequestContextHolder;
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 public class AsyncConfig implements AsyncConfigurer {
 
+    public static final String ASYNC_EXECUTOR_BEAN = "ContextAwareThreadPoolTaskExecutor";
+
     @Bean
     @Override
     public AsyncUncaughtExceptionHandler getAsyncUncaughtExceptionHandler() {
         return new SimpleAsyncUncaughtExceptionHandler();
     }
 
-    @Bean
+    @Bean(ASYNC_EXECUTOR_BEAN)
     @Override
     public Executor getAsyncExecutor() {
         return new DelegatingSecurityContextAsyncTaskExecutor(
@@ -75,27 +78,34 @@ public class AsyncConfig implements AsyncConfigurer {
         }
 
         private <T> Callable<T> wrap(final Callable<T> task) {
-            var parentThreadRequestAttributes = RequestContextHolder.currentRequestAttributes();
-            return () -> {
-                try {
-                    RequestContextHolder.setRequestAttributes(parentThreadRequestAttributes);
-                    return task.call();
-                } finally {
-                    RequestContextHolder.resetRequestAttributes();
-                }
-            };
+            val parentThreadRequestAttributes = RequestContextHolder.getRequestAttributes();
+            if (parentThreadRequestAttributes != null) {
+                return () -> {
+                    try {
+                        RequestContextHolder.setRequestAttributes(parentThreadRequestAttributes);
+                        return task.call();
+                    } finally {
+                        RequestContextHolder.resetRequestAttributes();
+                    }
+                };
+            } else {
+                return task;
+            }
         }
 
         private Runnable wrap(final Runnable task) {
-            var parentThreadRequestAttributes = RequestContextHolder.currentRequestAttributes();
-            return () -> {
-                try {
-                    RequestContextHolder.setRequestAttributes(parentThreadRequestAttributes);
-                    task.run();
-                } finally {
-                    RequestContextHolder.resetRequestAttributes();
-                }
-            };
+            val parentThreadRequestAttributes = RequestContextHolder.getRequestAttributes();
+            if (parentThreadRequestAttributes != null) {
+                return () -> {
+                    try {
+                        RequestContextHolder.setRequestAttributes(parentThreadRequestAttributes);
+                        task.run();
+                    } finally {
+                        RequestContextHolder.resetRequestAttributes();
+                    }
+                };
+            }
+            return task;
         }
     }
 }

@@ -1,13 +1,15 @@
 package com.github.arhor.simple.expense.tracker.service.impl;
 
+import de.siegmar.fastcsv.reader.NamedCsvReader;
 import lombok.extern.slf4j.Slf4j;
+import lombok.val;
 
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -40,7 +42,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.arhor.simple.expense.tracker.config.properties.ConversionRatesConfigurationProperties;
 
 import static java.util.Arrays.sort;
@@ -51,7 +52,7 @@ import static java.util.Comparator.comparing;
 public class ConversionRateProvider extends AbstractRateProvider {
 
     private static final CurrencyUnit BASE_CURRENCY = Monetary.getCurrency("EUR");
-
+    private static final String COL_DATE = "date";
     private static final String PROVIDER_NAME = "EXCHANGERATE_HOST";
     private static final RateType PROVIDER_RATE_TYPE = RateType.DEFERRED;
     private static final ProviderContext CONTEXT = ProviderContextBuilder.of(PROVIDER_NAME, PROVIDER_RATE_TYPE)
@@ -59,46 +60,40 @@ public class ConversionRateProvider extends AbstractRateProvider {
         .set("days", 1)
         .build();
 
-
+    private final ConversionRatesConfigurationProperties conversionRatesConfigurationProperties;
     private final ResourcePatternResolver resourcePatternResolver;
-
-    private final ObjectMapper objectMapper;
     private final RestTemplate restTemplate;
 
-    private final ConversionRatesConfigurationProperties conversionRatesConfigurationProperties;
     private final Map<LocalDate, Map<String, ExchangeRate>> loadedRates = new ConcurrentHashMap<>();
-
-    private final Set<Integer> yearsAvailableLocally = new HashSet<>();
+    private final Set<Integer> yearsAvailableLocally = Collections.synchronizedSet(new HashSet<>());
 
     @Autowired
     public ConversionRateProvider(
         final ResourcePatternResolver resourcePatternResolver,
-        final ObjectMapper objectMapper,
         final RestTemplate restTemplate,
         final ConversionRatesConfigurationProperties conversionRatesConfigurationProperties
     ) {
         super(CONTEXT);
         this.resourcePatternResolver = resourcePatternResolver;
-        this.objectMapper = objectMapper;
         this.restTemplate = restTemplate;
         this.conversionRatesConfigurationProperties = conversionRatesConfigurationProperties;
     }
 
     @PostConstruct
     public void init() throws IOException {
-        var dataFilePattern = conversionRatesConfigurationProperties.dataFilePattern();
-        var yearsToLoad = conversionRatesConfigurationProperties.yearsToLoad();
-        var resources = resourcePatternResolver.getResources(dataFilePattern);
+        val dataFilePattern = conversionRatesConfigurationProperties.dataFilePattern();
+        val yearsToLoad = conversionRatesConfigurationProperties.yearsToLoad();
+        val resources = resourcePatternResolver.getResources(dataFilePattern);
 
-        var tasks = new CompletableFuture[yearsToLoad];
+        val tasks = new CompletableFuture[yearsToLoad];
 
         sort(resources, comparing((final Resource resource) -> {
-            var filename = resource.getFilename();
+            val filename = resource.getFilename();
 
             if (filename != null) {
                 try {
-                    var yearString = filename.replace(".json", "");
-                    var year = Integer.parseInt(yearString);
+                    val yearString = filename.replace(".csv", "");
+                    val year = Integer.parseInt(yearString);
 
                     yearsAvailableLocally.add(year);
                 } catch (NumberFormatException e) {
@@ -110,14 +105,14 @@ public class ConversionRateProvider extends AbstractRateProvider {
         }).reversed());
 
         for (int i = 0, resourcesLength = resources.length; (i < resourcesLength) && (i < yearsToLoad); i++) {
-            var resource = resources[i];
+            val resource = resources[i];
 
-            tasks[i] = CompletableFuture.runAsync(
-                () -> handleLoadedData(
+            tasks[i] = CompletableFuture.runAsync(() -> {
+                handleLoadedData(
                     resource.getFilename(),
                     resource::getInputStream
-                )
-            );
+                );
+            });
         }
         CompletableFuture.allOf(tasks).join();
     }
@@ -130,24 +125,24 @@ public class ConversionRateProvider extends AbstractRateProvider {
             return null;
         }
 
-        var result = findExchangeRate(conversionQuery);
+        val result = findExchangeRate(conversionQuery);
 
-        var baseCurrencyCode = conversionQuery.getBaseCurrency().getCurrencyCode();
-        var termCurrencyCode = conversionQuery.getCurrency().getCurrencyCode();
+        val baseCurrencyCode = conversionQuery.getBaseCurrency().getCurrencyCode();
+        val termCurrencyCode = conversionQuery.getCurrency().getCurrencyCode();
 
-        var sourceRate = result.targets.get(baseCurrencyCode);
-        var targetRate = result.targets.get(termCurrencyCode);
+        val sourceRate = result.targets.get(baseCurrencyCode);
+        val targetRate = result.targets.get(termCurrencyCode);
 
-        var builder = getBuilder(conversionQuery);
+        val builder = getBuilder(conversionQuery);
 
         return createExchangeRate(conversionQuery, builder, sourceRate, targetRate);
     }
 
     private RateResult findExchangeRate(final ConversionQuery conversionQuery) {
-        var dates = getQueryDates(conversionQuery);
+        val dates = getQueryDates(conversionQuery);
 
         if (dates == null) {
-            var targetDateRates = loadedRates.keySet()
+            val targetDateRates = loadedRates.keySet()
                 .stream()
                 .max(Comparator.naturalOrder())
                 .map(loadedRates::get)
@@ -160,20 +155,20 @@ public class ConversionRateProvider extends AbstractRateProvider {
                 );
             return new RateResult(targetDateRates);
         } else {
-            for (var date : dates) {
+            for (val date : dates) {
                 var targets = loadedRates.get(date);
-                var year = date.getYear();
+                val year = date.getYear();
 
                 if (targets != null) {
                     return new RateResult(targets);
                 } else if (yearsAvailableLocally.contains(year)) {
                     try {
-                        var dataFilePattern = conversionRatesConfigurationProperties.dataFilePattern();
-                        var resources = resourcePatternResolver.getResources(dataFilePattern);
+                        val dataFilePattern = conversionRatesConfigurationProperties.dataFilePattern();
+                        val resources = resourcePatternResolver.getResources(dataFilePattern);
 
-                        for (var resource : resources) {
-                            var filename = resource.getFilename();
-                            var stringYear = String.valueOf(year);
+                        for (val resource : resources) {
+                            val filename = resource.getFilename();
+                            val stringYear = String.valueOf(year);
 
                             if ((filename != null) && filename.contains(stringYear)) {
                                 handleLoadedData(
@@ -195,18 +190,18 @@ public class ConversionRateProvider extends AbstractRateProvider {
                     }
                 }
 
-                var response = restTemplate.getForEntity(
+                val response = restTemplate.getForEntity(
                     "https://api.exchangerate.host/{date}",
-                    ExchangeRateData_2.class,
+                    ExchangeRateData.class,
                     Map.of("date", date.format(DateTimeFormatter.ISO_LOCAL_DATE))
                 );
 
                 if (response.getStatusCode() == HttpStatus.OK) {
-                    var data = response.getBody();
+                    val data = response.getBody();
                     if (data != null) {
                         log.info("Additionally loaded rates for the: {}", date);
 
-                        var rates = save(date, data.base, data.rates);
+                        val rates = save(date, Monetary.getCurrency(data.base), data.rates);
 
                         return new RateResult(rates);
                     }
@@ -214,7 +209,7 @@ public class ConversionRateProvider extends AbstractRateProvider {
                     log.warn("Failed to load conversion-rates from external API");
                 }
             }
-            var errorDates = Stream.of(dates)
+            val errorDates = Stream.of(dates)
                 .map(date -> date.format(DateTimeFormatter.ISO_LOCAL_DATE))
                 .toList();
             throw new MonetaryException(
@@ -236,30 +231,30 @@ public class ConversionRateProvider extends AbstractRateProvider {
             return builder.setFactor(DefaultNumberValue.ONE).build();
         }
 
-        var baseCurrency = query.getBaseCurrency();
-        var termCurrency = query.getCurrency();
+        val baseCurrency = query.getBaseCurrency();
+        val termCurrency = query.getCurrency();
 
         if (BASE_CURRENCY.equals(termCurrency)) {
             return (sourceRate != null) ? reverse(sourceRate) : null;
         } else if (BASE_CURRENCY.equals(baseCurrency)) {
             return targetRate;
         } else {
-            var rate1 = getExchangeRate(
+            val rate1 = getExchangeRate(
                 query.toBuilder()
                     .setTermCurrency(BASE_CURRENCY)
                     .build()
             );
-            var rate2 = getExchangeRate(
+            val rate2 = getExchangeRate(
                 query.toBuilder()
                     .setBaseCurrency(BASE_CURRENCY)
                     .setTermCurrency(termCurrency)
                     .build()
             );
             if ((rate1 != null) && (rate2 != null)) {
-                var factor1 = rate1.getFactor();
-                var factor2 = rate2.getFactor();
+                val factor1 = rate1.getFactor();
+                val factor2 = rate2.getFactor();
 
-                var resultFactor = multiply(factor1, factor2);
+                val resultFactor = multiply(factor1, factor2);
 
                 return builder.setFactor(resultFactor).setRateChain(rate1, rate2).build();
             }
@@ -272,18 +267,18 @@ public class ConversionRateProvider extends AbstractRateProvider {
     }
 
     private boolean areBothBaseCurrencies(final ConversionQuery query) {
-        var baseCurrency = query.getBaseCurrency();
-        var termCurrency = query.getCurrency();
+        val baseCurrency = query.getBaseCurrency();
+        val termCurrency = query.getCurrency();
 
         return BASE_CURRENCY.equals(baseCurrency)
             && BASE_CURRENCY.equals(termCurrency);
     }
 
     private ExchangeRateBuilder getBuilder(final ConversionQuery query) {
-        var scale = getExchangeContext("exchangerate.digit.fraction");
+        val scale = getExchangeContext("exchangerate.digit.fraction");
 
-        var baseCurrency = query.getBaseCurrency();
-        var termCurrency = query.getCurrency();
+        val baseCurrency = query.getBaseCurrency();
+        val termCurrency = query.getCurrency();
 
         return new ExchangeRateBuilder(scale)
             .setBase(baseCurrency)
@@ -293,11 +288,11 @@ public class ConversionRateProvider extends AbstractRateProvider {
     private ExchangeRate reverse(final ExchangeRate rate) {
         Objects.requireNonNull(rate, "Rate null is not reversible.");
 
-        var sourceBaseCurrency = rate.getCurrency();
-        var sourceTermCurrency = rate.getBaseCurrency();
-        var sourceFactor = rate.getFactor();
+        val sourceBaseCurrency = rate.getCurrency();
+        val sourceTermCurrency = rate.getBaseCurrency();
+        val sourceFactor = rate.getFactor();
 
-        var reversedFactor = divide(DefaultNumberValue.ONE, sourceFactor);
+        val reversedFactor = divide(DefaultNumberValue.ONE, sourceFactor);
 
         return new ExchangeRateBuilder(rate)
             .setRate(rate)
@@ -307,15 +302,46 @@ public class ConversionRateProvider extends AbstractRateProvider {
             .build();
     }
 
-    private void handleLoadedData(final String resourceId, final InputStreamSource data) {
-        try (var reader = new BufferedReader(new InputStreamReader(data.get()))) {
-            var response = objectMapper.readValue(reader, ExchangeRateData.class);
+    private void handleLoadedData(final String resourceId, final InputStreamSource source) {
+        try (val csvReader = NamedCsvReader.builder().build(new InputStreamReader(source.get()))) {
+            for (val csvRow : csvReader) {
+                val currentRowFields = csvRow.getFields();
+                val rates = new HashMap<String, Double>(currentRowFields.size() - 1);
 
-            for (var localDateRates : response.rates.entrySet()) {
-                var date = localDateRates.getKey();
-                var rates = localDateRates.getValue();
+                var date = (LocalDate) null;
 
-                save(date, response.base, rates);
+                for (val entry : currentRowFields.entrySet()) {
+                    val name = entry.getKey();
+                    val value = entry.getValue();
+
+                    if (COL_DATE.equals(name)) {
+                        if (date == null) {
+                            date = LocalDate.parse(value);
+                        } else {
+                            throw new IllegalStateException(
+                                "There must be only one column '%s' in the row: %s".formatted(
+                                    COL_DATE,
+                                    csvRow
+                                )
+                            );
+                        }
+                    } else {
+                        if (isPresent(value)) {
+                            rates.put(name, Double.valueOf(value));
+                        }
+                    }
+                }
+
+                if (date == null) {
+                    throw new IllegalStateException(
+                        "There must be exactly one column '%s' in the row: %s".formatted(
+                            COL_DATE,
+                            csvRow
+                        )
+                    );
+                }
+
+                save(date, BASE_CURRENCY, rates);
             }
             log.info("[SUCCESS]: {}", resourceId);
         } catch (Exception e) {
@@ -323,22 +349,25 @@ public class ConversionRateProvider extends AbstractRateProvider {
         }
     }
 
-    private Map<String, ExchangeRate> save(final LocalDate date, final String base, final Map<String, Double> rates) {
+    private Map<String, ExchangeRate> save(
+        final LocalDate date,
+        final CurrencyUnit baseCurrency,
+        final Map<String, Double> rates
+    ) {
         var mappings = new HashMap<String, ExchangeRate>(rates.size());
 
-        for (var entry : rates.entrySet()) {
-            var term = entry.getKey();
-            var rate = entry.getValue();
+        for (val entry : rates.entrySet()) {
+            final var term = entry.getKey();
+            final var rate = entry.getValue();
 
             if (!Monetary.isCurrencyAvailable(term)) {
                 continue;
             }
 
-            var baseCurrency = Monetary.getCurrency(base);
-            var termCurrency = Monetary.getCurrency(term);
-            var conversionFactor = DefaultNumberValue.of(rate);
+            val termCurrency = Monetary.getCurrency(term);
+            val conversionFactor = DefaultNumberValue.of(rate);
 
-            var exchangeRate =
+            val exchangeRate =
                 new ExchangeRateBuilder(PROVIDER_NAME, PROVIDER_RATE_TYPE)
                     .setBase(baseCurrency)
                     .setTerm(termCurrency)
@@ -351,15 +380,17 @@ public class ConversionRateProvider extends AbstractRateProvider {
         return mappings;
     }
 
+    private boolean isPresent(final String value) {
+        return value != null
+            && !value.isEmpty()
+            && !value.isBlank();
+    }
+
     private record RateResult(Map<String, ExchangeRate> targets) {
     }
 
     @JsonIgnoreProperties(ignoreUnknown = true)
-    private record ExchangeRateData(String base, Map<LocalDate, Map<String, Double>> rates) {
-    }
-
-    @JsonIgnoreProperties(ignoreUnknown = true)
-    private record ExchangeRateData_2(String base, LocalDate date, Map<String, Double> rates) {
+    private record ExchangeRateData(String base, LocalDate date, Map<String, Double> rates) {
     }
 
     @FunctionalInterface

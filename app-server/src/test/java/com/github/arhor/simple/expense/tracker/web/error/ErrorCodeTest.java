@@ -1,5 +1,7 @@
 package com.github.arhor.simple.expense.tracker.web.error;
 
+import lombok.val;
+
 import java.util.Locale;
 
 import org.junit.jupiter.params.ParameterizedTest;
@@ -23,11 +25,11 @@ class ErrorCodeTest {
     @EnumSource(ErrorCode.class)
     void each_error_code_label_should_be_translated(final ErrorCode code) {
         // given
-        var label = code.getLabel();
-        var locale = Locale.ENGLISH;
+        val label = code.getLabel();
+        val locale = Locale.ENGLISH;
 
         // when
-        var message = messages.getMessage(label, null, locale);
+        val message = messages.getMessage(label, null, locale);
 
         // then
         assertThat(message)
@@ -38,11 +40,11 @@ class ErrorCodeTest {
     @EnumSource(ErrorCode.class)
     void each_error_code_numeric_value_length_should_be_less_than_or_equal_to_maximum(final ErrorCode code) {
         // given
-        var value = code.getNumericValue();
-        var limit = ErrorCodeSerializer.CODE_MAX_LENGTH;
+        val value = code.getNumericValue();
+        val limit = ErrorCodeSerializer.CODE_MAX_LENGTH;
 
         // when
-        var string = String.valueOf(value);
+        val string = String.valueOf(value);
 
         // then
         assertThat(string)
@@ -53,7 +55,7 @@ class ErrorCodeTest {
     @EnumSource(ErrorCode.Type.class)
     void each_error_code_type_should_not_have_numeric_value_duplicates(final ErrorCode.Type type) {
         // when
-        var errorCodesByType = stream(ErrorCode.values()).filter(it -> it.getType() == type).toList();
+        val errorCodesByType = stream(ErrorCode.values()).filter(it -> it.getType() == type).toList();
 
         // then
         assertThat(errorCodesByType)

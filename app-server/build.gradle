@@ -64,11 +64,11 @@ dependencies {
     developmentOnly "org.springframework.boot:spring-boot-devtools"
 
     implementation project(":app-model")
+    implementation "de.siegmar:fastcsv:${property("app.version.fastcsv")}"
     implementation "org.apache.commons:commons-lang3:${property("app.version.apacheCommonsLang")}"
     implementation "org.apache.commons:commons-collections4:${property("app.version.apacheCommonsCollections")}"
     implementation "org.flywaydb:flyway-core"
     implementation "org.javamoney:moneta:${property("app.version.javamoneyMoneta")}"
-
     implementation "org.springframework.boot:spring-boot-starter-aop"
     implementation "org.springframework.boot:spring-boot-starter-data-jdbc"
     implementation "org.springframework.boot:spring-boot-starter-oauth2-client"

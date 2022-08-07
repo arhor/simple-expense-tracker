@@ -1,5 +1,7 @@
 package com.github.arhor.simple.expense.tracker.config;
 
+import lombok.val;
+
 import java.util.Locale;
 import java.util.Optional;
 
@@ -15,7 +17,7 @@ public class LocalizationConfig {
 
     @Bean
     public MessageSource messageSource(final Optional<WebProperties> webProperties) {
-        var messageSource = new ReloadableResourceBundleMessageSource();
+        val messageSource = new ReloadableResourceBundleMessageSource();
 
         messageSource.setBasename("classpath:messages");
         messageSource.setDefaultEncoding("UTF-8");
@@ -26,7 +28,7 @@ public class LocalizationConfig {
 
     @Bean
     public LocalValidatorFactoryBean localValidatorFactoryBean(final MessageSource messages) {
-        var validatorFactoryBean = new LocalValidatorFactoryBean();
+        val validatorFactoryBean = new LocalValidatorFactoryBean();
 
         validatorFactoryBean.setValidationMessageSource(messages);
 

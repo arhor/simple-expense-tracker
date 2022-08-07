@@ -2,6 +2,7 @@ package com.github.arhor.simple.expense.tracker.service.task.startup;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import lombok.val;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -23,12 +24,12 @@ public class DisplayAppInfo implements StartupTask {
     }
 
     public void execute() {
-        var appName = getAppName();
-        var protocol = getProtocol();
-        var serverPort = getServerPort();
-        var contextPath = getContextPath();
-        var hostAddress = getHostAddress();
-        var javaVersion = getJavaVersion();
+        val appName = getAppName();
+        val protocol = getProtocol();
+        val serverPort = getServerPort();
+        val contextPath = getContextPath();
+        val hostAddress = getHostAddress();
+        val javaVersion = getJavaVersion();
         log.info(
             """
                             
@@ -59,14 +60,14 @@ public class DisplayAppInfo implements StartupTask {
     }
 
     private String getContextPath() {
-        var contextPath = env.getProperty("server.servlet.context-path");
+        val contextPath = env.getProperty("server.servlet.context-path");
         return ((contextPath == null) || contextPath.isBlank())
             ? "/"
             : contextPath;
     }
 
     private String getProtocol() {
-        var sslKeyStore = env.getProperty("server.ssl.key-store");
+        val sslKeyStore = env.getProperty("server.ssl.key-store");
         return (sslKeyStore == null)
             ? "http"
             : "https";
@@ -76,7 +77,7 @@ public class DisplayAppInfo implements StartupTask {
         try {
             return InetAddress.getLocalHost().getHostAddress();
         } catch (UnknownHostException e) {
-            var defaultHost = "localhost";
+            val defaultHost = "localhost";
             log.warn("The host name could not be determined, using `{}` as fallback", defaultHost);
             return defaultHost;
         }

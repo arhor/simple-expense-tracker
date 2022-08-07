@@ -1,5 +1,7 @@
 package com.github.arhor.simple.expense.tracker.util;
 
+import lombok.val;
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -40,15 +42,15 @@ public final class TimeUtils {
         final LocalDate endDate,
         final TimeZone timezone
     ) {
-        var startDatePresent = startDate != null;
-        var endDatePresent = endDate != null;
+        val startDatePresent = startDate != null;
+        val endDatePresent = endDate != null;
 
-        var zoneId = zoneIdOrDefaultUTC(timezone);
+        val zoneId = zoneIdOrDefaultUTC(timezone);
 
-        var safeStartDate = startDatePresent
+        val safeStartDate = startDatePresent
             ? startDate
             : (endDatePresent ? endDate : LocalDate.now(zoneId)).with(firstDayOfMonth());
-        var safeEndDate = endDatePresent
+        val safeEndDate = endDatePresent
             ? endDate
             : (startDatePresent ? startDate : LocalDate.now(zoneId)).with(lastDayOfMonth());
 

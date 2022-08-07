@@ -2,6 +2,7 @@ package com.github.arhor.simple.expense.tracker.aspect;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.val;
 
 import java.util.HashSet;
 import java.util.Objects;
@@ -24,8 +25,8 @@ public class CurrentRequestContext {
 
     public static Optional<CurrentRequestContext> get() {
         try {
-            var attributes = RequestContextHolder.currentRequestAttributes();
-            var context = (CurrentRequestContext) attributes.getAttribute(CURRENT_REQUEST_CONTEXT, SCOPE_REQUEST);
+            val attributes = RequestContextHolder.currentRequestAttributes();
+            val context = (CurrentRequestContext) attributes.getAttribute(CURRENT_REQUEST_CONTEXT, SCOPE_REQUEST);
             return Optional.ofNullable(context);
         } catch (IllegalStateException e) {
             return Optional.empty();

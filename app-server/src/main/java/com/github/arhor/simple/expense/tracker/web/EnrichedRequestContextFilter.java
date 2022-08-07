@@ -1,5 +1,7 @@
 package com.github.arhor.simple.expense.tracker.web;
 
+import lombok.val;
+
 import java.io.IOException;
 import java.util.UUID;
 
@@ -35,8 +37,8 @@ public class EnrichedRequestContextFilter extends OrderedRequestContextFilter {
     private FilterChain wrap(final FilterChain filterChain) {
         return (req, res) -> {
             if ((req instanceof HttpServletRequest request) && (res instanceof HttpServletResponse response)) {
-                var context = new CurrentRequestContext();
-                var requestId = request.getHeader(REQUEST_ID);
+                val context = new CurrentRequestContext();
+                val requestId = request.getHeader(REQUEST_ID);
 
                 if (requestId != null) {
                     context.setRequestId(UUID.fromString(requestId));

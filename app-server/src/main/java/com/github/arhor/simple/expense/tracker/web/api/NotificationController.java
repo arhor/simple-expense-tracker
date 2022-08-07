@@ -1,6 +1,7 @@
 package com.github.arhor.simple.expense.tracker.web.api;
 
 import lombok.RequiredArgsConstructor;
+import lombok.val;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -29,13 +30,13 @@ public class NotificationController {
 
     @PostMapping(path = "/subscribe", produces = TEXT_EVENT_STREAM_VALUE)
     public SseEmitter subscribe(final Authentication auth) {
-        var currentUserId = userService.determineUserId(auth);
+        val currentUserId = userService.determineUserId(auth);
         return notificationService.subscribe(currentUserId);
     }
 
     @PostMapping(path = "/unsubscribe")
     public void unsubscribe(final Authentication auth) {
-        var currentUserId = userService.determineUserId(auth);
+        val currentUserId = userService.determineUserId(auth);
         notificationService.unsubscribe(currentUserId);
     }
 
@@ -45,7 +46,7 @@ public class NotificationController {
         @RequestBody final NotificationDTO dto,
         final Authentication auth
     ) {
-        var currentUserId = userService.determineUserId(auth);
+        val currentUserId = userService.determineUserId(auth);
         notificationService.handleNotification(currentUserId, userId, dto);
     }
 }

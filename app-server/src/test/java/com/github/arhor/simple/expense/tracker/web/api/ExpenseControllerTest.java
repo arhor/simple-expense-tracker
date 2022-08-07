@@ -1,5 +1,7 @@
 package com.github.arhor.simple.expense.tracker.web.api;
 
+import lombok.val;
+
 import java.time.LocalDate;
 import java.util.TimeZone;
 
@@ -39,11 +41,11 @@ class ExpenseControllerTest extends BaseControllerTest {
     @WithMockUser
     void should_return_status_200_and_empty_expense_list() throws Exception {
         // given
-        var expectedCriteria = new DateRangeCriteria(null, null);
-        var currentTimeZone = TimeZone.getDefault();
+        val expectedCriteria = new DateRangeCriteria(null, null);
+        val currentTimeZone = TimeZone.getDefault();
 
         // when
-        var result = http.perform(get("/api/expenses"));
+        val result = http.perform(get("/api/expenses"));
 
         // then
         then(userService)
@@ -62,12 +64,12 @@ class ExpenseControllerTest extends BaseControllerTest {
     @WithMockUser
     void should_return_status_200_and_expense_list_with_expected_content() throws Exception {
         // given
-        var today = LocalDate.now();
-        var expectedCriteria = new DateRangeCriteria(today.minusWeeks(1), today);
-        var currentTimeZone = TimeZone.getDefault();
+        val today = LocalDate.now();
+        val expectedCriteria = new DateRangeCriteria(today.minusWeeks(1), today);
+        val currentTimeZone = TimeZone.getDefault();
 
         // when
-        var result = http.perform(
+        val result = http.perform(
             get("/api/expenses")
                 .queryParam("startDate", String.valueOf(expectedCriteria.startDate()))
                 .queryParam("endDate", String.valueOf(expectedCriteria.endDate()))

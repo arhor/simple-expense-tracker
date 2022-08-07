@@ -1,6 +1,7 @@
 package com.github.arhor.simple.expense.tracker.config;
 
 import lombok.extern.slf4j.Slf4j;
+import lombok.val;
 
 import java.util.Optional;
 
@@ -33,15 +34,15 @@ public class DatabaseConfig {
     public Flyway flyway(final Environment env) {
         log.debug("Configuring flyway instance to apply migrations");
 
-        var dbUrl = env.getRequiredProperty("spring.flyway.url");
-        var dbUsername = env.getRequiredProperty("spring.flyway.user");
-        var dbPassword = env.getRequiredProperty("spring.flyway.password");
+        val dbUrl = env.getRequiredProperty("spring.flyway.url");
+        val dbUsername = env.getRequiredProperty("spring.flyway.user");
+        val dbPassword = env.getRequiredProperty("spring.flyway.password");
 
-        var flywayConfig = Flyway.configure()
+        val flywayConfig = Flyway.configure()
             .baselineOnMigrate(true)
             .dataSource(dbUrl, dbUsername, dbPassword);
 
-        var locations = env.getProperty("spring.flyway.locations");
+        val locations = env.getProperty("spring.flyway.locations");
 
         if ((locations != null) && locations.length() > 0) {
             flywayConfig.locations(locations.split(","));
