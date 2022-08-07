@@ -1,8 +1,14 @@
 import { observer } from 'mobx-react';
 import { useTranslation } from 'react-i18next';
 
-import { Box, Button, FormControlLabel, Grid, Paper, Switch, Typography } from '@mui/material';
+import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import Grid from '@mui/material/Grid';
+import Paper from '@mui/material/Paper';
 import { useTheme } from '@mui/material/styles';
+import Switch from '@mui/material/Switch';
+import Typography from '@mui/material/Typography';
 
 import { useAppThemeControl } from '@/AppThemeProvider';
 

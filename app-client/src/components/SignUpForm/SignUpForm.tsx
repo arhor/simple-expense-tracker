@@ -3,8 +3,14 @@ import { FormEvent, useState } from 'react';
 import { observer } from 'mobx-react';
 import { Link as RouterLink, Navigate, useNavigate } from 'react-router-dom';
 
-import { LockOutlined } from '@mui/icons-material';
-import { Avatar, Box, Button, Grid, Link, TextField, Typography } from '@mui/material';
+import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
+import Avatar from '@mui/material/Avatar';
+import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
+import Grid from '@mui/material/Grid';
+import Link from '@mui/material/Link';
+import TextField from '@mui/material/TextField';
+import Typography from '@mui/material/Typography';
 
 import { UserRequestDTO } from '@/generated/UserRequestDTO';
 import { useStore } from '@/store';
@@ -76,7 +82,7 @@ const SignUpForm = () => {
             }}
         >
             <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
-                <LockOutlined />
+                <LockOutlinedIcon />
             </Avatar>
             <Typography component="h1" variant="h5">
                 Sign up

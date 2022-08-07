@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next';
 
-import { CircularProgress } from '@mui/material';
+import CircularProgress from '@mui/material/CircularProgress';
 
 import StatelessWidget from '@/components/StatelessWidget';
 

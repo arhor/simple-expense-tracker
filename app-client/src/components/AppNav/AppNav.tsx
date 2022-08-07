@@ -2,8 +2,12 @@ import { useState } from 'react';
 
 import { Link as RouterLink } from 'react-router-dom';
 
-import { BarChart, CurrencyExchange, Settings } from '@mui/icons-material';
-import { BottomNavigation, BottomNavigationAction, Paper } from '@mui/material';
+import BarChartIcon from '@mui/icons-material/BarChart';
+import CurrencyExchangeIcon from '@mui/icons-material/CurrencyExchange';
+import SettingsIcon from '@mui/icons-material/Settings';
+import BottomNavigation from '@mui/material/BottomNavigation';
+import BottomNavigationAction from '@mui/material/BottomNavigationAction';
+import Paper from '@mui/material/Paper';
 
 const AppNav = () => {
     const [value, setValue] = useState(0);
@@ -12,17 +16,17 @@ const AppNav = () => {
         <Paper sx={{ position: 'fixed', bottom: 0, left: 0, right: 0 }} elevation={3}>
             <BottomNavigation value={value} onChange={(e, newValue) => { setValue(newValue); }}>
                 <BottomNavigationAction
-                    icon={<CurrencyExchange />}
+                    icon={<CurrencyExchangeIcon />}
                     component={RouterLink}
                     to="/"
                 />
                 <BottomNavigationAction
-                    icon={<BarChart />}
+                    icon={<BarChartIcon />}
                     component={RouterLink}
                     to="/reports"
                 />
                 <BottomNavigationAction
-                    icon={<Settings />}
+                    icon={<SettingsIcon />}
                     component={RouterLink}
                     to="/settings"
                 />

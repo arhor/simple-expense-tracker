@@ -1,4 +1,4 @@
-import { Grid } from '@mui/material';
+import Grid from '@mui/material/Grid';
 
 import ExpenseItem from '@/components/ExpenseItem';
 import { ExpenseResponseDTO } from '@/generated/ExpenseResponseDTO';
