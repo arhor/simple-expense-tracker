@@ -9,21 +9,20 @@ import QuestionMarkIcon from '@mui/icons-material/QuestionMark';
 
 import { Optional } from '@/utils/core-utils';
 
-export const availableIcons: ReadonlyMap<string, ComponentType> = new Map([
-    ['add', AddIcon],
-    ['cloth', CheckroomIcon],
-    ['coffee', CoffeeIcon],
-    ['fastfood', FastfoodIcon],
-    ['home', HomeIcon],
-]);
+export const availableIcons = Object.freeze<{ [name: string]: ComponentType }>({
+    add: AddIcon, // TODO: 'add' icon should not be available to select as expense icon
+    cloth: CheckroomIcon,
+    coffee: CoffeeIcon,
+    fastfood: FastfoodIcon,
+    home: HomeIcon,
+    question: QuestionMarkIcon,
+});
 
 export function getIconByName(iconName: Optional<string>): ComponentType {
     const IconComponent: Optional<ComponentType> =
         (iconName !== null && iconName !== undefined)
-            ? availableIcons.get(iconName)
+            ? availableIcons[iconName]
             : null;
 
     return IconComponent ?? QuestionMarkIcon;
 }
-
-

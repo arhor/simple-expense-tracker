@@ -5,6 +5,7 @@ export type Props = {
     icon: Optional<string>;
 };
 
+// TODO: candidate for removal
 const ExpenseItemIcon = (props: Props) => {
     const IconComponent = getIconByName(props.icon);
     return <IconComponent />;
