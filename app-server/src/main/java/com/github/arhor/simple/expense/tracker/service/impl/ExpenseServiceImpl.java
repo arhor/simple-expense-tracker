@@ -28,7 +28,7 @@ import com.github.arhor.simple.expense.tracker.exception.EntityNotFoundException
 import com.github.arhor.simple.expense.tracker.model.ExpenseRequestDTO;
 import com.github.arhor.simple.expense.tracker.model.ExpenseResponseDTO;
 import com.github.arhor.simple.expense.tracker.service.ExpenseService;
-import com.github.arhor.simple.expense.tracker.service.MoneyConverter;
+import com.github.arhor.simple.expense.tracker.service.money.MoneyConverter;
 import com.github.arhor.simple.expense.tracker.service.mapping.ExpenseMapper;
 import com.github.arhor.simple.expense.tracker.util.TemporalRange;
 

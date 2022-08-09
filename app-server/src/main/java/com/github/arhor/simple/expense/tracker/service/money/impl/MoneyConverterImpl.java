@@ -1,4 +1,4 @@
-package com.github.arhor.simple.expense.tracker.service.impl;
+package com.github.arhor.simple.expense.tracker.service.money.impl;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -14,7 +14,7 @@ import javax.money.convert.ExchangeRateProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.github.arhor.simple.expense.tracker.service.MoneyConverter;
+import com.github.arhor.simple.expense.tracker.service.money.MoneyConverter;
 
 import static com.github.arhor.simple.expense.tracker.util.TimeUtils.currentZonedDateTime;
 
@@ -29,7 +29,7 @@ public class MoneyConverterImpl implements MoneyConverter {
     @SuppressWarnings("unchecked")
     public <T extends MonetaryAmount> T convert(
         final T amount,
-        final CurrencyUnit targetCurrency,
+        final CurrencyUnit currency,
         final LocalDate date
     ) {
         val sourceCurrency = amount.getCurrency();
@@ -38,7 +38,7 @@ public class MoneyConverterImpl implements MoneyConverter {
 
         val query = ConversionQueryBuilder.of()
             .setBaseCurrency(sourceCurrency)
-            .setTermCurrency(targetCurrency)
+            .setTermCurrency(currency)
             .setProviderName(providerName)
             .set(conversionDate)
             .build();

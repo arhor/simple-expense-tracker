@@ -3,9 +3,9 @@ plugins {
     id "jacoco"
     id "io.freefair.lombok"
     id "org.flywaydb.flyway"
-    id "com.adarshr.test-logger"
     id "org.springframework.boot"
     id "io.spring.dependency-management"
+    id "com.adarshr.test-logger"
 }
 
 description = "Server-side application based on Spring Boot %s and Java %s".formatted(
@@ -58,9 +58,7 @@ dependencies {
     annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
 
     compileOnly "org.mapstruct:mapstruct:${property("app.version.mapstruct")}"
-
     runtimeOnly "org.postgresql:postgresql"
-
     developmentOnly "org.springframework.boot:spring-boot-devtools"
 
     implementation project(":app-model")

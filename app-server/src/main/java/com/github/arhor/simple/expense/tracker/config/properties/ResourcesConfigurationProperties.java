@@ -9,8 +9,5 @@ import org.springframework.boot.context.properties.ConstructorBinding;
  */
 @ConstructorBinding
 @ConfigurationProperties("configuration.resources")
-public record ResourcesConfigurationProperties(
-    String[] patterns,
-    String[] locations
-) {
+public record ResourcesConfigurationProperties(String[] patterns, String[] locations) {
 }

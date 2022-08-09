@@ -1,13 +1,13 @@
 // @formatter:off
 pluginManagement {
     plugins {
-        id "com.github.node-gradle.node"     version settings["app.version.nodeGradlePlugin"]
-        id "org.flywaydb.flyway"             version settings["app.version.flyway"]
-        id "org.jsonschema2dataclass"        version settings["app.version.json2pojo"]
-        id "org.springframework.boot"        version settings["app.version.springBoot"]
-        id "io.freefair.lombok"              version settings["app.version.lombok"]
-        id "io.spring.dependency-management" version settings["app.version.springDependencyManagement"]
-        id "com.adarshr.test-logger"         version settings["app.version.gradleTestLogger"]
+        id "com.adarshr.test-logger"            version settings["app.version.gradleTestLogger"]
+        id "com.github.node-gradle.node"        version settings["app.version.nodeGradlePlugin"]
+        id "io.freefair.lombok"                 version settings["app.version.lombok"]
+        id "io.spring.dependency-management"    version settings["app.version.springDependencyManagement"]
+        id "org.flywaydb.flyway"                version settings["app.version.flyway"]
+        id "org.jsonschema2dataclass"           version settings["app.version.json2pojo"]
+        id "org.springframework.boot"           version settings["app.version.springBoot"]
     }
 }
 

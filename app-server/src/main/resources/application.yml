@@ -96,5 +96,5 @@ configuration:
       - classpath:/static/pics/
       - classpath:/static/data/
   conversion-rates:
-    data-file-pattern: classpath*:conversion-rates/defaults/exchange.host/*.csv
-    years-to-load: 5
+    pattern: classpath*:conversion-rates/defaults/exchange.host/*.csv
+    preload: 5
