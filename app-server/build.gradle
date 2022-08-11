@@ -1,25 +1,26 @@
 plugins {
-    id "java"
-    id "jacoco"
+    id "com.adarshr.test-logger"
     id "io.freefair.lombok"
+    id "io.spring.dependency-management"
+    id "jacoco"
+    id "java"
     id "org.flywaydb.flyway"
     id "org.springframework.boot"
-    id "io.spring.dependency-management"
-    id "com.adarshr.test-logger"
+    id "org.springframework.experimental.aot"
 }
 
 description = "Server-side application based on Spring Boot %s and Java %s".formatted(
-    project.property("app.version.springBoot"),
-    project.property("app.version.java"),
+    property("app.version.springBoot"),
+    property("app.version.java"),
 )
 
 java {
-    sourceCompatibility = project.property("app.version.java")
-    targetCompatibility = project.property("app.version.java")
+    sourceCompatibility = property("app.version.java")
+    targetCompatibility = property("app.version.java")
 }
 
 jacoco {
-    toolVersion = project.property("app.version.jacoco")
+    toolVersion = property("app.version.jacoco")
 }
 
 flyway {
@@ -36,6 +37,7 @@ flyway {
 
 repositories {
     mavenCentral()
+    maven { url "https://repo.spring.io/release" }
 }
 
 configurations {
@@ -91,20 +93,13 @@ dependencyManagement {
     }
 }
 
+bootBuildImage {
+    builder = "paketobuildpacks/builder:tiny"
+    environment = ["BP_NATIVE_IMAGE": "true"]
+}
+
 test {
     useJUnitPlatform()
-}
-
-check {
-    dependsOn = [
-        test,
-        jacocoTestReport,
-        jacocoTestCoverageVerification,
-    ]
-}
-
-bootRun {
-    jvmArgs += "--enable-preview"
 }
 
 jacocoTestReport {
@@ -123,6 +118,14 @@ jacocoTestCoverageVerification {
             }
         }
     }
+}
+
+check {
+    dependsOn = [
+        test,
+        jacocoTestReport,
+        jacocoTestCoverageVerification,
+    ]
 }
 
 void applyJaCoCoExclusions(ConfigurableFileCollection classDirectories) {
@@ -145,8 +148,6 @@ tasks.withType(JavaCompile) {
     options.compilerArgs = [
         "-Xlint:deprecation",
         "-Xlint:unchecked",
-        "-Xlint:preview",
         "-parameters",
-        "--enable-preview",
     ]
 }
