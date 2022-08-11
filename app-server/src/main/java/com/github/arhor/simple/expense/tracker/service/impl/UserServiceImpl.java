@@ -6,10 +6,6 @@ import lombok.val;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -77,39 +73,35 @@ public class UserServiceImpl implements UserService {
     }
 
     private boolean shouldCreateInternalUser(final String externalId, final String externalProvider) {
-        return (externalId != null)
-            && (externalProvider != null)
+        return (externalId!=null)
+            && (externalProvider!=null)
             && !userRepository.existsByExternalIdAndExternalProvider(externalId, externalProvider);
     }
 
     private InternalUser.Projection determineInternalUser(final Authentication auth) {
-        return switch (auth) {
-            case final OAuth2AuthenticationToken token -> {
-                val externalId = token.getName();
-                val externalProvider = token.getAuthorizedClientRegistrationId();
-
-                yield userRepository.findByExternalIdAndProvider(externalId, externalProvider).orElseThrow(() ->
-                    new EntityNotFoundException(
-                        "User", "externalId=" + externalId + ", externalProvider=" + externalProvider
-                    )
-                );
-            }
-            case final UsernamePasswordAuthenticationToken token -> {
-                val username = token.getName();
-
-                yield userRepository.findByUsername(username).orElseThrow(() ->
-                    new EntityNotFoundException(
-                        "User", "username=" + username
-                    )
-                );
-            }
-            case null, default -> throw new IllegalArgumentException(
-                "Unsupported authentication type: " + (
-                    (auth != null)
-                        ? auth.getClass().getSimpleName()
-                        : "<null>"
+        if (auth instanceof OAuth2AuthenticationToken token) {
+            val externalId = token.getName();
+            val externalProvider = token.getAuthorizedClientRegistrationId();
+            return userRepository.findByExternalIdAndProvider(externalId, externalProvider).orElseThrow(() ->
+                new EntityNotFoundException(
+                    "User", "externalId=" + externalId + ", externalProvider=" + externalProvider
                 )
             );
-        };
+        }
+        if (auth instanceof UsernamePasswordAuthenticationToken token) {
+            val username = token.getName();
+            return userRepository.findByUsername(username).orElseThrow(() ->
+                new EntityNotFoundException(
+                    "User", "username=" + username
+                )
+            );
+        }
+        throw new IllegalArgumentException(
+            "Unsupported authentication type: " + (
+                (auth!=null)
+                    ? auth.getClass().getSimpleName()
+                    :"<null>"
+            )
+        );
     }
 }
