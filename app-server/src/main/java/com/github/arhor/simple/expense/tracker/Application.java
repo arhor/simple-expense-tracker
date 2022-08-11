@@ -2,12 +2,12 @@ package com.github.arhor.simple.expense.tracker;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
 
 import com.github.arhor.simple.expense.tracker.config.properties.ApplicationProps;
 
 @SpringBootApplication(proxyBeanMethods = false)
-@EnableConfigurationProperties(ApplicationProps.class)
+@ConfigurationPropertiesScan(basePackageClasses = ApplicationProps.class)
 public class Application {
 
     public static void main(final String[] args) {

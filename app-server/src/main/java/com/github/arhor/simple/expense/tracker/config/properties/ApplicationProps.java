@@ -1,6 +1,7 @@
 package com.github.arhor.simple.expense.tracker.config.properties;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -16,11 +17,15 @@ public record ApplicationProps(
 
     @ConstructorBinding
     ApplicationProps(
-        final @DefaultValue("/api") String apiPathPrefix,
+        @DefaultValue("/api") final String apiPathPrefix,
         final Resources resources,
         final ConversionRates conversionRates
     ) {
-        this(apiPathPrefix, Optional.ofNullable(resources), conversionRates);
+        this(
+            Objects.requireNonNull(apiPathPrefix),
+            Optional.ofNullable(resources),
+            Objects.requireNonNull(conversionRates)
+        );
     }
 
     public String apiUrlPath(final String url) {
