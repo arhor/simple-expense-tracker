@@ -17,14 +17,14 @@ public record ApplicationProps(
 
     @ConstructorBinding
     ApplicationProps(
-        @DefaultValue("/api") final String apiPathPrefix,
+        @DefaultValue("") final String apiPathPrefix,
         final Resources resources,
         final ConversionRates conversionRates
     ) {
         this(
-            Objects.requireNonNull(apiPathPrefix),
+            Objects.requireNonNull(apiPathPrefix, "api-path-prefix cannot be null"),
             Optional.ofNullable(resources),
-            Objects.requireNonNull(conversionRates)
+            Objects.requireNonNull(conversionRates, "conversion-rates cannot be null")
         );
     }
 
