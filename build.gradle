@@ -1,13 +1,31 @@
 plugins {
     id "base"
+    id "java-platform"
 }
 
 ext {
-    env = Dotenv.configure().location("$rootDir").allowMissingFile(true).load()
+    env = Dotenv.configure().location("$rootDir").filename(".env").allowMissingFile(true).load()
 }
 
 wrapper {
-    gradleVersion = project.property("app.version.gradle")
+    gradleVersion = project.property("version.gradle")
+}
+
+dependencies {
+    constraints {
+        // @formatter:off
+        api group: "com.fasterxml.jackson.core", name: "jackson-databind"    , version: this["version.jackson"]
+        api group: "com.google.code.findbugs"  , name: "jsr305"              , version: this["version.findbugsJsr305"]
+        api group: "com.tngtech.archunit"      , name: "archunit-junit5"     , version: this["version.archunit"]
+        api group: "de.siegmar"                , name: "fastcsv"             , version: this["version.fastcsv"]
+        api group: "javax.validation"          , name: "validation-api"      , version: this["version.javaxValidation"]
+        api group: "org.apache.commons"        , name: "commons-collections4", version: this["version.apacheCommonsCollections"]
+        api group: "org.apache.commons"        , name: "commons-lang3"       , version: this["version.apacheCommonsLang"]
+        api group: "org.javamoney"             , name: "moneta"              , version: this["version.javamoneyMoneta"]
+        api group: "org.mapstruct"             , name: "mapstruct"           , version: this["version.mapstruct"]
+        api group: "org.mapstruct"             , name: "mapstruct-processor" , version: this["version.mapstruct"]
+        // @formatter:on
+    }
 }
 
 task stage(type: Jar, dependsOn: [":app-client:build", ":app-server:build"]) {

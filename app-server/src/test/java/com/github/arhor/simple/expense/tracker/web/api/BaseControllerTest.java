@@ -1,6 +1,7 @@
 package com.github.arhor.simple.expense.tracker.web.api;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.security.core.Authentication;
@@ -12,9 +13,11 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import com.github.arhor.simple.expense.tracker.ContractTest;
 import com.github.arhor.simple.expense.tracker.config.LocalizationConfig;
+import com.github.arhor.simple.expense.tracker.config.properties.ApplicationProps;
 import com.github.arhor.simple.expense.tracker.service.impl.TimeServiceImpl;
 
 @ContractTest
+@EnableConfigurationProperties({ApplicationProps.class})
 @Import({LocalizationConfig.class, TimeServiceImpl.class})
 abstract class BaseControllerTest {
 

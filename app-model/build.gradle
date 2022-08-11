@@ -4,20 +4,21 @@ plugins {
     id "simple-expense-tracker.node-conventions"
 }
 
-description = "Application model described via JSON Schema, used to generate sources for the Client/Server communication"
+description = "Shared model described via JSON Schema, used to generate sources for the Client/Server communication"
 
 repositories {
     mavenCentral()
 }
 
 dependencies {
-    implementation "com.fasterxml.jackson.core:jackson-databind:${property("app.version.jackson")}"
-    implementation "javax.validation:validation-api:${property("app.version.javaxValidation")}"
-    implementation "com.google.code.findbugs:jsr305:${property("app.version.findbugsJsr305")}"
+    implementation platform(rootProject)
+    implementation "com.fasterxml.jackson.core:jackson-databind"
+    implementation "com.google.code.findbugs:jsr305"
+    implementation "javax.validation:validation-api"
 }
 
 jsonSchema2Pojo {
-    targetVersion = project.property("app.version.java")
+    targetVersion = project.property("version.java")
     targetPackage = "com.github.arhor.simple.expense.tracker.model"
     removeOldOutput = true
     includeJsr303Annotations = true

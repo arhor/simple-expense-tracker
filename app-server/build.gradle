@@ -9,17 +9,17 @@ plugins {
 }
 
 description = "Server-side application based on Spring Boot %s and Java %s".formatted(
-    property("app.version.springBoot"),
-    property("app.version.java"),
+    property("version.springBoot"),
+    property("version.java"),
 )
 
 java {
-    sourceCompatibility = property("app.version.java")
-    targetCompatibility = property("app.version.java")
+    sourceCompatibility = property("version.java")
+    targetCompatibility = property("version.java")
 }
 
 jacoco {
-    toolVersion = property("app.version.jacoco")
+    toolVersion = property("version.jacoco")
 }
 
 flyway {
@@ -54,20 +54,22 @@ configurations {
 }
 
 dependencies {
-    annotationProcessor "org.mapstruct:mapstruct-processor:${property("app.version.mapstruct")}"
+    annotationProcessor platform(rootProject)
+    annotationProcessor "org.mapstruct:mapstruct-processor"
     annotationProcessor "org.springframework:spring-context-indexer"
     annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
 
-    compileOnly "org.mapstruct:mapstruct:${property("app.version.mapstruct")}"
+    compileOnly "org.mapstruct:mapstruct"
     runtimeOnly "org.postgresql:postgresql"
     developmentOnly "org.springframework.boot:spring-boot-devtools"
 
+    implementation platform(rootProject)
     implementation project(":app-model")
-    implementation "de.siegmar:fastcsv:${property("app.version.fastcsv")}"
-    implementation "org.apache.commons:commons-lang3:${property("app.version.apacheCommonsLang")}"
-    implementation "org.apache.commons:commons-collections4:${property("app.version.apacheCommonsCollections")}"
+    implementation "de.siegmar:fastcsv"
+    implementation "org.apache.commons:commons-lang3"
+    implementation "org.apache.commons:commons-collections4"
     implementation "org.flywaydb:flyway-core"
-    implementation "org.javamoney:moneta:${property("app.version.javamoneyMoneta")}"
+    implementation "org.javamoney:moneta"
     implementation "org.springframework.boot:spring-boot-starter-aop"
     implementation "org.springframework.boot:spring-boot-starter-data-jdbc"
     implementation "org.springframework.boot:spring-boot-starter-oauth2-client"
@@ -77,9 +79,7 @@ dependencies {
     implementation "org.springframework.boot:spring-boot-starter-web"
     implementation "org.springframework.session:spring-session-core"
 
-    testRuntimeOnly "org.postgresql:postgresql"
-
-    testImplementation "com.tngtech.archunit:archunit-junit5:${property("app.version.archunit")}"
+    testImplementation "com.tngtech.archunit:archunit-junit5"
     testImplementation "org.springframework.boot:spring-boot-starter-test"
     testImplementation "org.springframework.security:spring-security-test"
     testImplementation "org.testcontainers:junit-jupiter"
@@ -88,7 +88,7 @@ dependencies {
 
 dependencyManagement {
     imports {
-        mavenBom "org.testcontainers:testcontainers-bom:${property("app.version.testcontainers")}"
+        mavenBom "org.testcontainers:testcontainers-bom:${property("version.testcontainers")}"
     }
 }
 
