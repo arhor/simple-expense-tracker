@@ -77,6 +77,7 @@ spring:
             clientSecret: ${GOOGLE_CLIENT_SECRET}
 
 configuration:
+  api-path-prefix: /api
   resources:
     patterns:
       - /index.html
@@ -87,7 +88,7 @@ configuration:
       - /js/**
       - /pics/**
       - /data/**
-    locations:
+    location:
       - classpath:/static/
       - classpath:/static/assets/
       - classpath:/static/css/

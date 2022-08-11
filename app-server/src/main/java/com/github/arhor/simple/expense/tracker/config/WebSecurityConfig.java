@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -16,11 +17,11 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
+import org.springframework.session.MapSession;
 import org.springframework.session.MapSessionRepository;
 import org.springframework.session.SessionRepository;
 import org.springframework.session.config.annotation.web.http.EnableSpringHttpSession;
 
-import static com.github.arhor.simple.expense.tracker.config.WebServerConfig.apiUrlPath;
 import static org.springframework.security.oauth2.client.web.OAuth2AuthorizationRequestRedirectFilter.DEFAULT_AUTHORIZATION_REQUEST_BASE_URI;
 
 @Configuration
@@ -30,6 +31,8 @@ import static org.springframework.security.oauth2.client.web.OAuth2Authorization
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
+    @Value("${configuration.api-path-prefix:/api}")
+    private final String apiPathPrefix;
     private final AuthenticationSuccessHandler authenticationSuccessHandler;
     private final UserDetailsService userDetailsService;
     private final PasswordEncoder passwordEncoder;
@@ -70,11 +73,15 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
             .contentSecurityPolicy("script-src 'self' 'unsafe-inline'");
     }
 
+    private String apiUrlPath(final String url) {
+        return apiPathPrefix + url;
+    }
+
     @Configuration(proxyBeanMethods = false)
     public static class Beans {
 
         @Bean
-        public SessionRepository<?> sessionRepository() {
+        public SessionRepository<MapSession> sessionRepository() {
             return new MapSessionRepository(new ConcurrentHashMap<>());
         }
 
