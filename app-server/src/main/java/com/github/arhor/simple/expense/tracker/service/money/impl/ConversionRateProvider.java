@@ -247,7 +247,7 @@ public class ConversionRateProvider extends AbstractRateProvider {
             val date = e.getKey();
             val rates = e.getValue();
 
-            var mappings = new HashMap<String, ExchangeRate>(rates.size());
+            val mappings = new HashMap<String, ExchangeRate>(rates.size());
 
             for (val entry : rates.entrySet()) {
                 val term = entry.getKey();

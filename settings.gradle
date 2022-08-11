@@ -13,7 +13,6 @@ pluginManagement {
         id "org.flywaydb.flyway"                  version settings["app.version.flyway"]
         id "org.jsonschema2dataclass"             version settings["app.version.json2pojo"]
         id "org.springframework.boot"             version settings["app.version.springBoot"]
-        id "org.springframework.experimental.aot" version settings["app.version.springExperimentalAot"]
     }
 }
 

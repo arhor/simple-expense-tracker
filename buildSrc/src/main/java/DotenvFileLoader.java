@@ -17,13 +17,13 @@ final class DotenvFileLoader {
         final String filename,
         final boolean allowMissingFile
     ) throws IOException {
-        try (var dotenvFileInputStream = getDotenvFileInputStream(location, filename, allowMissingFile)) {
+        try (final var dotenvFileInputStream = getDotenvFileInputStream(location, filename, allowMissingFile)) {
             return readDotenvFileAsProperties(dotenvFileInputStream);
         }
     }
 
     static Properties readDotenvFileAsProperties(final InputStream dotenvFileInputStream) throws IOException {
-        var properties = new Properties();
+        final var properties = new Properties();
         properties.load(dotenvFileInputStream);
         return properties;
     }
@@ -34,8 +34,8 @@ final class DotenvFileLoader {
         final boolean allowMissingFile
     ) throws IOException {
 
-        var fileLocation = getDotenvFileLocation(location, filename);
-        var path = getDotenvFilePath(fileLocation);
+        final var fileLocation = getDotenvFileLocation(location, filename);
+        final var path = getDotenvFilePath(fileLocation);
 
         if (Files.exists(path)) {
             return Files.newInputStream(path);
@@ -48,9 +48,9 @@ final class DotenvFileLoader {
         final String fileLocation,
         final boolean allowMissingFile
     ) {
-        var currentClass = DotenvFileLoader.class;
-
+        final var currentClass = DotenvFileLoader.class;
         var inputStream = currentClass.getResourceAsStream(fileLocation);
+
         if (inputStream == null) {
             inputStream = currentClass.getClassLoader().getResourceAsStream(fileLocation);
         }

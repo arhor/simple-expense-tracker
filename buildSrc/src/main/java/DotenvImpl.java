@@ -43,7 +43,7 @@ final class DotenvImpl implements Dotenv {
 
     @Override
     public String get(final String name, final String defaultValue) {
-        var property = getPropertyThenClearSearchHistory(name);
+        final var property = getPropertyThenClearSearchHistory(name);
         return (property != null)
             ? property
             : defaultValue;
@@ -51,7 +51,7 @@ final class DotenvImpl implements Dotenv {
 
     @Override
     public String getRequired(final String name) throws MissingPropertyException {
-        var property = getPropertyThenClearSearchHistory(name);
+        final var property = getPropertyThenClearSearchHistory(name);
         if (property != null) {
             return property;
         }
@@ -67,14 +67,14 @@ final class DotenvImpl implements Dotenv {
     }
 
     private String getProperty(final String name) {
-        var property = findProperty(name);
+        final var property = findProperty(name);
         return (property != null)
             ? resolveReferences(property)
             : null;
     }
 
     private String findProperty(final String name) {
-        var property = includeSystemVariables
+        final var property = includeSystemVariables
             ? systemEnvironment.get(name)
             : null;
         return ((property == null) || allowOverrideSystemVariables)
@@ -87,23 +87,23 @@ final class DotenvImpl implements Dotenv {
     }
 
     private String resolveReferences(final String input, final int startIndex) {
-        var refStartIndex = input.indexOf(REFERENCE_START, startIndex);
+        final var refStartIndex = input.indexOf(REFERENCE_START, startIndex);
 
         if (refStartIndex == -1) {
             return input;
         }
 
-        var refEndIndex = input.indexOf(REFERENCE_END, refStartIndex);
+        final var refEndIndex = input.indexOf(REFERENCE_END, refStartIndex);
 
         if (refEndIndex == -1) {
             return input;
         }
 
-        var refName = input.substring(refStartIndex + REFERENCE_START.length(), refEndIndex);
-        var refValue = findRefValue(refName);
+        final var refName = input.substring(refStartIndex + REFERENCE_START.length(), refEndIndex);
+        final var refValue = findRefValue(refName);
 
-        var prefix = (refStartIndex > 0) ? input.substring(0, refStartIndex) : "";
-        var suffix = input.substring(refEndIndex + 1);
+        final var prefix = (refStartIndex > 0) ? input.substring(0, refStartIndex) : "";
+        final var suffix = input.substring(refEndIndex + 1);
 
         return resolveReferences(prefix + refValue + suffix, prefix.length() + refValue.length());
     }
