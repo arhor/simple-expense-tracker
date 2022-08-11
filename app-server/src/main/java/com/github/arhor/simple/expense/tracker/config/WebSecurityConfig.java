@@ -5,7 +5,6 @@ import lombok.RequiredArgsConstructor;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -22,6 +21,8 @@ import org.springframework.session.MapSessionRepository;
 import org.springframework.session.SessionRepository;
 import org.springframework.session.config.annotation.web.http.EnableSpringHttpSession;
 
+import com.github.arhor.simple.expense.tracker.config.properties.ApplicationProps;
+
 import static org.springframework.security.oauth2.client.web.OAuth2AuthorizationRequestRedirectFilter.DEFAULT_AUTHORIZATION_REQUEST_BASE_URI;
 
 @Configuration
@@ -31,11 +32,10 @@ import static org.springframework.security.oauth2.client.web.OAuth2Authorization
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
-    @Value("${configuration.api-path-prefix:/api}")
-    private final String apiPathPrefix;
+    private final ApplicationProps applicationProps;
     private final AuthenticationSuccessHandler authenticationSuccessHandler;
-    private final UserDetailsService userDetailsService;
     private final PasswordEncoder passwordEncoder;
+    private final UserDetailsService userDetailsService;
 
     // TODO: is it necessary?
     @Override
@@ -54,16 +54,16 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
             .permitAll()
             .and()
             .logout()
-            .logoutUrl(apiUrlPath("/logout"))
+            .logoutUrl(applicationProps.apiUrlPath("/logout"))
             .logoutSuccessUrl("/")
             .and()
             .formLogin()
-            .loginProcessingUrl(apiUrlPath("/login"))
+            .loginProcessingUrl(applicationProps.apiUrlPath("/login"))
             .successHandler(authenticationSuccessHandler)
             .and()
             .oauth2Login()
             .authorizationEndpoint()
-            .baseUri(apiUrlPath(DEFAULT_AUTHORIZATION_REQUEST_BASE_URI))
+            .baseUri(applicationProps.apiUrlPath(DEFAULT_AUTHORIZATION_REQUEST_BASE_URI))
             .and()
             .successHandler(authenticationSuccessHandler)
             .and()
@@ -71,10 +71,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
             .xssProtection()
             .and()
             .contentSecurityPolicy("script-src 'self' 'unsafe-inline'");
-    }
-
-    private String apiUrlPath(final String url) {
-        return apiPathPrefix + url;
     }
 
     @Configuration(proxyBeanMethods = false)

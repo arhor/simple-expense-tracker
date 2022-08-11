@@ -27,10 +27,10 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.NoHandlerFoundException;
 
 import com.github.arhor.simple.expense.tracker.aspect.CurrentRequestContext;
+import com.github.arhor.simple.expense.tracker.config.properties.ApplicationProps;
 import com.github.arhor.simple.expense.tracker.exception.EntityDuplicateException;
 import com.github.arhor.simple.expense.tracker.exception.EntityNotFoundException;
 
-import static com.github.arhor.simple.expense.tracker.config.WebServerConfig.apiUrlPath;
 import static com.github.arhor.simple.expense.tracker.util.TimeUtils.currentZonedDateTime;
 import static com.github.arhor.simple.expense.tracker.web.error.ErrorCode.HANDLER_NOT_FOUND;
 import static com.github.arhor.simple.expense.tracker.web.error.ErrorCode.HANDLER_NOT_FOUND_DEFAULT;
@@ -41,6 +41,7 @@ import static java.util.Collections.emptyList;
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 public class GlobalExceptionHandler {
 
+    private final ApplicationProps applicationProps;
     private final MessageSource messages;
 
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -109,7 +110,7 @@ public class GlobalExceptionHandler {
         Object result;
         if (requestURL.equals("/")) {
             result = handleErrorCode(HANDLER_NOT_FOUND_DEFAULT, locale, timeZone);
-        } else if (requestURL.startsWith(apiUrlPath("/"))) {
+        } else if (requestURL.startsWith(applicationProps.apiUrlPath("/"))) {
             result = handleErrorCode(HANDLER_NOT_FOUND, locale, timeZone, exception.getHttpMethod(), requestURL);
         } else {
             result = new ModelAndView("forward:/");

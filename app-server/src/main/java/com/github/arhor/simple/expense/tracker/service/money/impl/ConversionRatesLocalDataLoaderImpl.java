@@ -22,7 +22,7 @@ import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.ResourcePatternResolver;
 import org.springframework.stereotype.Service;
 
-import com.github.arhor.simple.expense.tracker.config.properties.ConversionRatesProps;
+import com.github.arhor.simple.expense.tracker.config.properties.ApplicationProps;
 import com.github.arhor.simple.expense.tracker.service.money.ConversionRatesLocalDataLoader;
 
 import static java.util.Arrays.sort;
@@ -35,7 +35,7 @@ public class ConversionRatesLocalDataLoaderImpl implements ConversionRatesLocalD
 
     private static final String COL_DATE = "date";
 
-    private final ConversionRatesProps conversionRatesProps;
+    private final ApplicationProps applicationProps;
     private final ResourcePatternResolver resourcePatternResolver;
 
     @Override
@@ -60,7 +60,7 @@ public class ConversionRatesLocalDataLoaderImpl implements ConversionRatesLocalD
     @Override
     public void loadInitialConversionRates(final Consumer<Map<LocalDate, Map<String, Double>>> consumer) {
         withLocalData(resources -> {
-            val preload = conversionRatesProps.preload();
+            val preload = applicationProps.conversionRates().preload();
             val tasks = new CompletableFuture[preload];
 
             sort(resources, comparing(Resource::getFilename).reversed());
@@ -93,7 +93,7 @@ public class ConversionRatesLocalDataLoaderImpl implements ConversionRatesLocalD
         try {
             consumer.accept(
                 resourcePatternResolver.getResources(
-                    conversionRatesProps.pattern()
+                    applicationProps.conversionRates().pattern()
                 )
             );
         } catch (IOException e) {

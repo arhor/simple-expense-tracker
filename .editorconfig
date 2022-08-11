@@ -12,6 +12,16 @@ ij_formatter_off_tag = @formatter:off
 ij_formatter_on_tag = @formatter:on
 ij_formatter_tags_enabled = true
 
+[*.java]
+ij_java_keep_simple_classes_in_one_line = true
+ij_java_keep_simple_lambdas_in_one_line = true
+ij_java_keep_simple_methods_in_one_line = true
+ij_java_new_line_after_lparen_in_record_header = true
+ij_java_record_components_wrap = split_into_lines
+ij_java_rparen_on_new_line_in_record_header = true
+ij_java_spaces_within_record_header = true
+ij_java_align_multiline_records = true
+
 [*.yml]
 indent_size = 2
 
