@@ -23,9 +23,9 @@ jacoco {
 }
 
 flyway {
-    url = env.getRequired "JDBC_DATABASE_URL"
-    user = env.getRequired "JDBC_DATABASE_USERNAME"
-    password = env.getRequired "JDBC_DATABASE_PASSWORD"
+    url = env["JDBC_DATABASE_URL"]
+    user = env["JDBC_DATABASE_USERNAME"]
+    password = env["JDBC_DATABASE_PASSWORD"]
 
     driver = "org.postgresql.Driver"
     encoding = "UTF-8"

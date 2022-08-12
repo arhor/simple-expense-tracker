@@ -18,7 +18,7 @@ dependencies {
 }
 
 jsonSchema2Pojo {
-    targetVersion = project.property("version.java")
+    targetVersion = property("version.java")
     targetPackage = "com.github.arhor.simple.expense.tracker.model"
     removeOldOutput = true
     includeJsr303Annotations = true

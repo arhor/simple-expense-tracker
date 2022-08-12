@@ -3,8 +3,8 @@ plugins {
 }
 
 description = "Client-side application based on React.js %s and Node.js %s".formatted(
-    project.property("version.react"),
-    project.property("version.node"),
+    property("version.react"),
+    property("version.node"),
 )
 
 def generatedSourcesDir = "src/generated"
