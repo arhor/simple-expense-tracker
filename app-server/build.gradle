@@ -59,10 +59,6 @@ dependencies {
     annotationProcessor "org.springframework:spring-context-indexer"
     annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
 
-    compileOnly "org.mapstruct:mapstruct"
-    runtimeOnly "org.postgresql:postgresql"
-    developmentOnly "org.springframework.boot:spring-boot-devtools"
-
     implementation platform(rootProject)
     implementation project(":app-model")
     implementation "de.siegmar:fastcsv"
@@ -78,6 +74,10 @@ dependencies {
     implementation "org.springframework.boot:spring-boot-starter-validation"
     implementation "org.springframework.boot:spring-boot-starter-web"
     implementation "org.springframework.session:spring-session-core"
+
+    compileOnly "org.mapstruct:mapstruct"
+    runtimeOnly "org.postgresql:postgresql"
+    developmentOnly "org.springframework.boot:spring-boot-devtools"
 
     testImplementation "com.tngtech.archunit:archunit-junit5"
     testImplementation "org.springframework.boot:spring-boot-starter-test"
@@ -108,7 +108,7 @@ jacocoTestCoverageVerification {
     violationRules {
         rule {
             limit {
-                minimum = 0.10
+                minimum = 0.15
             }
         }
     }
@@ -128,9 +128,8 @@ void applyJaCoCoExclusions(ConfigurableFileCollection classDirectories) {
             dir: it,
             exclude: [
                 "com/github/arhor/simple/expense/tracker/Application.class",
-                "com/github/arhor/simple/expense/tracker/web/error/ErrorResponse.class",
-                "com/github/arhor/simple/expense/tracker/web/error/GlobalExceptionHandler.class",
                 "com/github/arhor/simple/expense/tracker/**/config/*",
+                "com/github/arhor/simple/expense/tracker/**/error/*",
                 "com/github/arhor/simple/expense/tracker/**/exception/*",
                 "com/github/arhor/simple/expense/tracker/**/model/*",
             ]
@@ -140,7 +139,17 @@ void applyJaCoCoExclusions(ConfigurableFileCollection classDirectories) {
 
 tasks.withType(JavaCompile) {
     options.compilerArgs = [
+        "-Xlint:cast",
         "-Xlint:deprecation",
+        "-Xlint:empty",
+        "-Xlint:fallthrough",
+        "-Xlint:overloads",
+        "-Xlint:overrides",
+        "-Xlint:rawtypes",
+        "-Xlint:removal",
+        "-Xlint:static",
+        "-Xlint:try",
+        "-Xlint:varargs",
         "-Xlint:unchecked",
         "-parameters",
     ]
