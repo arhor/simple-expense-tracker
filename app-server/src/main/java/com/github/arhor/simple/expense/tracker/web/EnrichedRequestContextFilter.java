@@ -12,12 +12,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.boot.web.servlet.filter.OrderedRequestContextFilter;
 import org.springframework.stereotype.Component;
-import org.springframework.web.context.request.RequestContextHolder;
 
 import com.github.arhor.simple.expense.tracker.aspect.CurrentRequestContext;
-
-import static com.github.arhor.simple.expense.tracker.aspect.CurrentRequestContext.CURRENT_REQUEST_CONTEXT;
-import static org.springframework.web.context.request.RequestAttributes.SCOPE_REQUEST;
 
 @Component
 public class EnrichedRequestContextFilter extends OrderedRequestContextFilter {
@@ -36,19 +32,16 @@ public class EnrichedRequestContextFilter extends OrderedRequestContextFilter {
 
     private FilterChain wrap(final FilterChain filterChain) {
         return (req, res) -> {
-            if ((req instanceof HttpServletRequest request) && (res instanceof HttpServletResponse response)) {
+            if ((req instanceof HttpServletRequest servletReq) && (res instanceof HttpServletResponse servletRes)) {
                 val context = new CurrentRequestContext();
-                val requestId = request.getHeader(REQUEST_ID);
+                val requestId = servletReq.getHeader(REQUEST_ID);
 
                 if (requestId != null) {
                     context.setRequestId(UUID.fromString(requestId));
                 }
+                context.setToCurrentRequestAttributes();
 
-                RequestContextHolder
-                    .currentRequestAttributes()
-                    .setAttribute(CURRENT_REQUEST_CONTEXT, context, SCOPE_REQUEST);
-
-                response.addHeader(REQUEST_ID, context.getRequestId().toString());
+                servletRes.addHeader(REQUEST_ID, context.getRequestId().toString());
             }
             filterChain.doFilter(req, res);
         };

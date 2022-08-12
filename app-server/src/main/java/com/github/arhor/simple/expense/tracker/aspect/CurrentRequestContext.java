@@ -2,6 +2,7 @@ package com.github.arhor.simple.expense.tracker.aspect;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 
 import java.util.HashSet;
@@ -14,6 +15,7 @@ import org.springframework.web.context.request.RequestContextHolder;
 
 import static org.springframework.web.context.request.RequestAttributes.SCOPE_REQUEST;
 
+@Slf4j
 public class CurrentRequestContext {
 
     public static final String CURRENT_REQUEST_CONTEXT = "X-CURRENT-REQUEST-CONTEXT";
@@ -27,9 +29,19 @@ public class CurrentRequestContext {
         try {
             val attributes = RequestContextHolder.currentRequestAttributes();
             val context = (CurrentRequestContext) attributes.getAttribute(CURRENT_REQUEST_CONTEXT, SCOPE_REQUEST);
+
             return Optional.ofNullable(context);
         } catch (IllegalStateException e) {
+            log.trace("Cannot get CurrentRequestContext instance from the request attributes", e);
             return Optional.empty();
+        }
+    }
+
+    public void setToCurrentRequestAttributes() {
+        val currentRequestAttributes = RequestContextHolder.getRequestAttributes();
+
+        if (currentRequestAttributes != null) {
+            currentRequestAttributes.setAttribute(CURRENT_REQUEST_CONTEXT, this, SCOPE_REQUEST);
         }
     }
 
