@@ -1,6 +1,7 @@
 package com.github.arhor.simple.expense.tracker.service.impl;
 
 import lombok.RequiredArgsConstructor;
+import lombok.experimental.ExtensionMethod;
 import lombok.val;
 
 import java.time.LocalDate;
@@ -14,11 +15,11 @@ import com.github.arhor.simple.expense.tracker.data.repository.ExpenseItemReposi
 import com.github.arhor.simple.expense.tracker.model.ExpenseItemDTO;
 import com.github.arhor.simple.expense.tracker.service.ExpenseItemService;
 import com.github.arhor.simple.expense.tracker.service.mapping.ExpenseItemMapper;
+import com.github.arhor.simple.expense.tracker.util.JavaLangExt;
 import com.github.arhor.simple.expense.tracker.util.TemporalRange;
 
-import static com.github.arhor.simple.expense.tracker.util.StreamUtils.useStream;
-
 @Service
+@ExtensionMethod(JavaLangExt.class)
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 public class ExpenseItemServiceImpl implements ExpenseItemService {
 
@@ -28,18 +29,14 @@ public class ExpenseItemServiceImpl implements ExpenseItemService {
     @Override
     @Transactional(readOnly = true)
     public List<ExpenseItemDTO> getExpenseItems(final Long expenseId, final TemporalRange<LocalDate> dateRange) {
-        return useStream(
-            expenseItemRepository.findAllByExpenseIdAndDateRange(
-                expenseId,
-                dateRange.start(),
-                dateRange.end()
-            ),
-            stream -> {
-                return stream
-                    .map(expenseItemMapper::mapToDTO)
-                    .toList();
-            }
-        );
+        val startDate = dateRange.start();
+        val endDate = dateRange.end();
+
+        return expenseItemRepository.findAllByExpenseIdAndDateRange(expenseId, startDate, endDate).use(stream -> {
+            return stream
+                .map(expenseItemMapper::mapToDTO)
+                .toList();
+        });
     }
 
     @Override

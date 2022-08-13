@@ -1,39 +1,55 @@
 package com.github.arhor.simple.expense.tracker.config;
 
-import lombok.RequiredArgsConstructor;
+import lombok.experimental.ExtensionMethod;
 import lombok.val;
 
 import java.util.concurrent.Executor;
 
+import org.slf4j.MDC;
 import org.springframework.aop.interceptor.AsyncUncaughtExceptionHandler;
 import org.springframework.aop.interceptor.SimpleAsyncUncaughtExceptionHandler;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.AsyncConfigurer;
 import org.springframework.scheduling.annotation.EnableAsync;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.security.task.DelegatingSecurityContextAsyncTaskExecutor;
+import org.springframework.web.context.request.RequestContextHolder;
 
-import com.github.arhor.simple.expense.tracker.config.async.ContextAwareThreadPoolTaskExecutor;
+import com.github.arhor.simple.expense.tracker.util.CollectionExt;
 
 @EnableAsync
+@ExtensionMethod(CollectionExt.class)
 @Configuration(proxyBeanMethods = false)
-@RequiredArgsConstructor(onConstructor_ = @Autowired)
 public class AsyncConfig implements AsyncConfigurer {
 
-    public static final String ASYNC_EXECUTOR_BEAN = "ContextAwareThreadPoolTaskExecutor";
-
-    @Bean
     @Override
     public AsyncUncaughtExceptionHandler getAsyncUncaughtExceptionHandler() {
         return new SimpleAsyncUncaughtExceptionHandler();
     }
 
-    @Bean(ASYNC_EXECUTOR_BEAN)
     @Override
     public Executor getAsyncExecutor() {
-        val executor = new ContextAwareThreadPoolTaskExecutor();
+        val executor = new ThreadPoolTaskExecutor();
+
         executor.initialize();
+        executor.setTaskDecorator(this::decorate);
+
         return new DelegatingSecurityContextAsyncTaskExecutor(executor);
+    }
+
+    private Runnable decorate(final Runnable delegate) {
+        val attributes = RequestContextHolder.getRequestAttributes();
+        val contextMap = MDC.getCopyOfContextMap();
+
+        return ((attributes == null) && (contextMap == null)) ? delegate : () -> {
+            try {
+                RequestContextHolder.setRequestAttributes(attributes);
+                MDC.setContextMap(contextMap.emptyIfNull());
+                delegate.run();
+            } finally {
+                MDC.clear();
+                RequestContextHolder.resetRequestAttributes();
+            }
+        };
     }
 }

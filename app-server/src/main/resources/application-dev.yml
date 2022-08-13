@@ -3,8 +3,3 @@ spring:
     import:
       - optional:file:.env[.properties]
       - optional:file:../.env[.properties]
-
-logging:
-  level:
-    org.springframework.jdbc.core.JdbcTemplate: DEBUG
-    com.github.arhor: DEBUG

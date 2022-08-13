@@ -21,6 +21,7 @@ dependencies {
         api group: "javax.validation"          , name: "validation-api"      , version: this["version.javaxValidation"]
         api group: "org.apache.commons"        , name: "commons-collections4", version: this["version.apacheCommonsCollections"]
         api group: "org.apache.commons"        , name: "commons-lang3"       , version: this["version.apacheCommonsLang"]
+        api group: "org.codehaus.janino"       , name: "janino"              , version: this["version.janino"]
         api group: "org.javamoney"             , name: "moneta"              , version: this["version.javamoneyMoneta"]
         api group: "org.mapstruct"             , name: "mapstruct"           , version: this["version.mapstruct"]
         api group: "org.mapstruct"             , name: "mapstruct-processor" , version: this["version.mapstruct"]

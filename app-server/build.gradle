@@ -44,12 +44,16 @@ configurations {
         extendsFrom annotationProcessor
     }
     implementation {
-        exclude module: "spring-boot-starter-tomcat"
-        exclude module: "moneta-convert-ecb"
-        exclude module: "moneta-convert-imf"
+        exclude group: "org.javamoney.moneta", module: "moneta-convert-ecb"
+        exclude group: "org.javamoney.moneta", module: "moneta-convert-imf"
+        exclude group: "org.springframework.boot", module: "spring-boot-starter-tomcat"
     }
     testImplementation {
-        exclude module: "junit-vintage-engine"
+        exclude group: "org.junit.vintage", module: "junit-vintage-engine"
+    }
+    all {
+        exclude group: "org.apache.logging.log4j", module: "log4j-to-slf4j"
+        exclude group: "org.apache.logging.log4j", module: "log4j-api"
     }
 }
 
@@ -76,6 +80,7 @@ dependencies {
     implementation "org.springframework.session:spring-session-core"
 
     compileOnly "org.mapstruct:mapstruct"
+    runtimeOnly "org.codehaus.janino:janino"
     runtimeOnly "org.postgresql:postgresql"
     developmentOnly "org.springframework.boot:spring-boot-devtools"
 

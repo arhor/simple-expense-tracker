@@ -1,6 +1,5 @@
 package com.github.arhor.simple.expense.tracker.config;
 
-import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 
 import java.util.Optional;
@@ -17,7 +16,6 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import static com.github.arhor.simple.expense.tracker.util.TimeUtils.currentZonedDateTime;
 
-@Slf4j
 @Configuration(proxyBeanMethods = false)
 @EnableJdbcAuditing(modifyOnCreate = false, dateTimeProviderRef = "instantDateTimeProviderUTC")
 @EnableJdbcRepositories(basePackages = "com.github.arhor.simple.expense.tracker.data.repository")
@@ -32,19 +30,18 @@ public class DatabaseConfig {
     @Bean(initMethod = "migrate")
     @ConditionalOnProperty(name = "spring.flyway.enabled", havingValue = "true")
     public Flyway flyway(final Environment env) {
-        log.debug("Configuring flyway instance to apply migrations");
-
         val dbUrl = env.getRequiredProperty("spring.flyway.url");
         val dbUsername = env.getRequiredProperty("spring.flyway.user");
         val dbPassword = env.getRequiredProperty("spring.flyway.password");
 
         val flywayConfig = Flyway.configure()
             .baselineOnMigrate(true)
-            .dataSource(dbUrl, dbUsername, dbPassword);
+            .dataSource(dbUrl, dbUsername, dbPassword)
+            .loggers("slf4j");
 
         val locations = env.getProperty("spring.flyway.locations");
 
-        if ((locations != null) && locations.length() > 0) {
+        if ((locations != null) && !locations.isBlank()) {
             flywayConfig.locations(locations.split(","));
         }
 
