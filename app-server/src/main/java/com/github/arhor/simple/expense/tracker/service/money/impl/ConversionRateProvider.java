@@ -29,6 +29,7 @@ import org.javamoney.moneta.convert.ExchangeRateBuilder;
 import org.javamoney.moneta.spi.AbstractRateProvider;
 import org.javamoney.moneta.spi.DefaultNumberValue;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -41,11 +42,12 @@ import com.github.arhor.simple.expense.tracker.service.money.ConversionRatesLoca
 public class ConversionRateProvider extends AbstractRateProvider {
 
     private static final CurrencyUnit BASE_CURRENCY = Monetary.getCurrency("EUR");
-    private static final String PROVIDER_NAME = "EXCHANGERATE_HOST";
     private static final RateType PROVIDER_RATE_TYPE = RateType.DEFERRED;
+    private static final String EXCHANGERATE_HOST_URL = "https://api.exchangerate.host";
+    private static final String PROVIDER_NAME = "EXCHANGERATE_HOST";
 
     private final ConversionRatesLocalDataLoader conversionRatesLocalDataLoader;
-    private final RestTemplate restTemplate;
+    private final RestTemplate http;
 
     private final Map<LocalDate, Map<String, ExchangeRate>> loadedRates = new ConcurrentHashMap<>();
     private final Set<Integer> yearsAvailableLocally = Collections.synchronizedSet(new HashSet<>());
@@ -53,7 +55,7 @@ public class ConversionRateProvider extends AbstractRateProvider {
     @Autowired
     public ConversionRateProvider(
         final ConversionRatesLocalDataLoader conversionRatesLocalDataLoader,
-        final RestTemplate restTemplate
+        final RestTemplateBuilder restTemplateBuilder
     ) {
         super(
             ProviderContextBuilder.of(PROVIDER_NAME, PROVIDER_RATE_TYPE)
@@ -62,7 +64,7 @@ public class ConversionRateProvider extends AbstractRateProvider {
                 .build()
         );
         this.conversionRatesLocalDataLoader = conversionRatesLocalDataLoader;
-        this.restTemplate = restTemplate;
+        this.http = restTemplateBuilder.rootUri(EXCHANGERATE_HOST_URL).build();
     }
 
     @PostConstruct
@@ -129,10 +131,10 @@ public class ConversionRateProvider extends AbstractRateProvider {
                     }
                 }
 
-                val response = restTemplate.getForEntity(
-                    "https://api.exchangerate.host/{date}",
+                val response = http.getForEntity(
+                    "/{date}",
                     ExchangeRateData.class,
-                    Map.of("date", date.format(DateTimeFormatter.ISO_LOCAL_DATE))
+                    date.format(DateTimeFormatter.ISO_LOCAL_DATE)
                 );
 
                 if (response.getStatusCode() == HttpStatus.OK) {

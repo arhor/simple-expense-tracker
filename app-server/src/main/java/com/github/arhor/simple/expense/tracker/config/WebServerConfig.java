@@ -4,7 +4,12 @@ import lombok.RequiredArgsConstructor;
 import lombok.val;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.io.ResourceLoader;
+import org.springframework.core.io.support.ResourcePatternResolver;
+import org.springframework.core.io.support.ResourcePatternUtils;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.config.annotation.PathMatchConfigurer;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
@@ -39,5 +44,11 @@ public class WebServerConfig implements WebMvcConfigurer {
 
             registry.addResourceHandler(patterns).addResourceLocations(location);
         });
+    }
+
+    @Bean
+    @ConditionalOnMissingBean
+    public ResourcePatternResolver resourcePatternResolver(final ResourceLoader resourceLoader) {
+        return ResourcePatternUtils.getResourcePatternResolver(resourceLoader);
     }
 }

@@ -11,6 +11,7 @@ import org.springframework.aop.interceptor.SimpleAsyncUncaughtExceptionHandler;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.AsyncConfigurer;
 import org.springframework.scheduling.annotation.EnableAsync;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.security.task.DelegatingSecurityContextAsyncTaskExecutor;
 import org.springframework.web.context.request.RequestContextHolder;
@@ -18,9 +19,10 @@ import org.springframework.web.context.request.RequestContextHolder;
 import com.github.arhor.simple.expense.tracker.util.CollectionExt;
 
 @EnableAsync
+@EnableScheduling
 @ExtensionMethod(CollectionExt.class)
 @Configuration(proxyBeanMethods = false)
-public class AsyncConfig implements AsyncConfigurer {
+public class AsyncTasksConfig implements AsyncConfigurer {
 
     @Override
     public AsyncUncaughtExceptionHandler getAsyncUncaughtExceptionHandler() {
@@ -32,20 +34,20 @@ public class AsyncConfig implements AsyncConfigurer {
         val executor = new ThreadPoolTaskExecutor();
 
         executor.initialize();
-        executor.setTaskDecorator(this::decorate);
+        executor.setTaskDecorator(this::decorateUsingParentContext);
 
         return new DelegatingSecurityContextAsyncTaskExecutor(executor);
     }
 
-    private Runnable decorate(final Runnable delegate) {
+    private Runnable decorateUsingParentContext(final Runnable task) {
         val attributes = RequestContextHolder.getRequestAttributes();
         val contextMap = MDC.getCopyOfContextMap();
 
-        return ((attributes == null) && (contextMap == null)) ? delegate : () -> {
+        return ((attributes == null) && (contextMap == null)) ? task : () -> {
             try {
                 RequestContextHolder.setRequestAttributes(attributes);
                 MDC.setContextMap(contextMap.emptyIfNull());
-                delegate.run();
+                task.run();
             } finally {
                 MDC.clear();
                 RequestContextHolder.resetRequestAttributes();

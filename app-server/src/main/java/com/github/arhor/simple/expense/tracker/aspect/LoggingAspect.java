@@ -14,36 +14,28 @@ import org.aspectj.lang.annotation.Pointcut;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
 @Aspect
 @Component
+@Profile("dev")
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 public class LoggingAspect {
 
     @Around("webLayer() || serviceLayer() || persistenceLayer()")
     public Object logMethodExecution(final ProceedingJoinPoint joinPoint) throws Throwable {
         val log = componentLogger(joinPoint);
+
         if (log.isDebugEnabled()) {
-            val requestId = CurrentRequestContext.requestId();
             val signature = joinPoint.getSignature();
             val signatureName = "%s.%s()".formatted(
                 signature.getDeclaringType().getSimpleName(),
                 signature.getName()
             );
-            log.debug(
-                "Request-ID: {}, Method: {}, Arguments: {}",
-                requestId,
-                signatureName,
-                stringifyJoinPointArgs(joinPoint)
-            );
+            log.debug("Method: {}, args: {}", signatureName, stringifyJoinPointArgs(joinPoint));
             val result = joinPoint.proceed();
-            log.debug(
-                "Request-ID: {}, Method: {}, Result: {}",
-                requestId,
-                signatureName,
-                result
-            );
+            log.debug("Method: {}, exit: {}", signatureName, result);
             return result;
         }
         return joinPoint.proceed();
@@ -53,11 +45,11 @@ public class LoggingAspect {
     public void logException(final JoinPoint joinPoint, final Throwable exception) {
         CurrentRequestContext.get().ifPresent(context -> {
             if (!context.isExceptionLogged(exception)) {
-                componentLogger(joinPoint).error(
-                    "Request-ID: {}",
-                    context.getRequestId(),
-                    exception
-                );
+                componentLogger(joinPoint)
+                    .error(
+                        exception.getMessage(),
+                        exception
+                    );
                 context.setExceptionBeenLogged(exception);
             }
         });

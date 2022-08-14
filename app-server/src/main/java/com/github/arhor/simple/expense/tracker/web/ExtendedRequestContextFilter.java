@@ -10,13 +10,14 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.slf4j.MDC;
 import org.springframework.boot.web.servlet.filter.OrderedRequestContextFilter;
 import org.springframework.stereotype.Component;
 
 import com.github.arhor.simple.expense.tracker.aspect.CurrentRequestContext;
 
 @Component
-public class EnrichedRequestContextFilter extends OrderedRequestContextFilter {
+public class ExtendedRequestContextFilter extends OrderedRequestContextFilter {
 
     private static final String REQUEST_ID = "X-REQUEST-ID";
 
@@ -34,16 +35,23 @@ public class EnrichedRequestContextFilter extends OrderedRequestContextFilter {
         return (req, res) -> {
             if ((req instanceof HttpServletRequest servletReq) && (res instanceof HttpServletResponse servletRes)) {
                 val context = new CurrentRequestContext();
-                val requestId = servletReq.getHeader(REQUEST_ID);
+                var requestId = servletReq.getHeader(REQUEST_ID);
 
                 if (requestId != null) {
                     context.setRequestId(UUID.fromString(requestId));
+                } else {
+                    requestId = context.getRequestId().toString();
                 }
-                context.setToCurrentRequestAttributes();
 
-                servletRes.addHeader(REQUEST_ID, context.getRequestId().toString());
+                context.setToCurrentRequestAttributes();
+                MDC.put("request-id", requestId);
+                servletRes.addHeader(REQUEST_ID, requestId);
             }
-            filterChain.doFilter(req, res);
+            try {
+                filterChain.doFilter(req, res);
+            } finally {
+                MDC.clear();
+            }
         };
     }
 }

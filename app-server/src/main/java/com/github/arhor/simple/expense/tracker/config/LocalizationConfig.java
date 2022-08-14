@@ -18,10 +18,11 @@ public class LocalizationConfig {
     @Bean
     public MessageSource messageSource(final Optional<WebProperties> webProperties) {
         val messageSource = new ReloadableResourceBundleMessageSource();
+        val defaultLocale = webProperties.map(WebProperties::getLocale).orElse(Locale.ENGLISH);
 
         messageSource.setBasename("classpath:messages");
         messageSource.setDefaultEncoding("UTF-8");
-        messageSource.setDefaultLocale(webProperties.map(WebProperties::getLocale).orElse(Locale.ENGLISH));
+        messageSource.setDefaultLocale(defaultLocale);
 
         return messageSource;
     }

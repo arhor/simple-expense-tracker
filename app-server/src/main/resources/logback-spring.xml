@@ -5,10 +5,10 @@
         <encoder>
             <pattern>
                 <springProfile name="heroku">
-                    %d{HH:mm:ss.SSS} [%thread] %-5level %-36logger{36} - %msg%n
+                    %d{HH:mm:ss.SSS} [%thread] %-5level %-36logger{36} - Request-ID: [%X{request-id}] %msg%n
                 </springProfile>
                 <springProfile name="!heroku">
-                    %cyan(%d{HH:mm:ss.SSS}) %gray([%thread]) %highlight(%-5level) %magenta(%-36logger{36}) - %msg%n
+                    %cyan(%d{HH:mm:ss.SSS}) %gray([%thread]) %highlight(%-5level) %magenta(%-36logger{36}) - Request-ID: [%X{request-id}] %msg%n
                 </springProfile>
             </pattern>
         </encoder>
