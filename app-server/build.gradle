@@ -80,8 +80,10 @@ dependencies {
     implementation "org.springframework.session:spring-session-core"
 
     compileOnly "org.mapstruct:mapstruct"
+
     runtimeOnly "org.codehaus.janino:janino"
     runtimeOnly "org.postgresql:postgresql"
+
     developmentOnly "org.springframework.boot:spring-boot-devtools"
 
     testImplementation "com.tngtech.archunit:archunit-junit5"
