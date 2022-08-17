@@ -6,9 +6,9 @@ import lombok.val;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-public final class JavaLangExt {
+public final class CommonExtensions {
 
-    private JavaLangExt() { /* should not be instantiated */ }
+    private CommonExtensions() { /* should not be instantiated */ }
 
     @SneakyThrows
     public static <T extends AutoCloseable, R> R use(final T self, final Function<T, R> action) {

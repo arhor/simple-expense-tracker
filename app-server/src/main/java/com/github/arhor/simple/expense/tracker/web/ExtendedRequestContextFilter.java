@@ -1,6 +1,6 @@
 package com.github.arhor.simple.expense.tracker.web;
 
-import com.github.arhor.simple.expense.tracker.util.JavaLangExt;
+import com.github.arhor.simple.expense.tracker.util.CommonExtensions;
 import lombok.experimental.ExtensionMethod;
 import lombok.val;
 import org.slf4j.MDC;
@@ -16,7 +16,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Component
-@ExtensionMethod(JavaLangExt.class)
+@ExtensionMethod(CommonExtensions.class)
 @SuppressWarnings("NullableProblems")
 public class ExtendedRequestContextFilter extends OrderedRequestContextFilter {
 

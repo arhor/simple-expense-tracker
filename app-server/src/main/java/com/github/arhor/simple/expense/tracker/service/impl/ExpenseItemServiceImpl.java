@@ -15,11 +15,11 @@ import com.github.arhor.simple.expense.tracker.data.repository.ExpenseItemReposi
 import com.github.arhor.simple.expense.tracker.model.ExpenseItemDTO;
 import com.github.arhor.simple.expense.tracker.service.ExpenseItemService;
 import com.github.arhor.simple.expense.tracker.service.mapping.ExpenseItemMapper;
-import com.github.arhor.simple.expense.tracker.util.JavaLangExt;
+import com.github.arhor.simple.expense.tracker.util.CommonExtensions;
 import com.github.arhor.simple.expense.tracker.util.TemporalRange;
 
 @Service
-@ExtensionMethod(JavaLangExt.class)
+@ExtensionMethod(CommonExtensions.class)
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 public class ExpenseItemServiceImpl implements ExpenseItemService {
 
