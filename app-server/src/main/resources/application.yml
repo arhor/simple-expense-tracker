@@ -78,6 +78,7 @@ spring:
 
 application-props:
   api-path-prefix: /api
+  log-method-execution: false
   resources:
     patterns:
       - /index.html

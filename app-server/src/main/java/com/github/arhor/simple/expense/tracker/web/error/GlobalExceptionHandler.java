@@ -1,18 +1,16 @@
 package com.github.arhor.simple.expense.tracker.web.error;
 
+import com.github.arhor.simple.expense.tracker.web.CurrentRequestContext;
+import com.github.arhor.simple.expense.tracker.config.properties.ApplicationProps;
+import com.github.arhor.simple.expense.tracker.exception.EntityDuplicateException;
+import com.github.arhor.simple.expense.tracker.exception.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
-import java.util.TimeZone;
-import java.util.function.Function;
-
 import org.apache.commons.collections4.ListUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
+import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -26,10 +24,12 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.NoHandlerFoundException;
 
-import com.github.arhor.simple.expense.tracker.aspect.CurrentRequestContext;
-import com.github.arhor.simple.expense.tracker.config.properties.ApplicationProps;
-import com.github.arhor.simple.expense.tracker.exception.EntityDuplicateException;
-import com.github.arhor.simple.expense.tracker.exception.EntityNotFoundException;
+import java.io.FileNotFoundException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+import java.util.TimeZone;
+import java.util.function.Function;
 
 import static com.github.arhor.simple.expense.tracker.util.TimeUtils.currentZonedDateTime;
 import static com.github.arhor.simple.expense.tracker.web.error.ErrorCode.HANDLER_NOT_FOUND;
@@ -47,8 +47,18 @@ public class GlobalExceptionHandler {
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(Exception.class)
     public ErrorResponse handleDefault(final Exception exception, final Locale locale, final TimeZone timeZone) {
-        log.error("Unhandled exception. Consider appropriate exception handler", exception);
-        return handleErrorCode(ErrorCode.UNCATEGORIZED, locale, timeZone);
+        log.error("Unhandled exception. Consider appropriate exception handler");
+        return handleErrorCode(exception, ErrorCode.UNCATEGORIZED, locale, timeZone);
+    }
+
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ExceptionHandler(DataAccessException.class)
+    public ErrorResponse handleDataAccessException(
+        final DataAccessException exception,
+        final Locale locale,
+        final TimeZone timeZone
+    ) {
+        return handleErrorCode(exception, ErrorCode.DATA_COMMON, locale, timeZone);
     }
 
     @ResponseStatus(HttpStatus.NOT_FOUND)
@@ -58,7 +68,7 @@ public class GlobalExceptionHandler {
         final Locale locale,
         final TimeZone timeZone
     ) {
-        return handleErrorCode(ErrorCode.NOT_FOUND, locale, timeZone, exception.getParams());
+        return handleErrorCode(exception, ErrorCode.NOT_FOUND, locale, timeZone, exception.getParams());
     }
 
     @ResponseStatus(HttpStatus.NOT_FOUND)
@@ -68,7 +78,7 @@ public class GlobalExceptionHandler {
         final Locale locale,
         final TimeZone timeZone
     ) {
-        return handleErrorCode(ErrorCode.NOT_FOUND, locale, timeZone, "InternalUser", "provided username");
+        return handleErrorCode(exception, ErrorCode.NOT_FOUND, locale, timeZone, "InternalUser", "provided username");
     }
 
     @ResponseStatus(HttpStatus.CONFLICT)
@@ -78,17 +88,18 @@ public class GlobalExceptionHandler {
         final Locale locale,
         final TimeZone timeZone
     ) {
-        return handleErrorCode(ErrorCode.DUPLICATE, locale, timeZone, exception.getParams());
+        return handleErrorCode(exception, ErrorCode.DUPLICATE, locale, timeZone, exception.getParams());
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
     public ErrorResponse handleMethodArgumentTypeMismatchException(
-        MethodArgumentTypeMismatchException exception,
-        Locale locale,
-        TimeZone timeZone
+        final MethodArgumentTypeMismatchException exception,
+        final Locale locale,
+        final TimeZone timeZone
     ) {
         return handleErrorCode(
+            exception,
             ErrorCode.METHOD_ARG_TYPE_MISMATCH,
             locale,
             timeZone,
@@ -107,21 +118,33 @@ public class GlobalExceptionHandler {
     ) {
         val requestURL = exception.getRequestURL();
 
-        Object result;
         if (requestURL.equals("/")) {
-            result = handleErrorCode(HANDLER_NOT_FOUND_DEFAULT, locale, timeZone);
+            return handleErrorCode(exception,
+                HANDLER_NOT_FOUND_DEFAULT,
+                locale,
+                timeZone
+            );
         } else if (requestURL.startsWith(applicationProps.apiUrlPath("/"))) {
-            result = handleErrorCode(HANDLER_NOT_FOUND, locale, timeZone, exception.getHttpMethod(), requestURL);
+            return handleErrorCode(exception,
+                HANDLER_NOT_FOUND,
+                locale,
+                timeZone,
+                exception.getHttpMethod(),
+                requestURL
+            );
         } else {
-            result = new ModelAndView("forward:/");
+            return new ModelAndView("forward:/");
         }
-        return result;
     }
 
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     @ExceptionHandler(AccessDeniedException.class)
-    public ErrorResponse handleAccessDeniedException(Locale locale, TimeZone timeZone) {
-        return handleErrorCode(ErrorCode.UNAUTHORIZED, locale, timeZone);
+    public ErrorResponse handleAccessDeniedException(
+        final AccessDeniedException exception,
+        final Locale locale,
+        final TimeZone timeZone
+    ) {
+        return handleErrorCode(exception, ErrorCode.UNAUTHORIZED, locale, timeZone);
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
@@ -145,6 +168,7 @@ public class GlobalExceptionHandler {
         );
 
         return handleErrorCode(
+            exception,
             ErrorCode.VALIDATION_FAILED,
             locale,
             timeZone,
@@ -152,27 +176,46 @@ public class GlobalExceptionHandler {
         );
     }
 
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ExceptionHandler(FileNotFoundException.class)
+    public ErrorResponse handleFileNotFoundException(
+        final FileNotFoundException exception,
+        final Locale locale,
+        final TimeZone timeZone
+    ) {
+        return handleErrorCode(
+            exception,
+            ErrorCode.FILE_NOT_FOUND,
+            locale,
+            timeZone
+        );
+    }
+
     private ErrorResponse handleErrorCode(
-        final ErrorCode error,
+        final Throwable exception,
+        final ErrorCode errorCode,
         final Locale locale,
         final TimeZone timeZone,
         final Object... args
     ) {
-        return handleErrorCode(error, locale, timeZone, emptyList(), args);
+        return handleErrorCode(exception, errorCode, locale, timeZone, emptyList(), args);
     }
 
     private ErrorResponse handleErrorCode(
-        final ErrorCode error,
+        final Throwable exception,
+        final ErrorCode errorCode,
         final Locale locale,
         final TimeZone timeZone,
         final List<String> details,
         final Object... args
     ) {
+        log.error(exception.getMessage(), exception);
+
         return new ErrorResponse(
-            CurrentRequestContext.requestId(),
-            messages.getMessage(error.getLabel(), args, locale),
+            CurrentRequestContext.getRequestId(),
+            messages.getMessage(errorCode.getLabel(), args, locale),
             currentZonedDateTime(timeZone),
-            error,
+            errorCode,
             details
         );
     }
@@ -192,154 +235,4 @@ public class GlobalExceptionHandler {
         }
         return result;
     }
-
-    //    private fun handleResponseStatusException(ex: ResponseStatusException): Pair<HttpStatus, MessageResponse> {
-    //        logger.error("Unhandled error. Please, create proper exception handler for it.", ex)
-    //        return ex.status to messageResponse {
-    //            error {
-    //                text = "Internal Server Error. Please, contact system administrator."
-    //            }
-    //        }
-    //    }
-    //
-    //    private fun handleFileNotFoundException(ex: FileNotFoundException): Pair<HttpStatus, MessageResponse> {
-    //        return HttpStatus.NOT_FOUND to messageResponse {
-    //            error {
-    //                code = ErrorCode.FILE_NOT_FOUND
-    //                text = "File Not Found"
-    //                details = listOf(ex.message)
-    //            }
-    //        }
-    //    }
-    //
-    //    private fun handleMethodArgumentTypeMismatchException(
-    //        ex: MethodArgumentTypeMismatchException,
-    //        lang: Locale
-    //    ): Pair<HttpStatus, MessageResponse> {
-    //        return HttpStatus.BAD_REQUEST to messageResponse {
-    //            error {
-    //                code = ErrorCode.UNCATEGORIZED
-    //                text = lang.localize("error.wrong.argument")
-    //                details = listOf(
-    //                    lang.localize("error.wrong.argument.details", ex.name, ex.value)
-    //                )
-    //            }
-    //        }
-    //    }
-    //
-    //    private fun handleDataAccessException(ex: DataAccessException, lang: Locale): Pair<HttpStatus, MessageResponse> {
-    //        return HttpStatus.NOT_FOUND to messageResponse {
-    //            error {
-    //                code = ErrorCode.DATA_ACCESS_ERROR
-    //                text = lang.localize("error.data.uncategorized")
-    //                details = listOf(ex.message)
-    //            }
-    //        }
-    //    }
-    //
-    //    private fun handleEntityNotFoundException(
-    //        ex: EntityNotFoundException,
-    //        lang: Locale
-    //    ): Pair<HttpStatus, MessageResponse> {
-    //        val (entityType, propName, propValue) = ex
-    //
-    //        return HttpStatus.NOT_FOUND to messageResponse {
-    //            error {
-    //                code = ErrorCode.NOT_FOUND
-    //                text = lang.localize("error.entity.notfound")
-    //                details = listOf(
-    //                    lang.localize("error.entity.notfound.details", entityType, propName, propValue)
-    //                )
-    //            }
-    //        }
-    //    }
-    //
-    //    private fun handleInvalidFormatException(
-    //        ex: InvalidFormatException,
-    //        lang: Locale
-    //    ): Pair<HttpStatus, MessageResponse> {
-    //        val parser = ex.processor as JsonParser
-    //
-    //        return HttpStatus.BAD_REQUEST to messageResponse {
-    //            error {
-    //                code = ErrorCode.VALIDATION_FAILED
-    //                text = lang.localize("error.json.format.invalid")
-    //                details = listOf(
-    //                    lang.localize(
-    //                        "error.json.format.invalid.details",
-    //                        ex.value,
-    //                        parser.currentName,
-    //                        ex.targetType.simpleName
-    //                    )
-    //                )
-    //            }
-    //        }
-    //    }
-    //
-    //    private fun handleJsonProcessingException(
-    //        ex: JsonProcessingException,
-    //        lang: Locale
-    //    ): Pair<HttpStatus, MessageResponse> {
-    //        val value = when (val processor = ex.processor) {
-    //            is JsonParser -> processor.currentName ?: processor.text
-    //            else -> "[UNKNOWN JSON PROCESSOR]"
-    //        }
-    //
-    //        return HttpStatus.BAD_REQUEST to messageResponse {
-    //            error {
-    //                code = ErrorCode.UNCATEGORIZED
-    //                text = lang.localize("error.json.parse")
-    //                details = listOf(
-    //                    lang.localize(
-    //                        "error.json.parse.details",
-    //                        value,
-    //                        ex.location.lineNr,
-    //                        ex.location.columnNr
-    //                    )
-    //                )
-    //            }
-    //        }
-    //    }
-    //
-    //    private fun handleMethodArgumentNotValidException(
-    //        ex: MethodArgumentNotValidException,
-    //        lang: Locale
-    //    ): Pair<HttpStatus, MessageResponse> {
-    //        return HttpStatus.BAD_REQUEST to messageResponse {
-    //            error {
-    //                code = ErrorCode.VALIDATION_FAILED
-    //                text = lang.localize("Object validation failed")
-    //                details = errorMessagesGroupedByField(ex, lang)
-    //            }
-    //        }
-    //    }
-    //
-    //    private fun handleAuthenticationException(
-    //        ex: AuthenticationException,
-    //        lang: Locale
-    //    ): Pair<HttpStatus, MessageResponse> {
-    //        logger.error { "Authentication failed: ${ex.message}" }
-    //        return HttpStatus.UNAUTHORIZED to messageResponse {
-    //            error {
-    //                code = ErrorCode.SECURITY_VIOLATION
-    //                text = lang.localize("error.credentials.bad")
-    //            }
-    //        }
-    //    }
-    //
-    //    private fun errorMessagesGroupedByField(
-    //        ex: MethodArgumentNotValidException,
-    //        lang: Locale
-    //    ): List<FieldErrorDetails> {
-    //
-    //        return ex.allErrors
-    //            .map { it as FieldError }
-    //            .groupBy({ it.field }, { it.defaultMessage })
-    //            .map { (field, messages) ->
-    //                FieldErrorDetails(
-    //                    field = lang.localize("error.validation.failed", field),
-    //                    messages = messages.filterNotNull()
-    //                )
-    //            }
-    //    }
 }

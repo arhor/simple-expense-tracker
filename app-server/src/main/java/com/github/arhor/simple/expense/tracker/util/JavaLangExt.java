@@ -23,4 +23,13 @@ public final class JavaLangExt {
             action.accept(s);
         }
     }
+
+    public static <T, R> R let(final T self, final Function<T, R> action) {
+        return action.apply(self);
+    }
+
+    public static <T> T also(final T self, final Consumer<T> action) {
+        action.accept(self);
+        return self;
+    }
 }

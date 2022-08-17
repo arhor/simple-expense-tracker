@@ -1,14 +1,12 @@
 package com.github.arhor.simple.expense.tracker.web.error;
 
-import lombok.val;
-
-import java.io.IOException;
-
-import org.apache.commons.lang3.StringUtils;
-
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
+import lombok.val;
+import org.apache.commons.lang3.StringUtils;
+
+import java.io.IOException;
 
 public class ErrorCodeSerializer extends StdSerializer<ErrorCode> {
 
@@ -23,8 +21,10 @@ public class ErrorCodeSerializer extends StdSerializer<ErrorCode> {
     public void serialize(final ErrorCode value, final JsonGenerator generator, final SerializerProvider provider)
         throws IOException {
 
+        val errorCodeHexString = Integer.toHexString(value.getNumericValue());
+
         val type = value.getType();
-        val code = StringUtils.leftPad(Integer.toHexString(value.getNumericValue()), CODE_MAX_LENGTH, CODE_PAD_SYMBOL);
+        val code = StringUtils.leftPad(errorCodeHexString, CODE_MAX_LENGTH, CODE_PAD_SYMBOL);
 
         val result = (type + "-" + code).toUpperCase();
 

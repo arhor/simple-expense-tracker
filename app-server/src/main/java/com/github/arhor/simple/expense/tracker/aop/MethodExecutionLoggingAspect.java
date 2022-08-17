@@ -1,27 +1,22 @@
-package com.github.arhor.simple.expense.tracker.aspect;
+package com.github.arhor.simple.expense.tracker.aop;
 
-import lombok.RequiredArgsConstructor;
 import lombok.val;
-
-import java.util.StringJoiner;
-
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
-import org.aspectj.lang.annotation.AfterThrowing;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Profile;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
+
+import java.util.StringJoiner;
 
 @Aspect
 @Component
-@Profile("dev")
-@RequiredArgsConstructor(onConstructor_ = @Autowired)
-public class LoggingAspect {
+@ConditionalOnProperty(prefix = "application-props", name = "log-method-execution")
+public class MethodExecutionLoggingAspect {
 
     @Around("webLayer() || serviceLayer() || persistenceLayer()")
     public Object logMethodExecution(final ProceedingJoinPoint joinPoint) throws Throwable {
@@ -39,20 +34,6 @@ public class LoggingAspect {
             return result;
         }
         return joinPoint.proceed();
-    }
-
-    @AfterThrowing(pointcut = "webLayer() || serviceLayer() || persistenceLayer()", throwing = "exception")
-    public void logException(final JoinPoint joinPoint, final Throwable exception) {
-        CurrentRequestContext.get().ifPresent(context -> {
-            if (!context.isExceptionLogged(exception)) {
-                componentLogger(joinPoint)
-                    .error(
-                        exception.getMessage(),
-                        exception
-                    );
-                context.setExceptionBeenLogged(exception);
-            }
-        });
     }
 
     @Pointcut(
