@@ -78,7 +78,7 @@ spring:
 
 application-props:
   api-path-prefix: /api
-  log-method-execution: false
+  enable-scheduled-tasks: false
   resources:
     patterns:
       - /index.html
@@ -99,4 +99,4 @@ application-props:
       - classpath:/static/data/
   conversion-rates:
     pattern: classpath*:conversion-rates/defaults/exchange.host/*.csv
-    preload: 5
+    preload: 1

@@ -1,18 +1,22 @@
-package com.github.arhor.simple.expense.tracker.service.task.scheduled;
+package com.github.arhor.simple.expense.tracker.config;
 
 import lombok.RequiredArgsConstructor;
 
 import java.util.concurrent.TimeUnit;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.stereotype.Component;
 
 import com.github.arhor.simple.expense.tracker.service.NotificationService;
 
-@Component
+@EnableScheduling
+@Configuration(proxyBeanMethods = false)
+@ConditionalOnProperty(prefix = "application-props", name = "enable-scheduled-tasks")
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
-public class ScheduledTasks {
+public class ScheduledTasksConfig {
 
     private final NotificationService notificationService;
 
