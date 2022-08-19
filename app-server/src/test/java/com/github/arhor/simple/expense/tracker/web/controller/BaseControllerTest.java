@@ -1,4 +1,4 @@
-package com.github.arhor.simple.expense.tracker.web.api;
+package com.github.arhor.simple.expense.tracker.web.controller;
 
 import org.junit.jupiter.api.Tag;
 import org.springframework.beans.factory.annotation.Autowired;

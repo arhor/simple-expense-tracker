@@ -1,4 +1,4 @@
-package com.github.arhor.simple.expense.tracker.web.api;
+package com.github.arhor.simple.expense.tracker.web.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.val;
