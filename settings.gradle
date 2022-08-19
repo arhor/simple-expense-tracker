@@ -22,7 +22,6 @@ rootProject.name = "simple-expense-tracker"
 include ":app-client"
 include ":app-model"
 include ":app-server"
-include ":app-server-webflux"
 
 dependencyResolutionManagement {
     versionCatalogs {

@@ -23,11 +23,12 @@ public class CreatingUserAuthenticationSuccessHandler extends SavedRequestAwareA
 
     @Override
     public void onAuthenticationSuccess(
-        final HttpServletRequest request,
-        final HttpServletResponse response,
-        final Authentication authentication
+        final HttpServletRequest req,
+        final HttpServletResponse res,
+        final Authentication auth
     ) throws ServletException, IOException {
-        userService.createNewUserIfNecessary(authentication);
-        super.onAuthenticationSuccess(request, response, authentication);
+
+        userService.createNewUserIfNecessary(auth);
+        super.onAuthenticationSuccess(req, res, auth);
     }
 }
