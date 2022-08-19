@@ -209,7 +209,7 @@ public class GlobalExceptionHandler {
         final List<String> details,
         final Object... args
     ) {
-        log.error(exception.getMessage(), exception);
+        log.error("An exception occurred:", exception);
 
         return new ErrorResponse(
             CurrentRequestContext.getRequestId(),

@@ -5,10 +5,13 @@ import ReactDOM from 'react-dom';
 import App from '@/App';
 import '@/config/i18n';
 import '@/config/logging';
+import { withOptional } from '@/utils/core-utils';
 
-ReactDOM.render(
-    <StrictMode>
-        <App />
-    </StrictMode>,
-    document.getElementById('root'),
-);
+withOptional(document.getElementById('root'), (container) => {
+    ReactDOM.render(
+        <StrictMode>
+            <App />
+        </StrictMode>,
+        container,
+    );
+});

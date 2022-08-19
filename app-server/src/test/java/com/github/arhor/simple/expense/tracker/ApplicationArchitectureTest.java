@@ -35,8 +35,9 @@ class ApplicationArchitectureTest {
             .layer("Web").definedBy(applicationPackage(".web.."))
             .layer("Service").definedBy(applicationPackage(".service.."))
             .layer("Persistence").definedBy(applicationPackage(".data.."))
+            .layer("Configuration").definedBy(applicationPackage(".config.."))
             .whereLayer("Web").mayNotBeAccessedByAnyLayer()
-            .whereLayer("Service").mayOnlyBeAccessedByLayers("Web")
+            .whereLayer("Service").mayOnlyBeAccessedByLayers("Web", "Configuration")
             .whereLayer("Persistence").mayOnlyBeAccessedByLayers("Service")
             .check(applicationClasses);
     }

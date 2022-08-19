@@ -2,6 +2,12 @@ export type Optional<T> = T | null | undefined;
 
 export type PartialOptional<T> = Partial<{ [P in keyof T]: Optional<T[P]> }>;
 
+export function withOptional<T>(value: Optional<T>, action: (arg: T) => void): void {
+    if (value !== null && value !== undefined) {
+        action(value);
+    }
+}
+
 export function useObjectURL(data: BufferSource, urlConsumer: (arg: string) => void) {
     const blob = new Blob([data]);
     const url = window.URL.createObjectURL(blob);
