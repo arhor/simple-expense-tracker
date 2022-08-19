@@ -1,0 +1,164 @@
+plugins {
+    id "com.adarshr.test-logger"
+    id "io.freefair.lombok"
+    id "io.spring.dependency-management"
+    id "jacoco"
+    id "java"
+    id "org.flywaydb.flyway"
+    id "org.springframework.boot"
+}
+
+description = "Server-side application based on Spring Boot WebFlux %s and Java %s".formatted(
+    property("version.springBoot"),
+    property("version.java"),
+)
+
+java {
+    sourceCompatibility = property("version.java")
+    targetCompatibility = property("version.java")
+}
+
+jacoco {
+    toolVersion = property("version.jacoco")
+}
+
+flyway {
+    url = env["JDBC_DATABASE_URL"]
+    user = env["JDBC_DATABASE_USERNAME"]
+    password = env["JDBC_DATABASE_PASSWORD"]
+
+    driver = "org.postgresql.Driver"
+    encoding = "UTF-8"
+    locations = ["classpath:db/migration"]
+    baselineVersion = "0.0"
+    baselineOnMigrate = true
+}
+
+repositories {
+    mavenCentral()
+    maven { url "https://repo.spring.io/release" }
+}
+
+configurations {
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+    implementation {
+        exclude group: "org.javamoney.moneta", module: "moneta-convert-ecb"
+        exclude group: "org.javamoney.moneta", module: "moneta-convert-imf"
+    }
+    testImplementation {
+        exclude group: "org.junit.vintage", module: "junit-vintage-engine"
+    }
+    all {
+        exclude group: "org.apache.logging.log4j", module: "log4j-to-slf4j"
+        exclude group: "org.apache.logging.log4j", module: "log4j-api"
+    }
+}
+
+dependencies {
+    annotationProcessor platform(rootProject)
+    annotationProcessor "org.mapstruct:mapstruct-processor"
+    annotationProcessor "org.springframework:spring-context-indexer"
+    annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
+
+    implementation platform(rootProject)
+    implementation project(":app-model")
+    implementation "de.siegmar:fastcsv"
+    implementation "org.apache.commons:commons-lang3"
+    implementation "org.apache.commons:commons-collections4"
+    implementation "org.flywaydb:flyway-core"
+    implementation "org.javamoney:moneta"
+    implementation "org.springframework.boot:spring-boot-starter-aop"
+    implementation "org.springframework.boot:spring-boot-starter-data-r2dbc"
+    implementation "org.springframework.boot:spring-boot-starter-oauth2-client"
+    implementation "org.springframework.boot:spring-boot-starter-security"
+    implementation "org.springframework.boot:spring-boot-starter-validation"
+    implementation "org.springframework.boot:spring-boot-starter-webflux"
+    implementation "org.springframework.session:spring-session-core"
+
+    compileOnly "org.mapstruct:mapstruct"
+
+    runtimeOnly "org.codehaus.janino:janino"
+    runtimeOnly "org.postgresql:postgresql"
+    runtimeOnly "org.postgresql:r2dbc-postgresql"
+
+    developmentOnly "org.springframework.boot:spring-boot-devtools"
+
+    testImplementation "com.tngtech.archunit:archunit-junit5"
+    testImplementation "io.projectreactor:reactor-test"
+    testImplementation "org.springframework.boot:spring-boot-starter-test"
+    testImplementation "org.springframework.security:spring-security-test"
+    testImplementation "org.testcontainers:junit-jupiter"
+    testImplementation "org.testcontainers:postgresql"
+    testImplementation "org.testcontainers:r2dbc"
+}
+
+dependencyManagement {
+    imports {
+        mavenBom "org.testcontainers:testcontainers-bom:${property("version.testcontainers")}"
+    }
+}
+
+test {
+    useJUnitPlatform()
+}
+
+jacocoTestReport {
+    shouldRunAfter test
+    applyJaCoCoExclusions(classDirectories)
+}
+
+jacocoTestCoverageVerification {
+    shouldRunAfter jacocoTestReport
+    applyJaCoCoExclusions(classDirectories)
+
+    violationRules {
+        rule {
+            limit {
+                minimum = 0.15
+            }
+        }
+    }
+}
+
+check {
+    dependsOn = [
+        test,
+        jacocoTestReport,
+        jacocoTestCoverageVerification,
+    ]
+}
+
+void applyJaCoCoExclusions(ConfigurableFileCollection classDirectories) {
+    classDirectories.from = files(classDirectories.files.collect {
+        fileTree(
+            dir: it,
+            exclude: [
+                "com/github/arhor/simple/expense/tracker/Application.class",
+                "com/github/arhor/simple/expense/tracker/**/config/*",
+                "com/github/arhor/simple/expense/tracker/**/error/*",
+                "com/github/arhor/simple/expense/tracker/**/exception/*",
+                "com/github/arhor/simple/expense/tracker/**/model/*",
+            ]
+        )
+    })
+}
+
+tasks.withType(JavaCompile) {
+    options.compilerArgs = [
+        "-Xlint:cast",
+        "-Xlint:deprecation",
+        "-Xlint:empty",
+        "-Xlint:fallthrough",
+        "-Xlint:overloads",
+        "-Xlint:overrides",
+        "-Xlint:rawtypes",
+        "-Xlint:removal",
+        "-Xlint:static",
+        "-Xlint:try",
+        "-Xlint:varargs",
+        "-Xlint:unchecked",
+        "-parameters",
+    ]
+}
