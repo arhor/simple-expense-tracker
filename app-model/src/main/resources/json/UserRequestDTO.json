@@ -22,8 +22,7 @@
   },
   "required": [
     "username",
-    "password",
-    "currency"
+    "password"
   ],
   "additionalProperties": false
 }

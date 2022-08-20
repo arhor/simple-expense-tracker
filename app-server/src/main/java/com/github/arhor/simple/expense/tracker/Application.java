@@ -27,7 +27,9 @@ public class Application {
             val port = env.getProperty("server.port");
             val path = env.getProperty("server.servlet.context-path", "/");
 
-            log.info("Local access URL: http://localhost:{}{}", port, path);
+            if ((port != null) && (path != null)) {
+                log.info("Local access URL: http://localhost:{}{}", port, path);
+            }
         };
     }
 }

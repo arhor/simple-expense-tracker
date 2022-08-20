@@ -4,7 +4,6 @@ import lombok.val;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.password.PasswordEncoder;
 
 import com.github.arhor.simple.expense.tracker.data.model.InternalUser;
 import com.github.arhor.simple.expense.tracker.model.UserRequestDTO;
@@ -18,9 +17,6 @@ class InternalUserMapperTest extends MapperTestBase {
 
     @Autowired
     private InternalUserMapper userMapper;
-
-    @Autowired
-    private PasswordEncoder passwordEncoder;
 
     @Test
     void should_correctly_map_user_entity_to_response_dto() {
@@ -93,10 +89,11 @@ class InternalUserMapperTest extends MapperTestBase {
     @Test
     void should_correctly_map_user_request_dto_to_entity_also_encoding_password() {
         // given
-        val request = new UserRequestDTO();
-        request.setUsername("test-username");
-        request.setPassword("test-password");
-        request.setCurrency("test-currency");
+        val username = "test-username";
+        val password = "test-password";
+        val currency = "test-currency";
+
+        val request = new UserRequestDTO(username, password, currency);
 
         val encodedPassword = "encoded-test-password";
 
@@ -116,18 +113,18 @@ class InternalUserMapperTest extends MapperTestBase {
             .satisfies(
                 user -> {
                     assertThat(user.username())
-                        .as("username")
-                        .isEqualTo(request.getUsername());
+                        .describedAs("username")
+                        .isEqualTo(username);
                 },
                 user -> {
                     assertThat(user.password())
-                        .as("password")
+                        .describedAs("password")
                         .isEqualTo(encodedPassword);
                 },
                 user -> {
                     assertThat(user.currency())
-                        .as("currency")
-                        .isEqualTo(request.getCurrency());
+                        .describedAs("currency")
+                        .isEqualTo(currency);
                 }
             );
     }

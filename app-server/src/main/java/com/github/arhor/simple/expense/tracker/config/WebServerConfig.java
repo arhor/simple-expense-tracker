@@ -33,7 +33,9 @@ public class WebServerConfig implements WebMvcConfigurer {
 
     @Override
     public void configurePathMatch(final PathMatchConfigurer configurer) {
-        configurer.addPathPrefix(applicationProps.apiPathPrefix(), forAnnotation(RestController.class));
+        applicationProps.apiPathPrefix().ifPresent(pathPrefix -> {
+            configurer.addPathPrefix(pathPrefix, forAnnotation(RestController.class));
+        });
     }
 
     @Override

@@ -25,6 +25,7 @@ jsonSchema2Pojo {
     includeJsr305Annotations = true
     includeSetters = true
     includeGetters = true
+    includeConstructors = true
     useOptionalForGetters = true
     useBigDecimals = true
     useLongIntegers = true

@@ -3,11 +3,5 @@ spring:
     active: test
 
 application-props:
-  resources:
-    patterns:
-      - ""
-    location:
-      - ""
   conversion-rates:
-    pattern: ""
     preload: 0

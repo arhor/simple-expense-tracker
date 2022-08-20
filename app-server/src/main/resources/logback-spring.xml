@@ -1,5 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration scan="true" scanPeriod="30 seconds">
+    <contextListener class="ch.qos.logback.classic.jul.LevelChangePropagator">
+        <resetJUL>true</resetJUL>
+    </contextListener>
+
+    <shutdownHook class="ch.qos.logback.core.hook.DelayingShutdownHook"/>
+
     <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
         <withJansi>false</withJansi>
         <encoder>
@@ -14,7 +20,7 @@
         </encoder>
     </appender>
 
-    <springProfile name="dev">
+    <springProfile name="dev | test">
         <logger name="com.github.arhor.simple.expense.tracker" level="DEBUG"/>
         <logger name="org.springframework.jdbc.core.JdbcTemplate" level="DEBUG"/>
     </springProfile>

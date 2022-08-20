@@ -47,10 +47,12 @@ public class UserServiceImpl implements UserService {
         if (userRepository.existsByUsername(username)) {
             throw new EntityDuplicateException("InternalUser", "username=" + username);
         }
-
         val user = userMapper.mapToUser(request);
-        val createdUser = userRepository.save(user);
-
+        val createdUser = userRepository.save(
+            user.currency() == null
+                ? user.toBuilder().currency("USD").build()
+                : user
+        );
         return userMapper.mapToResponse(createdUser);
     }
 

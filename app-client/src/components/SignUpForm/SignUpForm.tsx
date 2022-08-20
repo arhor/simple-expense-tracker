@@ -65,7 +65,7 @@ const SignUpForm = () => {
                 username as string,
                 password as string,
             );
-            navigate('/');
+            navigate('/sign-in');
         }
     };
 

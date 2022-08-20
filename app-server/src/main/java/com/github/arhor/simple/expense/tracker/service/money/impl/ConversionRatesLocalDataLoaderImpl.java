@@ -59,46 +59,50 @@ public class ConversionRatesLocalDataLoaderImpl implements ConversionRatesLocalD
 
     @Override
     public void loadInitialConversionRates(final Consumer<Map<LocalDate, Map<String, Double>>> consumer) {
-        withLocalData(resources -> {
-            val preload = applicationProps.conversionRates().preload();
-            val tasks = new CompletableFuture[preload];
+        applicationProps.conversionRates().ifPresent(conversionRates -> {
+            withLocalData(resources -> {
+                val preload = conversionRates.preload();
+                val tasks = new CompletableFuture[preload];
 
-            sort(resources, comparing(Resource::getFilename).reversed());
+                sort(resources, comparing(Resource::getFilename).reversed());
 
-            for (int i = 0, resourcesLength = resources.length; (i < resourcesLength) && (i < preload); i++) {
-                val resource = resources[i];
-                val filename = resource.getFilename();
+                for (int i = 0, resourcesLength = resources.length; (i < resourcesLength) && (i < preload); i++) {
+                    val resource = resources[i];
+                    val filename = resource.getFilename();
 
-                if (filename != null) {
-                    try {
-                        tasks[i] = CompletableFuture.runAsync(() -> {
-                            readDataFile(
-                                Integer.parseInt(
-                                    filename.replace(".csv", "")
-                                ),
-                                resource::getInputStream,
-                                consumer
-                            );
-                        });
-                    } catch (NumberFormatException e) {
-                        log.error("Conversion-rates filename must represent the year for which it contains data", e);
+                    if (filename != null) {
+                        try {
+                            tasks[i] = CompletableFuture.runAsync(() -> {
+                                readDataFile(
+                                    Integer.parseInt(
+                                        filename.replace(".csv", "")
+                                    ),
+                                    resource::getInputStream,
+                                    consumer
+                                );
+                            });
+                        } catch (NumberFormatException e) {
+                            log.error("Conversion-rates filename must represent the year for which it contains data", e);
+                        }
                     }
                 }
-            }
-            CompletableFuture.allOf(tasks).join();
+                CompletableFuture.allOf(tasks).join();
+            });
         });
     }
 
     private void withLocalData(final Consumer<Resource[]> consumer) {
-        try {
-            consumer.accept(
-                resourcePatternResolver.getResources(
-                    applicationProps.conversionRates().pattern()
-                )
-            );
-        } catch (IOException e) {
-            log.error("Failed to load conversion-rates from local data-files", e);
-        }
+        applicationProps.conversionRates().ifPresent(conversionRates -> {
+            try {
+                consumer.accept(
+                    resourcePatternResolver.getResources(
+                        conversionRates.pattern()
+                    )
+                );
+            } catch (IOException e) {
+                log.error("Failed to load conversion-rates from local data-files", e);
+            }
+        });
     }
 
     private void readDataFile(

@@ -96,7 +96,7 @@ class UserControllerTest extends BaseControllerTest {
                     assertThat(dto.getCurrency())
                         .as("currency")
                         .isNotNull()
-                        .isEqualTo(currency);
+                        .contains(currency);
                 }
             );
 
