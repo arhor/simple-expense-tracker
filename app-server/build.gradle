@@ -3,8 +3,10 @@ plugins {
     id "io.freefair.lombok"
     id "io.spring.dependency-management"
     id "jacoco"
-    id "java"
     id "org.flywaydb.flyway"
+    id "org.jetbrains.kotlin.jvm"
+    id "org.jetbrains.kotlin.kapt"
+    id "org.jetbrains.kotlin.plugin.spring"
     id "org.springframework.boot"
 }
 
@@ -16,6 +18,10 @@ description = "Server-side application based on Spring Boot %s and Java %s".form
 java {
     sourceCompatibility = property("version.java")
     targetCompatibility = property("version.java")
+}
+
+kapt {
+    keepJavacAnnotationProcessors = true
 }
 
 jacoco {
@@ -58,10 +64,10 @@ configurations {
 }
 
 dependencies {
-    annotationProcessor platform(rootProject)
-    annotationProcessor "org.mapstruct:mapstruct-processor"
-    annotationProcessor "org.springframework:spring-context-indexer"
-    annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
+    kapt platform(rootProject)
+    kapt "org.mapstruct:mapstruct-processor"
+    kapt "org.springframework:spring-context-indexer"
+    kapt "org.springframework.boot:spring-boot-configuration-processor"
 
     implementation platform(rootProject)
     implementation project(":app-model")
@@ -70,6 +76,8 @@ dependencies {
     implementation "org.apache.commons:commons-collections4"
     implementation "org.flywaydb:flyway-core"
     implementation "org.javamoney:moneta"
+    implementation "org.jetbrains.kotlin:kotlin-reflect"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
     implementation "org.springframework.boot:spring-boot-starter-aop"
     implementation "org.springframework.boot:spring-boot-starter-data-jdbc"
     implementation "org.springframework.boot:spring-boot-starter-oauth2-client"
@@ -87,6 +95,7 @@ dependencies {
     developmentOnly "org.springframework.boot:spring-boot-devtools"
 
     testImplementation "com.tngtech.archunit:archunit-junit5"
+    testImplementation "org.mockito.kotlin:mockito-kotlin"
     testImplementation "org.springframework.boot:spring-boot-starter-test"
     testImplementation "org.springframework.security:spring-security-test"
     testImplementation "org.testcontainers:junit-jupiter"
@@ -160,4 +169,15 @@ tasks.withType(JavaCompile) {
         "-Xlint:unchecked",
         "-parameters",
     ]
+}
+
+tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile) {
+    kotlinOptions {
+        freeCompilerArgs = [
+            "-Xjsr305=strict",
+            "-Xjvm-default=all",
+        ]
+        jvmTarget = project.property("version.java")
+        javaParameters = true
+    }
 }

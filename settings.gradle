@@ -1,13 +1,16 @@
 pluginManagement {
     plugins {
         // @formatter:off
-        id "com.adarshr.test-logger"         version settings["version.gradleTestLogger"]
-        id "com.github.node-gradle.node"     version settings["version.nodeGradlePlugin"]
-        id "io.freefair.lombok"              version settings["version.lombok"]
-        id "io.spring.dependency-management" version settings["version.springDependencyManagement"]
-        id "org.flywaydb.flyway"             version settings["version.flyway"]
-        id "org.jsonschema2dataclass"        version settings["version.json2pojo"]
-        id "org.springframework.boot"        version settings["version.springBoot"]
+        id "com.adarshr.test-logger"            version settings["version.gradleTestLogger"]
+        id "com.github.node-gradle.node"        version settings["version.nodeGradlePlugin"]
+        id "io.freefair.lombok"                 version settings["version.lombok"]
+        id "io.spring.dependency-management"    version settings["version.springDependencyManagement"]
+        id "org.flywaydb.flyway"                version settings["version.flyway"]
+        id "org.jsonschema2dataclass"           version settings["version.json2pojo"]
+        id "org.jetbrains.kotlin.kapt"          version settings["version.kotlin"]
+        id "org.jetbrains.kotlin.jvm"           version settings["version.kotlin"]
+        id "org.jetbrains.kotlin.plugin.spring" version settings["version.kotlin"]
+        id "org.springframework.boot"           version settings["version.springBoot"]
         // @formatter:on
     }
     repositories {

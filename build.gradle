@@ -25,6 +25,7 @@ dependencies {
         api group: "org.javamoney"             , name: "moneta"              , version: this["version.javamoneyMoneta"]
         api group: "org.mapstruct"             , name: "mapstruct"           , version: this["version.mapstruct"]
         api group: "org.mapstruct"             , name: "mapstruct-processor" , version: this["version.mapstruct"]
+        api group: "org.mockito.kotlin"        , name: "mockito-kotlin"      , version: this["version.mockitoKotlin"]
         // @formatter:on
     }
 }
