@@ -1,4 +1,4 @@
-package com.github.arhor.simple.expense.tracker;
+package com.github.arhor.simple.expense.tracker
 
 import com.github.arhor.simple.expense.tracker.config.properties.ApplicationProps
 import org.slf4j.LoggerFactory
@@ -22,7 +22,7 @@ class Application {
         val path = env.getProperty("server.servlet.context-path", "/")
 
         if (port != null) {
-            log.info("Local access URL: http://localhost:{}{}", port, path);
+            log.info("Local access URL: http://localhost:{}{}", port, path)
         }
     }
 }
