@@ -22,7 +22,7 @@ import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.ResourcePatternResolver;
 import org.springframework.stereotype.Service;
 
-import com.github.arhor.simple.expense.tracker.config.properties.ApplicationProps;
+import com.github.arhor.simple.expense.tracker.config.props.ApplicationProps;
 import com.github.arhor.simple.expense.tracker.service.money.ConversionRatesLocalDataLoader;
 
 import static java.util.Arrays.sort;
@@ -59,9 +59,11 @@ public class ConversionRatesLocalDataLoaderImpl implements ConversionRatesLocalD
 
     @Override
     public void loadInitialConversionRates(final Consumer<Map<LocalDate, Map<String, Double>>> consumer) {
-        applicationProps.conversionRates().ifPresent(conversionRates -> {
+        var conversionRates = applicationProps.getConversionRates();
+
+        if (conversionRates != null) {
             withLocalData(resources -> {
-                val preload = conversionRates.preload();
+                val preload = conversionRates.getPreload();
                 val tasks = new CompletableFuture[preload];
 
                 sort(resources, comparing(Resource::getFilename).reversed());
@@ -88,21 +90,23 @@ public class ConversionRatesLocalDataLoaderImpl implements ConversionRatesLocalD
                 }
                 CompletableFuture.allOf(tasks).join();
             });
-        });
+        }
     }
 
     private void withLocalData(final Consumer<Resource[]> consumer) {
-        applicationProps.conversionRates().ifPresent(conversionRates -> {
+        var conversionRates = applicationProps.getConversionRates();
+
+        if (conversionRates != null) {
             try {
                 consumer.accept(
                     resourcePatternResolver.getResources(
-                        conversionRates.pattern()
+                        conversionRates.getPattern()
                     )
                 );
             } catch (IOException e) {
                 log.error("Failed to load conversion-rates from local data-files", e);
             }
-        });
+        }
     }
 
     private void readDataFile(

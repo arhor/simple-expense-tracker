@@ -1,7 +1,7 @@
 package com.github.arhor.simple.expense.tracker.web.error;
 
 import com.github.arhor.simple.expense.tracker.web.CurrentRequestContext;
-import com.github.arhor.simple.expense.tracker.config.properties.ApplicationProps;
+import com.github.arhor.simple.expense.tracker.config.props.ApplicationProps;
 import com.github.arhor.simple.expense.tracker.exception.EntityDuplicateException;
 import com.github.arhor.simple.expense.tracker.exception.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;

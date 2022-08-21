@@ -1,6 +1,6 @@
 package com.github.arhor.simple.expense.tracker
 
-import com.github.arhor.simple.expense.tracker.config.properties.ApplicationProps
+import com.github.arhor.simple.expense.tracker.config.props.ApplicationProps
 import org.slf4j.LoggerFactory
 import org.springframework.boot.ApplicationArguments
 import org.springframework.boot.ApplicationRunner
