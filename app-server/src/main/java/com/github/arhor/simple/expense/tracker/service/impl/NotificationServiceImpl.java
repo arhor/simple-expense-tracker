@@ -72,14 +72,16 @@ public class NotificationServiceImpl implements NotificationService {
             val notifications = notificationRepository.findAllByTargetUserIdIn(userIds);
 
             for (val notification : notifications) {
-                val sent =
-                    sendInternal(
+                var sent = false;
+                try {
+                    sent = sendInternal(
                         notification.targetUserId(),
                         notificationMapper.mapProjectionToDto(notification)
                     );
-
-                if (sent) {
-                    notificationRepository.deleteById(notification.id());
+                } finally {
+                    if (sent) {
+                        notificationRepository.deleteById(notification.id());
+                    }
                 }
             }
         }

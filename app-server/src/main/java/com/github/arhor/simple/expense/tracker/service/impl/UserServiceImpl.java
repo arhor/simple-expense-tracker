@@ -84,6 +84,7 @@ public class UserServiceImpl implements UserService {
         if (auth instanceof OAuth2AuthenticationToken token) {
             val externalId = token.getName();
             val externalProvider = token.getAuthorizedClientRegistrationId();
+
             return userRepository.findByExternalIdAndProvider(externalId, externalProvider).orElseThrow(() ->
                 new EntityNotFoundException(
                     "User", "externalId=" + externalId + ", externalProvider=" + externalProvider
@@ -92,6 +93,7 @@ public class UserServiceImpl implements UserService {
         }
         if (auth instanceof UsernamePasswordAuthenticationToken token) {
             val username = token.getName();
+
             return userRepository.findByUsername(username).orElseThrow(() ->
                 new EntityNotFoundException(
                     "User", "username=" + username
