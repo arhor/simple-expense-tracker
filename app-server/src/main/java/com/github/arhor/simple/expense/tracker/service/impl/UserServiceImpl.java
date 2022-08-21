@@ -1,24 +1,22 @@
 package com.github.arhor.simple.expense.tracker.service.impl;
 
+import com.github.arhor.simple.expense.tracker.data.model.InternalUser;
+import com.github.arhor.simple.expense.tracker.data.model.projection.CompactInternalUserProjection;
+import com.github.arhor.simple.expense.tracker.data.repository.InternalUserRepository;
+import com.github.arhor.simple.expense.tracker.exception.EntityDuplicateException;
+import com.github.arhor.simple.expense.tracker.model.Currency;
+import com.github.arhor.simple.expense.tracker.model.UserRequestDTO;
+import com.github.arhor.simple.expense.tracker.model.UserResponseDTO;
+import com.github.arhor.simple.expense.tracker.service.UserService;
+import com.github.arhor.simple.expense.tracker.service.mapping.InternalUserMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.val;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import com.github.arhor.simple.expense.tracker.data.model.InternalUser;
-import com.github.arhor.simple.expense.tracker.data.repository.InternalUserRepository;
-import com.github.arhor.simple.expense.tracker.exception.EntityDuplicateException;
-import com.github.arhor.simple.expense.tracker.exception.EntityNotFoundException;
-import com.github.arhor.simple.expense.tracker.model.Currency;
-import com.github.arhor.simple.expense.tracker.model.UserRequestDTO;
-import com.github.arhor.simple.expense.tracker.model.UserResponseDTO;
-import com.github.arhor.simple.expense.tracker.service.UserService;
-import com.github.arhor.simple.expense.tracker.service.mapping.InternalUserMapper;
 
 @Service
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
@@ -75,12 +73,12 @@ public class UserServiceImpl implements UserService {
     }
 
     private boolean shouldCreateInternalUser(final String externalId, final String externalProvider) {
-        return (externalId!=null)
-            && (externalProvider!=null)
+        return (externalId != null)
+            && (externalProvider != null)
             && !userRepository.existsByExternalIdAndExternalProvider(externalId, externalProvider);
     }
 
-    private InternalUser.Projection determineInternalUser(final Authentication auth) {
+    private CompactInternalUserProjection determineInternalUser(final Authentication auth) {
         if (auth instanceof OAuth2AuthenticationToken token) {
             val externalId = token.getName();
             val externalProvider = token.getAuthorizedClientRegistrationId();
@@ -102,9 +100,9 @@ public class UserServiceImpl implements UserService {
         }
         throw new IllegalArgumentException(
             "Unsupported authentication type: " + (
-                (auth!=null)
+                (auth != null)
                     ? auth.getClass().getSimpleName()
-                    :"<null>"
+                    : "<null>"
             )
         );
     }

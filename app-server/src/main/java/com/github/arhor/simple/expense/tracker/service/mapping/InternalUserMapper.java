@@ -1,13 +1,13 @@
 package com.github.arhor.simple.expense.tracker.service.mapping;
 
+import com.github.arhor.simple.expense.tracker.data.model.InternalUser;
+import com.github.arhor.simple.expense.tracker.data.model.projection.CompactInternalUserProjection;
+import com.github.arhor.simple.expense.tracker.model.UserRequestDTO;
+import com.github.arhor.simple.expense.tracker.model.UserResponseDTO;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
-
-import com.github.arhor.simple.expense.tracker.data.model.InternalUser;
-import com.github.arhor.simple.expense.tracker.model.UserRequestDTO;
-import com.github.arhor.simple.expense.tracker.model.UserResponseDTO;
 
 @Mapper(config = SharedMappingConfig.class)
 public abstract class InternalUserMapper {
@@ -25,5 +25,5 @@ public abstract class InternalUserMapper {
 
     public abstract UserResponseDTO mapToResponse(InternalUser entity);
 
-    public abstract UserResponseDTO mapToResponse(InternalUser.Projection projection);
+    public abstract UserResponseDTO mapToResponse(CompactInternalUserProjection projection);
 }

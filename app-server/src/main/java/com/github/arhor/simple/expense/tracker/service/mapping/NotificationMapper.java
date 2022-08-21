@@ -1,5 +1,6 @@
 package com.github.arhor.simple.expense.tracker.service.mapping;
 
+import com.github.arhor.simple.expense.tracker.data.model.projection.CompactNotificationProjection;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
@@ -13,5 +14,5 @@ public interface NotificationMapper {
     @Mapping(target = "timestamp", ignore = true)
     Notification mapDtoToEntity(NotificationDTO dto, Long targetUserId, Long sourceUserId);
 
-    NotificationDTO mapProjectionToDto(Notification.Projection projection);
+    NotificationDTO mapProjectionToDto(CompactNotificationProjection projection);
 }

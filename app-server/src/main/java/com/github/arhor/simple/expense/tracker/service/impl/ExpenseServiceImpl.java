@@ -24,7 +24,6 @@ import com.github.arhor.simple.expense.tracker.data.model.projection.AggregatedE
 import com.github.arhor.simple.expense.tracker.data.repository.ExpenseItemRepository;
 import com.github.arhor.simple.expense.tracker.data.repository.ExpenseRepository;
 import com.github.arhor.simple.expense.tracker.data.repository.InternalUserRepository;
-import com.github.arhor.simple.expense.tracker.exception.EntityNotFoundException;
 import com.github.arhor.simple.expense.tracker.model.ExpenseRequestDTO;
 import com.github.arhor.simple.expense.tracker.model.ExpenseResponseDTO;
 import com.github.arhor.simple.expense.tracker.service.ExpenseService;
