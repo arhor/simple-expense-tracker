@@ -28,8 +28,8 @@ import com.github.arhor.simple.expense.tracker.exception.EntityNotFoundException
 import com.github.arhor.simple.expense.tracker.model.ExpenseRequestDTO;
 import com.github.arhor.simple.expense.tracker.model.ExpenseResponseDTO;
 import com.github.arhor.simple.expense.tracker.service.ExpenseService;
-import com.github.arhor.simple.expense.tracker.service.money.MoneyConverter;
 import com.github.arhor.simple.expense.tracker.service.mapping.ExpenseMapper;
+import com.github.arhor.simple.expense.tracker.service.money.MoneyConverter;
 import com.github.arhor.simple.expense.tracker.util.TemporalRange;
 
 @Service
@@ -45,14 +45,14 @@ public class ExpenseServiceImpl implements ExpenseService {
     @Override
     public List<ExpenseResponseDTO> getUserExpenses(final Long userId, final TemporalRange<LocalDate> dateRange) {
         val expenses = expenseRepository.findAllByUserId(userId);
-        val expenseTotalsById = getExpenseItemsTotal(userId, expenses.stream().map(Expense::id).toList(), dateRange);
+        val expenseTotalsById = getExpenseItemsTotal(userId, expenses.stream().map(Expense::getId).toList(), dateRange);
 
         return expenses
             .stream()
             .map(expense -> expenseMapper.mapToDTO(
                     expense,
                     expenseTotalsById.getOrDefault(
-                        expense.id(),
+                        expense.getId(),
                         BigDecimal.ZERO
                     )
                 )
@@ -65,8 +65,8 @@ public class ExpenseServiceImpl implements ExpenseService {
         return expenseRepository.findById(expenseId)
             .map(entity -> expenseMapper.mapToDTO(
                     entity,
-                    getExpenseItemsTotal(entity.userId(), List.of(entity.id()), dateRange).getOrDefault(
-                        entity.id(),
+                    getExpenseItemsTotal(entity.getUserId(), List.of(entity.getId()), dateRange).getOrDefault(
+                        entity.getId(),
                         BigDecimal.ZERO
                     )
                 )
@@ -112,7 +112,7 @@ public class ExpenseServiceImpl implements ExpenseService {
 
         for (val expenseItem : aggregatedExpenseItems) {
             val expenseTotalCalculator = totalByExpense.computeIfAbsent(
-                expenseItem.expenseId(),
+                expenseItem.getExpenseId(),
                 key -> new TotalCalculationContext(targetCurrency)
             );
             expenseTotalCalculator.add(expenseItem);
@@ -136,11 +136,11 @@ public class ExpenseServiceImpl implements ExpenseService {
         }
 
         void add(final AggregatedExpenseItemProjection expenseItem) {
-            val sourceCurrency = expenseItem.currency();
+            val sourceCurrency = expenseItem.getCurrency();
             val targetCurrency = total.getCurrency();
 
-            val amount = Money.of(expenseItem.totalAmount(), sourceCurrency);
-            val result = converter.convert(amount, targetCurrency, expenseItem.date());
+            val amount = Money.of(expenseItem.getTotalAmount(), sourceCurrency);
+            val result = converter.convert(amount, targetCurrency, expenseItem.getDate());
 
             total = total.add(result);
         }
