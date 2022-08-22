@@ -1,10 +1,8 @@
-package com.github.arhor.simple.expense.tracker.service;
+package com.github.arhor.simple.expense.tracker.service
 
-import java.time.LocalDate;
-
-import javax.validation.constraints.PastOrPresent;
-
-import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.format.annotation.DateTimeFormat
+import java.time.LocalDate
+import javax.validation.constraints.PastOrPresent
 
 /**
  * Represents date-range query-string parameters.
@@ -12,13 +10,12 @@ import org.springframework.format.annotation.DateTimeFormat;
  * @param startDate start of the date-range, nullable
  * @param endDate   end of the date-range, nullable
  */
-public record DateRangeCriteria(
+data class DateRangeCriteria(
     @PastOrPresent
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
-    LocalDate startDate,
+    val startDate: LocalDate,
 
     @PastOrPresent
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
-    LocalDate endDate
-) {
-}
+    val endDate: LocalDate
+)

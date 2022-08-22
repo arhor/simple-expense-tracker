@@ -7,11 +7,11 @@ import '@/config/i18n';
 import '@/config/logging';
 import { withOptional } from '@/utils/core-utils';
 
-withOptional(document.getElementById('root'), (container) => {
+withOptional(document.getElementById('root'), (root) => {
     ReactDOM.render(
         <StrictMode>
             <App />
         </StrictMode>,
-        container,
+        root,
     );
 });

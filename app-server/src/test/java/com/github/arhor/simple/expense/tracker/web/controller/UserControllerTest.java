@@ -11,7 +11,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.test.context.support.WithMockUser;
 
-import com.github.arhor.simple.expense.tracker.config.properties.ApplicationProps;
+import com.github.arhor.simple.expense.tracker.config.props.ApplicationProps;
 import com.github.arhor.simple.expense.tracker.model.UserRequestDTO;
 import com.github.arhor.simple.expense.tracker.model.UserResponseDTO;
 import com.github.arhor.simple.expense.tracker.service.UserService;

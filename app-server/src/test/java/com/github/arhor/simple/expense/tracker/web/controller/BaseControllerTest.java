@@ -13,7 +13,7 @@ import org.springframework.security.web.authentication.AuthenticationSuccessHand
 import org.springframework.test.web.servlet.MockMvc;
 
 import com.github.arhor.simple.expense.tracker.config.LocalizationConfig;
-import com.github.arhor.simple.expense.tracker.config.properties.ApplicationProps;
+import com.github.arhor.simple.expense.tracker.config.props.ApplicationProps;
 import com.github.arhor.simple.expense.tracker.service.impl.TimeServiceImpl;
 
 import static org.assertj.core.api.SoftAssertions.assertSoftly;

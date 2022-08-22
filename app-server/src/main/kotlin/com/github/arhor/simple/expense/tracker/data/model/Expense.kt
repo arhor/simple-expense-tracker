@@ -17,7 +17,7 @@ data class Expense(
     val icon: String?,
     val color: String?,
     @CreatedDate
-    val created: LocalDateTime,
+    val created: LocalDateTime? = null,
     @LastModifiedDate
-    val updated: LocalDateTime?,
+    val updated: LocalDateTime? = null,
 )
