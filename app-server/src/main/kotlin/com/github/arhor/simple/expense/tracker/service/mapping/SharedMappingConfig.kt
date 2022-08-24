@@ -6,7 +6,6 @@ import org.mapstruct.NullValueMappingStrategy;
 @MapperConfig(
     componentModel = "spring",
     nullValueMappingStrategy = NullValueMappingStrategy.RETURN_DEFAULT,
-    uses = OptionalMapper.class
+    uses = [OptionalMapper::class],
 )
-public final class SharedMappingConfig {
-}
+class SharedMappingConfig
