@@ -39,18 +39,11 @@ class ConversionRatesLocalDataLoaderImpl(
 
     override fun loadInitialConversionRates(consumer: (Map<LocalDate, Map<String, Double>>) -> Unit) {
         applicationProps.conversionRates?.let { (_, preload) ->
-            withLocalData {
+            withLocalData { resources ->
                 runBlocking(Dispatchers.IO) {
-                    it.sortedBy { it.filename }.takeLast(preload).map { resource ->
+                    resources.sortedBy { it.filename }.takeLast(preload).map {
                         launch {
-                            try {
-                                readDataFile(resource, consumer)
-                            } catch (e: NumberFormatException) {
-                                log.error(
-                                    "Conversion-rates filename must represent the year for which it contains data",
-                                    e
-                                )
-                            }
+                            readDataFile(it, consumer)
                         }
                     }.joinAll()
                 }
@@ -94,10 +87,7 @@ class ConversionRatesLocalDataLoaderImpl(
                 }
             }
         } catch (e: NumberFormatException) {
-            log.error(
-                "Conversion-rates filename must represent the year for which it contains data",
-                e
-            )
+            log.error("Conversion-rates filename must represent the year for which it contains data", e)
         }
     }
 
