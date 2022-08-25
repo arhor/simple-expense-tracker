@@ -3,7 +3,7 @@ package com.github.arhor.simple.expense.tracker.exception;
 abstract class PropertyConditionException(
     private val name: String,
     private val condition: String,
-) : RuntimeException(message = "Property [$name] exception occurred, caused by condition [$condition]") {
+) : RuntimeException("Property [$name] exception occurred, caused by condition [$condition]") {
 
     val params: Array<Any>
         get() = arrayOf(name, condition)

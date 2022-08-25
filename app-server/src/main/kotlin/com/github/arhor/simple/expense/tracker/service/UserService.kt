@@ -6,7 +6,7 @@ import org.springframework.security.core.Authentication
 
 interface UserService {
 
-    fun determineUserId(auth: Authentication): Long?
+    fun determineUserId(auth: Authentication): Long
 
     fun determineUser(auth: Authentication): UserResponseDTO
 

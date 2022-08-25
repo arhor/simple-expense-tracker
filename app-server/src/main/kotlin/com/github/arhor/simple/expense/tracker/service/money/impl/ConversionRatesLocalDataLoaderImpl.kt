@@ -5,20 +5,17 @@ import com.github.arhor.simple.expense.tracker.service.money.ConversionRatesLoca
 import de.siegmar.fastcsv.reader.NamedCsvReader
 import de.siegmar.fastcsv.reader.NamedCsvRow
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
-import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.joinAll
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.withContext
 import org.slf4j.LoggerFactory
 import org.springframework.core.io.Resource
 import org.springframework.core.io.support.ResourcePatternResolver
 import org.springframework.stereotype.Service
 import java.io.IOException
-import java.io.InputStream
 import java.lang.invoke.MethodHandles
 import java.time.LocalDate
 import java.time.chrono.IsoChronology
-import java.util.concurrent.CompletableFuture
 
 @Service
 class ConversionRatesLocalDataLoaderImpl(
@@ -32,11 +29,7 @@ class ConversionRatesLocalDataLoaderImpl(
                 val filename = resource.filename
 
                 if ((filename != null) && filename.contains(year.toString())) {
-                    readDataFile(
-                        year.toLong(),
-                        resource::getInputStream,
-                        consumer
-                    )
+                    readDataFile(resource, consumer)
                     break
                 }
             }
@@ -45,56 +38,32 @@ class ConversionRatesLocalDataLoaderImpl(
     }
 
     override fun loadInitialConversionRates(consumer: (Map<LocalDate, Map<String, Double>>) -> Unit) {
-        applicationProps.conversionRates?.let { conversionRates ->
-            withLocalData { resources ->
-//                runBlocking(Dispatchers.IO) {
-//                    resources
-//                        .sortedByDescending { it.filename }
-//                        .take(conversionRates.preload)
-//                        .filter { it.filename != null }
-//                        .map {
-//                            async {
-//                                readDataFile(
-//                                    it.filename!!.replace(".csv", "").toLong(),
-//                                    { it.inputStream },
-//                                    consumer
-//                                )
-//                            }
-//                        }.awaitAll()
-//                }
-
-                val preload = conversionRates.preload
-                val tasks = Array<CompletableFuture<*>?>(preload) { null }
-
-                resources.sortByDescending { it.filename }
-
-                resources.take(preload).forEachIndexed { i, resource ->
-                    val filename = resource.filename
-
-                    if (filename != null) {
-                        try {
-                            tasks[i] = CompletableFuture.runAsync {
-
+        applicationProps.conversionRates?.let { (_, preload) ->
+            withLocalData {
+                runBlocking(Dispatchers.IO) {
+                    it.sortedBy { it.filename }.takeLast(preload).map { resource ->
+                        launch {
+                            try {
+                                readDataFile(resource, consumer)
+                            } catch (e: NumberFormatException) {
+                                log.error(
+                                    "Conversion-rates filename must represent the year for which it contains data",
+                                    e
+                                )
                             }
-                        } catch (e: NumberFormatException) {
-                            log.error(
-                                "Conversion-rates filename must represent the year for which it contains data",
-                                e
-                            )
                         }
-                    }
+                    }.joinAll()
                 }
-                CompletableFuture.allOf(*tasks).join()
             }
         }
     }
 
     private fun withLocalData(consumer: (Array<Resource>) -> Unit) {
-        applicationProps.conversionRates?.let { conversionRates ->
+        applicationProps.conversionRates?.let {
             try {
                 consumer(
                     resourcePatternResolver.getResources(
-                        conversionRates.pattern
+                        it.pattern
                     )
                 )
             } catch (e: IOException) {
@@ -104,23 +73,31 @@ class ConversionRatesLocalDataLoaderImpl(
     }
 
     private fun readDataFile(
-        year: Long,
-        data: () -> InputStream,
+        resource: Resource,
         consumer: (Map<LocalDate, Map<String, Double>>) -> Unit
     ) {
-        NamedCsvReader.builder().skipComments(true).build(data.invoke().reader()).use { csv ->
-            try {
-                val length = determineMapCapacity(year)
-                val result = HashMap<LocalDate, Map<String, Double>>(length)
+        try {
+            val year = resource.filename!!.replace(".csv", "").toLong()
 
-                for (row in csv) {
-                    handleCsvRow(row, result::put)
+            NamedCsvReader.builder().skipComments(true).build(resource.inputStream.reader()).use { csv ->
+                try {
+                    val length = determineMapCapacity(year)
+                    val result = HashMap<LocalDate, Map<String, Double>>(length)
+
+                    for (row in csv) {
+                        handleCsvRow(row, result::put)
+                    }
+                    consumer(result)
+                    log.info("[SUCCESS]: {} year conversion rates loaded", year)
+                } catch (e: IOException) {
+                    log.warn("Failed to load rates for the year: {}", year, e)
                 }
-                consumer(result)
-                log.info("[SUCCESS]: {} year conversion rates loaded", year)
-            } catch (e: IOException) {
-                log.warn("Failed to load rates for the year: {}", year, e)
             }
+        } catch (e: NumberFormatException) {
+            log.error(
+                "Conversion-rates filename must represent the year for which it contains data",
+                e
+            )
         }
     }
 

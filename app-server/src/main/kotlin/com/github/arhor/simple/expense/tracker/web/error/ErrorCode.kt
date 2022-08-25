@@ -1,14 +1,13 @@
 package com.github.arhor.simple.expense.tracker.web.error;
 
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize
 
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-
-@Getter
-@RequiredArgsConstructor
-@JsonSerialize(using = ErrorCodeSerializer.class)
-public enum ErrorCode {
+@JsonSerialize(using = ErrorCodeSerializer::class)
+enum class ErrorCode(
+    val type: Type,
+    val numericValue: Int,
+    val label: String,
+) {
     // @formatter:off
     UNCATEGORIZED             (Type.GEN, 0x00000, "error.server.internal"),
 
@@ -27,20 +26,12 @@ public enum ErrorCode {
     // @formatter:on
     ;
 
-    private final Type type;
-    private final int numericValue;
-    private final String label;
-
-    @Getter
-    @RequiredArgsConstructor
-    public enum Type {
+    enum class Type(val description: String) {
         GEN("GENERAL"),
         SEC("SECURITY"),
         VAL("VALIDATION"),
         DAT("DATA"),
         SRV("SERVER"),
         ;
-
-        private final String description;
     }
 }

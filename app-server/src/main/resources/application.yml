@@ -17,7 +17,7 @@ spring:
     proxy-target-class: false
 
   main:
-    lazy-initialization: true
+#    lazy-initialization: true
     allow-bean-definition-overriding: true
 
   web:
@@ -100,4 +100,4 @@ application-props:
       - classpath:/static/data/
   conversion-rates:
     pattern: classpath*:conversion-rates/defaults/exchange.host/*.csv
-    preload: 1
+    preload: 5

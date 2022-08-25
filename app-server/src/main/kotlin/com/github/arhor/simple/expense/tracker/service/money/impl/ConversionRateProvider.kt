@@ -14,7 +14,6 @@ import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
-import java.util.stream.Stream
 import javax.annotation.PostConstruct
 import javax.money.CurrencyUnit
 import javax.money.Monetary
@@ -28,7 +27,7 @@ import javax.money.convert.RateType
 @Service
 class ConversionRateProvider(
     private val conversionRatesLocalDataLoader: ConversionRatesLocalDataLoader,
-    private val restTemplateBuilder: RestTemplateBuilder,
+    restTemplateBuilder: RestTemplateBuilder,
 ) : AbstractRateProvider(
     ProviderContextBuilder.of(PROVIDER_NAME, PROVIDER_RATE_TYPE)
         .set("providerDescription", "exchangerate.host API")
@@ -38,7 +37,7 @@ class ConversionRateProvider(
 
     private val http = restTemplateBuilder.rootUri(EXCHANGERATE_HOST_URL).build()
 
-    private val loadedRates =  ConcurrentHashMap<LocalDate, Map<String, ExchangeRate>>()
+    private val loadedRates = ConcurrentHashMap<LocalDate, Map<String, ExchangeRate>>()
     private val yearsAvailableLocally = Collections.synchronizedSet(HashSet<Int>())
 
     @PostConstruct
@@ -48,7 +47,7 @@ class ConversionRateProvider(
         }
     }
 
-    override fun getExchangeRate(  conversionQuery: ConversionQuery): ExchangeRate? {
+    override fun getExchangeRate(conversionQuery: ConversionQuery): ExchangeRate? {
         if (loadedRates.isEmpty()) {
             return null
         }
@@ -65,7 +64,7 @@ class ConversionRateProvider(
         return createExchangeRate(conversionQuery, builder, sourceRate, targetRate)
     }
 
-    private fun findExchangeRate(  conversionQuery: ConversionQuery): Map<String, ExchangeRate> {
+    private fun findExchangeRate(conversionQuery: ConversionQuery): Map<String, ExchangeRate> {
         val dates = getQueryDates(conversionQuery)
 
         if (dates == null) {
@@ -75,9 +74,7 @@ class ConversionRateProvider(
                 .map(loadedRates::get)
                 .orElseThrow {
                     MonetaryException(
-                        "There is no more recent exchange rate to rate on %s provider.".formatted(
-                            PROVIDER_NAME
-                        )
+                        "There is no more recent exchange rate to rate on $PROVIDER_NAME provider."
                     )
                 }!!
         } else {
@@ -103,29 +100,25 @@ class ConversionRateProvider(
 
                 val response = http.getForEntity(
                     "/{date}",
-                    ExchangeRateData.class,
+                    ExchangeRateData::class.java,
                     date.format(DateTimeFormatter.ISO_LOCAL_DATE)
                 )
 
-                if (response.getStatusCode() == HttpStatus.OK) {
-                    val data = response.getBody()
+                if (response.statusCode == HttpStatus.OK) {
+                    val data = response.body
                     if (data != null) {
                         logger.info("Additionally loaded rates for the: {}", date)
-                        save(Monetary.getCurrency(data.base), mapOf(date, data.rates))
-                        return loadedRates.get(date)
+                        save(Monetary.getCurrency(data.base), mapOf(date to data.rates))
+                        return loadedRates[date] ?: emptyMap()
                     }
                 } else {
                     logger.warn("Failed to load conversion-rates from external API")
                 }
             }
-            val errorDates = Stream.of(dates)
-                .map(date -> date.format(DateTimeFormatter.ISO_LOCAL_DATE))
-                .toList()
-            throw new MonetaryException(
-                "There is not exchange on day %s to rate to rate on %s.".formatted(
-                    errorDates,
-                    PROVIDER_NAME
-                )
+            val errorDates = dates.map { it.format(DateTimeFormatter.ISO_LOCAL_DATE) }
+
+            throw MonetaryException(
+                "There is not exchange on day $errorDates to rate to rate on $PROVIDER_NAME."
             )
         }
     }

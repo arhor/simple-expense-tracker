@@ -19,8 +19,8 @@ class ExpenseItemServiceImpl(
     override fun getExpenseItems(expenseId: Long, dateRange: TemporalRange<LocalDate>): List<ExpenseItemDTO> {
         return expenseItemRepository.findAllByExpenseIdAndDateRange(
             expenseId,
-            dateRange.start(),
-            dateRange.end(),
+            dateRange.start,
+            dateRange.end,
         ).use {
             it.map(expenseItemMapper::mapToDTO).toList()
         }

@@ -22,7 +22,7 @@ class UserServiceImpl(
     private val userMapper: InternalUserMapper,
 ) : UserService {
 
-    override fun determineUserId(auth: Authentication): Long? {
+    override fun determineUserId(auth: Authentication): Long {
         val user = determineInternalUser(auth)
         return user.id
     }

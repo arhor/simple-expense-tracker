@@ -1,6 +1,6 @@
 package com.github.arhor.simple.expense.tracker.config
 
-import com.github.arhor.simple.expense.tracker.util.TimeUtils
+import com.github.arhor.simple.expense.tracker.util.currentZonedDateTime
 import org.flywaydb.core.Flyway
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
@@ -28,11 +28,7 @@ class DatabaseConfig {
     private lateinit var dbPassword: String
 
     @Bean
-    fun instantDateTimeProviderUTC(): DateTimeProvider {
-        return DateTimeProvider {
-            Optional.of(TimeUtils.currentZonedDateTime())
-        }
-    }
+    fun instantDateTimeProviderUTC() = DateTimeProvider { Optional.of(currentZonedDateTime()) }
 
     @Bean(initMethod = "migrate")
     @ConditionalOnProperty(name = ["spring.flyway.enabled"], havingValue = "true")
