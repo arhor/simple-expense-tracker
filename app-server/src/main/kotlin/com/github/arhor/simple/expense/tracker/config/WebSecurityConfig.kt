@@ -35,7 +35,7 @@ class WebSecurityConfig(
             .permitAll()
             .and()
             .logout()
-            .logoutUrl(applicationProps!!.apiUrlPath("/logout"))
+            .logoutUrl(applicationProps.apiUrlPath("/logout"))
             .logoutSuccessUrl("/")
             .and()
             .formLogin()

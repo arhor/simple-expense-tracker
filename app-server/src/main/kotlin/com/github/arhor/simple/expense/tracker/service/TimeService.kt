@@ -9,7 +9,7 @@ interface TimeService {
 
     fun now(): ZonedDateTime
 
-    fun now(timezone: TimeZone): ZonedDateTime
+    fun now(timezone: TimeZone?): ZonedDateTime
 
-    fun convertToDateRange(criteria: DateRangeCriteria, timezone: TimeZone): TemporalRange<LocalDate>
+    fun convertToDateRange(criteria: DateRangeCriteria?, timezone: TimeZone?): TemporalRange<LocalDate>
 }

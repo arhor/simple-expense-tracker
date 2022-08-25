@@ -1,4 +1,6 @@
-package com.github.arhor.simple.expense.tracker.io
+@file:Suppress("UNUSED")
+
+package com.github.arhor.simple.expense.tracker.util
 
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -11,13 +13,12 @@ import kotlin.coroutines.resumeWithException
 import kotlin.coroutines.suspendCoroutine
 
 fun chunked(fileName: String, chunkSize: Int = DEFAULT_BUFFER_SIZE): Flow<Pair<ByteBuffer, Int>> {
-
     val buffer = ByteBuffer.allocate(chunkSize)
 
-    AsynchronousFileChannel.open(Paths.get(fileName)).use { channel ->
-
-        return flow {
+    return AsynchronousFileChannel.open(Paths.get(fileName)).use { channel ->
+        flow {
             var numRead: Int
+
             while (channel.readAsync(buffer).also { numRead = it } != -1) {
                 if (numRead > 0) {
                     emit(buffer to numRead)

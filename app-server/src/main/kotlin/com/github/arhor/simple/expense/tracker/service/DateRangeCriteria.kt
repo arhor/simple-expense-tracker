@@ -13,9 +13,9 @@ import javax.validation.constraints.PastOrPresent
 data class DateRangeCriteria(
     @PastOrPresent
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
-    val startDate: LocalDate,
+    val startDate: LocalDate?,
 
     @PastOrPresent
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
-    val endDate: LocalDate
+    val endDate: LocalDate?
 )

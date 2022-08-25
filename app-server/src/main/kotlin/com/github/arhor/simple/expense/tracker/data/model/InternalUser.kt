@@ -13,14 +13,14 @@ import java.time.LocalDateTime
 @Immutable
 data class InternalUser(
     @Id
-    val id: Long,
-    val username: String,
-    val password: String,
+    val id: Long? = null,
+    val username: String? = null,
+    val password: String? = null,
     val currency: String,
-    val externalId: String,
-    val externalProvider: String,
+    val externalId: String? = null,
+    val externalProvider: String? = null,
     @CreatedDate
-    val created: LocalDateTime?,
+    val created: LocalDateTime? = null,
     @LastModifiedDate
-    val updated: LocalDateTime?,
+    val updated: LocalDateTime? = null,
 )

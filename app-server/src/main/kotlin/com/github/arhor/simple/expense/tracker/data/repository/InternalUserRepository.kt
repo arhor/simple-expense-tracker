@@ -13,7 +13,7 @@ interface InternalUserRepository : CrudRepository<InternalUser, Long> {
     fun findByUsername(username: String): CompactInternalUserProjection?
 
     @Query(name = "InternalUser.findByExternalIdAndProvider")
-    fun findByExternalIdAndProvider(externalId: String, externalProvider: String): CompactInternalUserProjection
+    fun findByExternalIdAndProvider(externalId: String, externalProvider: String): CompactInternalUserProjection?
 
     fun existsByUsername(username: String): Boolean
 

@@ -6,11 +6,11 @@ import org.springframework.security.core.Authentication
 
 interface UserService {
 
-    fun determineUserId(auth: Authentication): Long
+    fun determineUserId(auth: Authentication): Long?
 
     fun determineUser(auth: Authentication): UserResponseDTO
 
     fun createNewUser(request: UserRequestDTO): UserResponseDTO
 
-    fun createNewUserIfNecessary(authentication: Authentication)
+    fun createNewUserIfNecessary(auth: Authentication)
 }

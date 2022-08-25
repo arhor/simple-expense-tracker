@@ -1,7 +1,5 @@
 package com.github.arhor.simple.expense.tracker.config
 
-import com.github.arhor.simple.expense.tracker.util.CollectionExt
-import lombok.experimental.ExtensionMethod
 import org.slf4j.MDC
 import org.springframework.aop.interceptor.AsyncUncaughtExceptionHandler
 import org.springframework.aop.interceptor.SimpleAsyncUncaughtExceptionHandler
@@ -14,7 +12,6 @@ import org.springframework.web.context.request.RequestContextHolder
 import java.util.concurrent.Executor
 
 @EnableAsync
-@ExtensionMethod(CollectionExt::class)
 @Configuration(proxyBeanMethods = false)
 class AsyncTasksConfig : AsyncConfigurer {
 

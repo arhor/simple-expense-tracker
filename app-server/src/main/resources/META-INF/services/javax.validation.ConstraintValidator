@@ -1,1 +1,1 @@
-com.github.arhor.simple.expense.tracker.web.validation.DateRangeValidator
+com.github.arhor.simple.expense.tracker.validation.DateRangeValidator
