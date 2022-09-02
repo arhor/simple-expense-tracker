@@ -1,7 +1,5 @@
 package com.github.arhor.simple.expense.tracker.web.controller;
 
-import lombok.val;
-
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;

@@ -3,7 +3,6 @@ pluginManagement {
         // @formatter:off
         id "com.adarshr.test-logger"            version settings["version.gradleTestLogger"]
         id "com.github.node-gradle.node"        version settings["version.nodeGradlePlugin"]
-        id "io.freefair.lombok"                 version settings["version.lombok"]
         id "io.spring.dependency-management"    version settings["version.springDependencyManagement"]
         id "org.flywaydb.flyway"                version settings["version.flyway"]
         id "org.jsonschema2dataclass"           version settings["version.json2pojo"]

@@ -1,7 +1,6 @@
 package com.github.arhor.simple.expense.tracker.service.event
 
 import com.github.arhor.simple.expense.tracker.service.NotificationService
-import lombok.extern.slf4j.Slf4j
 import org.slf4j.LoggerFactory
 import org.springframework.context.event.EventListener
 import org.springframework.scheduling.annotation.Async
@@ -9,7 +8,6 @@ import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.lang.invoke.MethodHandles
 
-@Slf4j
 @Service
 class NotificationEventListener(private val service: NotificationService) {
 

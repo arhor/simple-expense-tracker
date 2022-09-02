@@ -41,13 +41,13 @@ internal abstract class RepositoryTestBase {
     protected lateinit var notificationRepository: NotificationRepository
 
     protected fun createTestUser(number: Number = 0): InternalUser {
-        return InternalUser.builder()
-            .username("test-user-username-$number")
-            .password("test-user-password-$number")
-            .currency("USD")
-            .externalId(UUID.randomUUID().toString())
-            .externalProvider("test")
-            .build()
+        return InternalUser(
+            username = "test-user-username-$number",
+            password = "test-user-password-$number",
+            currency = "USD",
+            externalId = UUID.randomUUID().toString(),
+            externalProvider = "test",
+        )
     }
 
     protected fun createTestExpense(userId: Long?, number: Number = 0) = Expense(
@@ -73,12 +73,12 @@ internal abstract class RepositoryTestBase {
         date: LocalDate?
     ): List<ExpenseItem> {
         val expenseItemsToCreate = Stream.generate {
-            ExpenseItem.builder()
-                .expenseId(expenseId)
-                .currency(currency)
-                .amount(amount)
-                .date(date)
-                .build()
+            ExpenseItem(
+                expenseId = expenseId!!,
+                currency = currency!!,
+                amount = amount!!,
+                date = date!!,
+            )
         }
             .limit(number.toLong())
             .toList()

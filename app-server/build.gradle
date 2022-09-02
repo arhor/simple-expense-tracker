@@ -1,6 +1,5 @@
 plugins {
     id "com.adarshr.test-logger"
-    id "io.freefair.lombok"
     id "io.spring.dependency-management"
     id "jacoco"
     id "org.flywaydb.flyway"

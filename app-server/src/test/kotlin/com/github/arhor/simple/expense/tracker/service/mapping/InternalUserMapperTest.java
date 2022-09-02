@@ -1,7 +1,5 @@
 package com.github.arhor.simple.expense.tracker.service.mapping;
 
-import lombok.val;
-
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 

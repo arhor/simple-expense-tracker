@@ -1,7 +1,5 @@
 package com.github.arhor.simple.expense.tracker.service.mapping;
 
-import lombok.val;
-
 import java.util.UUID;
 
 import org.junit.jupiter.api.Test;

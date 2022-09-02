@@ -1,7 +1,5 @@
 package com.github.arhor.simple.expense.tracker.web.error;
 
-import lombok.val;
-
 import java.util.Locale;
 
 import org.junit.jupiter.params.ParameterizedTest;

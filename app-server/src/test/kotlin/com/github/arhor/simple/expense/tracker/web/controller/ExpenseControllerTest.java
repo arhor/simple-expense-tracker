@@ -1,7 +1,5 @@
 package com.github.arhor.simple.expense.tracker.web.controller;
 
-import lombok.val;
-
 import java.time.LocalDate;
 import java.util.TimeZone;
 
