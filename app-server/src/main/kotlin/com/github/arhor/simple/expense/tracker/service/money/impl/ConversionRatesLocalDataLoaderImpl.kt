@@ -41,7 +41,7 @@ class ConversionRatesLocalDataLoaderImpl(
         applicationProps.conversionRates?.let { (_, preload) ->
             withLocalData { resources ->
                 runBlocking(Dispatchers.IO) {
-                    resources.sortedBy { it.filename }.takeLast(preload).map {
+                    resources.sortedBy { it.filename }.takeLast(preload ?: 0).map {
                         launch {
                             readDataFile(it, consumer)
                         }
@@ -52,12 +52,10 @@ class ConversionRatesLocalDataLoaderImpl(
     }
 
     private fun withLocalData(consumer: (Array<Resource>) -> Unit) {
-        applicationProps.conversionRates?.let {
+        applicationProps.conversionRates?.pattern?.let {
             try {
                 consumer(
-                    resourcePatternResolver.getResources(
-                        it.pattern
-                    )
+                    resourcePatternResolver.getResources(it)
                 )
             } catch (e: IOException) {
                 log.error("Failed to load conversion-rates from local data-files", e)

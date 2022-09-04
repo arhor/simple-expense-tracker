@@ -14,7 +14,7 @@ internal class ExpenseItemRepositoryTest : RepositoryTestBase() {
     @Test
     fun `should return aggregated expense items grouped by date and currency`() {
         // given
-        val userId = createPersistedTestUser().id()
+        val userId = createPersistedTestUser().id
         val expense = createPersistedTestExpense(userId)
         val expenseDate = LocalDate.of(2022, 7, 1)
         val usdCurrency = "USD"

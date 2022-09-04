@@ -1,6 +1,5 @@
 package com.github.arhor.simple.expense.tracker
 
-import com.github.arhor.simple.expense.tracker.util.TimeUtils
 import com.tngtech.archunit.core.domain.JavaCall.Predicates.target
 import com.tngtech.archunit.core.domain.JavaClass.Predicates.implement
 import com.tngtech.archunit.core.domain.JavaClasses
@@ -20,26 +19,30 @@ internal class ApplicationArchitectureTest {
 
     @ArchTest
     fun `should check that correct layered architecture is observed`(appClasses: JavaClasses) {
-        layeredArchitecture()
-            .layer("Web").definedBy(applicationPackage(".web.."))
-            .layer("Service").definedBy(applicationPackage(".service.."))
-            .layer("Persistence").definedBy(applicationPackage(".data.."))
-            .layer("Configuration").definedBy(applicationPackage(".config.."))
+        // given
+        val applicationPackage = Application::class.java.getPackage().name
+
+        // when
+        val architecture = layeredArchitecture()
+            .layer("Web").definedBy("${applicationPackage}.web..")
+            .layer("Service").definedBy("${applicationPackage}.service..")
+            .layer("Persistence").definedBy("${applicationPackage}.data..")
+            .layer("Configuration").definedBy("${applicationPackage}.config..")
             .whereLayer("Web").mayNotBeAccessedByAnyLayer()
             .whereLayer("Service").mayOnlyBeAccessedByLayers("Web", "Configuration")
             .whereLayer("Persistence").mayOnlyBeAccessedByLayers("Service")
-            .check(appClasses)
+
+        // then
+        architecture.check(appClasses)
     }
 
     @ArchTest
     fun `should check that only TimeUtils class calls now method on temporal objects`(appClasses: JavaClasses) {
         noClasses()
             .that()
-            .doNotHaveFullyQualifiedName(TimeUtils::class.qualifiedName)
+            .doNotHaveFullyQualifiedName("com.github.arhor.simple.expense.tracker.util.TimeUtilsKt")
             .should()
             .callMethodWhere(target(name("now")).and(target(owner(implement(Temporal::class.java)))))
             .check(appClasses)
     }
-
-    private fun applicationPackage(name: String) = Application::class.java.getPackage().name + name
 }

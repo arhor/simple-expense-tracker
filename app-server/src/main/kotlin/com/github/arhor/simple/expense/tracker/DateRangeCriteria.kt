@@ -1,4 +1,4 @@
-package com.github.arhor.simple.expense.tracker.service
+package com.github.arhor.simple.expense.tracker
 
 import org.springframework.format.annotation.DateTimeFormat
 import java.time.LocalDate

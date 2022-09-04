@@ -5,11 +5,12 @@ import com.github.arhor.simple.expense.tracker.model.NotificationDTO
 import com.github.arhor.simple.expense.tracker.service.NotificationService
 import com.github.arhor.simple.expense.tracker.service.event.NotificationEvent
 import com.github.arhor.simple.expense.tracker.service.mapping.NotificationMapper
+import com.github.arhor.simple.expense.tracker.util.currentLocalDateTime
 import org.springframework.context.ApplicationEventPublisher
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter
-import java.util.*
+import java.util.UUID
 import java.util.concurrent.ConcurrentHashMap
 
 @Service
@@ -42,7 +43,12 @@ class NotificationServiceImpl(
             sent = sendInternal(userId, dto)
         } finally {
             if (!sent) {
-                val notification = notificationMapper.mapDtoToEntity(dto, userId, senderId)
+                val notification = notificationMapper.mapDtoToEntity(
+                    dto = dto,
+                    targetUserId = userId,
+                    sourceUserId = senderId,
+                    timestamp = currentLocalDateTime(),
+                )
                 notificationRepository.save(notification)
             }
         }

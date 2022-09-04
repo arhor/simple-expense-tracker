@@ -5,13 +5,18 @@ import com.github.arhor.simple.expense.tracker.data.model.projection.CompactNoti
 import com.github.arhor.simple.expense.tracker.model.NotificationDTO
 import org.mapstruct.Mapper
 import org.mapstruct.Mapping
+import java.time.LocalDateTime
 
 @Mapper(config = SharedMappingConfig::class)
 interface NotificationMapper {
 
     @Mapping(target = "id", ignore = true)
-    @Mapping(target = "timestamp", ignore = true)
-    fun mapDtoToEntity(dto: NotificationDTO, targetUserId: Long, sourceUserId: Long): Notification
+    fun mapDtoToEntity(
+        dto: NotificationDTO,
+        targetUserId: Long,
+        sourceUserId: Long,
+        timestamp: LocalDateTime
+    ): Notification
 
     fun mapProjectionToDto(projection: CompactNotificationProjection): NotificationDTO
 }

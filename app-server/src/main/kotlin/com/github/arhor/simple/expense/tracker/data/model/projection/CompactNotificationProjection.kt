@@ -1,6 +1,6 @@
 package com.github.arhor.simple.expense.tracker.data.model.projection
 
-import java.util.*
+import java.util.UUID
 
 /**
  * Compact projection of the  [com.github.arhor.simple.expense.tracker.data.model.Notification] entity.
@@ -8,7 +8,7 @@ import java.util.*
  */
 data class CompactNotificationProjection(
     val id: UUID,
-    val targetUserId: Long,
-    val message: String,
     val severity: String,
+    val message: String,
+    val targetUserId: Long,
 )

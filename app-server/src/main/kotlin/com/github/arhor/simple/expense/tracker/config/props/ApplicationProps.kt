@@ -29,7 +29,7 @@ data class ApplicationProps(
      * @param preload number of previous years to preload starting from the last year
      */
     data class ConversionRates(
-        val pattern: String,
-        val preload: Int,
+        val pattern: String?,
+        val preload: Int?,
     )
 }

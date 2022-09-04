@@ -16,9 +16,9 @@ internal class NotificationRepositoryTest : RepositoryTestBase() {
         val usersIds = createUsers().mapNotNull(InternalUser::id)
 
         val notifications = usersIds
-            .flatMap { createNotifications(it) }
+            .flatMap(::createNotifications)
             .map(notificationRepository::save)
-            .associateBy { it.id }
+            .associateBy(Notification::id)
 
         // when
         val result = notificationRepository.findAllByTargetUserIdIn(usersIds)
