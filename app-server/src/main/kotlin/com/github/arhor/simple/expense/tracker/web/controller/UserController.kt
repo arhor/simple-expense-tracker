@@ -32,7 +32,7 @@ class UserController(private val userService: UserService) {
         return ResponseEntity.created(location).body(createdUser)
     }
 
-    @GetMapping(params = ["current"])
+    @GetMapping("/current")
     @PreAuthorize("isAuthenticated()")
     fun getCurrentUser(auth: Authentication): UserResponseDTO {
         return userService.determineUser(auth)

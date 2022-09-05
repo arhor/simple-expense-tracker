@@ -17,7 +17,7 @@ spring:
     proxy-target-class: false
 
   main:
-#    lazy-initialization: true
+    lazy-initialization: true
     allow-bean-definition-overriding: true
 
   web:

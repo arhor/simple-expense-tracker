@@ -6,6 +6,6 @@ package com.github.arhor.simple.expense.tracker.data.model.projection
  */
 data class CompactInternalUserProjection(
     val id: Long,
-    val username: String,
+    val username: String?,
     val currency: String,
 )

@@ -8,12 +8,9 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
-import org.springframework.security.crypto.password.PasswordEncoder
-import org.springframework.security.oauth2.client.web.OAuth2AuthorizationRequestRedirectFilter
+import org.springframework.security.oauth2.client.web.OAuth2AuthorizationRequestRedirectFilter.DEFAULT_AUTHORIZATION_REQUEST_BASE_URI
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler
-import org.springframework.session.MapSession
 import org.springframework.session.MapSessionRepository
-import org.springframework.session.SessionRepository
 import org.springframework.session.config.annotation.web.http.EnableSpringHttpSession
 import java.util.concurrent.ConcurrentHashMap
 
@@ -26,10 +23,11 @@ class WebSecurityConfig(
     private val authenticationSuccessHandler: AuthenticationSuccessHandler,
 ) : WebSecurityConfigurerAdapter() {
 
-    public override fun configure(http: HttpSecurity) {
+    override fun configure(http: HttpSecurity) {
         http.cors()
             .and()
-            .csrf().disable()
+            .csrf()
+            .disable()
             .authorizeRequests()
             .anyRequest()
             .permitAll()
@@ -44,7 +42,7 @@ class WebSecurityConfig(
             .and()
             .oauth2Login()
             .authorizationEndpoint()
-            .baseUri(applicationProps.apiUrlPath(OAuth2AuthorizationRequestRedirectFilter.DEFAULT_AUTHORIZATION_REQUEST_BASE_URI))
+            .baseUri(applicationProps.apiUrlPath(DEFAULT_AUTHORIZATION_REQUEST_BASE_URI))
             .and()
             .successHandler(authenticationSuccessHandler)
             .and()
@@ -57,13 +55,9 @@ class WebSecurityConfig(
     @Configuration(proxyBeanMethods = false)
     class Beans {
         @Bean
-        fun sessionRepository(): SessionRepository<MapSession> {
-            return MapSessionRepository(ConcurrentHashMap())
-        }
+        fun sessionRepository() = MapSessionRepository(ConcurrentHashMap())
 
         @Bean
-        fun passwordEncoder(): PasswordEncoder {
-            return BCryptPasswordEncoder()
-        }
+        fun passwordEncoder() = BCryptPasswordEncoder()
     }
 }
