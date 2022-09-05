@@ -32,23 +32,21 @@ internal class UserControllerTest : BaseControllerTest() {
     private val user = slot<UserRequestDTO>()
 
     @Test
-    fun `should return status 201 user info and location header creating new user`() {
+    fun `should return status 201, user info and location header creating new user`() {
         // given
-        val usersEndPoint = applicationProps.apiUrlPath("/users")
-
         val expectedId = 1L
         val expectedUsername = "Username"
         val expectedPassword = "Password123"
         val expectedCurrency = "USD"
 
-        every { userService.createNewUser(any()) } returns UserResponseDTO().apply {
-            id = expectedId
-            username = expectedUsername
-            currency = expectedCurrency
-        }
+        every { userService.createNewUser(request = any()) } returns UserResponseDTO(
+            expectedId,
+            expectedUsername,
+            expectedCurrency
+        )
 
         // when
-        val result = http.post(usersEndPoint) {
+        val awaitResult = http.post(applicationProps.apiUrlPath("/users")) {
             contentType = MediaType.APPLICATION_JSON
             content = """
                 {
@@ -60,14 +58,14 @@ internal class UserControllerTest : BaseControllerTest() {
         }
 
         // then
-        verify(exactly = 1) { userService.createNewUser(capture(user)) }
+        verify(exactly = 1) { userService.createNewUser(request = capture(user)) }
 
         assertThat(user.captured)
             .returns(expectedUsername, from { it.username })
             .returns(expectedPassword, from { it.password })
             .returns(expectedCurrency, from { it.currency.get() })
 
-        result.andExpect {
+        awaitResult.andExpect {
             status { isCreated() }
             jsonPath("$.id") { value(expectedId) }
             jsonPath("$.username") { value(expectedUsername) }
@@ -83,11 +81,11 @@ internal class UserControllerTest : BaseControllerTest() {
         val expectedUsername = "Username"
         val expectedCurrency = "USD"
 
-        every { userService.determineUser(any()) } returns UserResponseDTO().apply {
-            id = expectedId
-            username = expectedUsername
-            currency = expectedCurrency
-        }
+        every { userService.determineUser(auth = any()) } returns UserResponseDTO(
+            expectedId,
+            expectedUsername,
+            expectedCurrency
+        )
 
         // when
         val result = http.get(applicationProps.apiUrlPath("/users/current")) {
