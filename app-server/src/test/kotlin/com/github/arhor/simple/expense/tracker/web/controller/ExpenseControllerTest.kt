@@ -73,9 +73,9 @@ internal class ExpenseControllerTest : BaseControllerTest() {
             )
         )
 
-        every { userService.determineUserId(any()) } returns expectedUserId
-        every { timeService.convertToDateRange(any(), any()) } returns expectedDateRange
-        every { expenseService.getUserExpenses(any(), any()) } returns expectedExpenses
+        every { userService.determineUserId(auth = any()) } returns expectedUserId
+        every { timeService.convertToDateRange(criteria = any(), timezone = any()) } returns expectedDateRange
+        every { expenseService.getUserExpenses(userId = any(), dateRange = any()) } returns expectedExpenses
 
         // when
         val result = http.get(expensesEndPoint) {
@@ -84,9 +84,9 @@ internal class ExpenseControllerTest : BaseControllerTest() {
         }
 
         // then
-        verify(exactly = 1) { userService.determineUserId(capture(authentication)) }
-        verify(exactly = 1) { timeService.convertToDateRange(expectedCriteria, expectedTimeZone) }
-        verify(exactly = 1) { expenseService.getUserExpenses(expectedUserId, expectedDateRange) }
+        verify(exactly = 1) { userService.determineUserId(capture(lst = authentication)) }
+        verify(exactly = 1) { timeService.convertToDateRange(criteria = expectedCriteria, timezone = expectedTimeZone) }
+        verify(exactly = 1) { expenseService.getUserExpenses(userId = expectedUserId, dateRange = expectedDateRange) }
 
         assertThat(authentication.captured)
             .isNotNull

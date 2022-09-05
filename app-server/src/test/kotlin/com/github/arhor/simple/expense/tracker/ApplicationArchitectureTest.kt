@@ -38,11 +38,14 @@ internal class ApplicationArchitectureTest {
 
     @ArchTest
     fun `should check that only TimeUtils class calls now method on temporal objects`(appClasses: JavaClasses) {
-        noClasses()
+        // given
+        val restrictions = noClasses()
             .that()
             .doNotHaveFullyQualifiedName("com.github.arhor.simple.expense.tracker.util.TimeUtilsKt")
             .should()
             .callMethodWhere(target(name("now")).and(target(owner(implement(Temporal::class.java)))))
-            .check(appClasses)
+
+        // then
+        restrictions.check(appClasses)
     }
 }
