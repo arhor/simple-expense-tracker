@@ -18,7 +18,6 @@ class CustomUserDetailsService(private val userRepository: InternalUserRepositor
                 .password(it.password)
                 .authorities("ROLE_USER")
                 .build()
-
         } ?: throw UsernameNotFoundException("InternalUser with username '$username' is not found.")
     }
 }
