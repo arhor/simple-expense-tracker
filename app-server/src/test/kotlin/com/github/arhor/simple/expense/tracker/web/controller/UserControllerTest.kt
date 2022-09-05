@@ -54,7 +54,7 @@ internal class UserControllerTest : BaseControllerTest() {
                     "password": "$expectedPassword",
                     "currency": "$expectedCurrency"
                 }
-            """.trimIndent()
+            """
         }
 
         // then
