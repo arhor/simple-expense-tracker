@@ -9,6 +9,7 @@ import io.mockk.every
 import io.mockk.slot
 import io.mockk.verify
 import org.assertj.core.api.Assertions.assertThat
+import org.assertj.core.api.Assertions.from
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
@@ -17,7 +18,6 @@ import org.springframework.security.core.Authentication
 import org.springframework.security.test.context.support.WithMockUser
 import org.springframework.test.web.servlet.get
 import org.springframework.test.web.servlet.post
-import java.util.function.Consumer
 
 @WebMvcTest(UserController::class)
 internal class UserControllerTest : BaseControllerTest() {
@@ -37,56 +37,35 @@ internal class UserControllerTest : BaseControllerTest() {
         val usersEndPoint = applicationProps.apiUrlPath("/users")
 
         val expectedId = 1L
-        val expectedUsername = "username"
-        val expectedPassword = "Password1"
+        val expectedUsername = "Username"
+        val expectedPassword = "Password123"
         val expectedCurrency = "USD"
 
-        val requestBody = """
-            {
-                "username": "$expectedUsername",
-                "password": "$expectedPassword",
-                "currency": "$expectedCurrency"
-            }
-            """.trimIndent()
-
-        val response = UserResponseDTO().apply {
+        every { userService.createNewUser(any()) } returns UserResponseDTO().apply {
             id = expectedId
             username = expectedUsername
             currency = expectedCurrency
         }
 
-        every { userService.createNewUser(any()) } returns response
-
         // when
         val result = http.post(usersEndPoint) {
             contentType = MediaType.APPLICATION_JSON
-            content = requestBody
+            content = """
+                {
+                    "username": "$expectedUsername",
+                    "password": "$expectedPassword",
+                    "currency": "$expectedCurrency"
+                }
+            """.trimIndent()
         }
 
         // then
         verify(exactly = 1) { userService.createNewUser(capture(user)) }
 
         assertThat(user.captured)
-            .satisfies(
-                Consumer {
-                    assertThat(it.username)
-                        .describedAs("username")
-                        .isNotNull
-                        .isEqualTo(expectedUsername)
-                },
-                {
-                    assertThat(it.password)
-                        .describedAs("password")
-                        .isNotNull
-                        .isEqualTo(expectedPassword)
-                },
-                {
-                    assertThat(it.currency)
-                        .describedAs("currency")
-                        .isNotNull
-                        .contains(expectedCurrency)
-                }
-            )
+            .returns(expectedUsername, from { it.username })
+            .returns(expectedPassword, from { it.password })
+            .returns(expectedCurrency, from { it.currency.get() })
 
         result.andExpect {
             status { isCreated() }
@@ -100,17 +79,18 @@ internal class UserControllerTest : BaseControllerTest() {
     @WithMockUser
     fun `should return status 200 and expected info for authenticated user`() {
         // given
-        val usersEndPoint = applicationProps.apiUrlPath("/users")
+        val expectedId = 1L
+        val expectedUsername = "Username"
+        val expectedCurrency = "USD"
 
-        val response = UserResponseDTO()
-        response.id = 1L
-        response.username = "user"
-        response.currency = "USD"
-
-        every { userService.determineUser(any()) } returns response
+        every { userService.determineUser(any()) } returns UserResponseDTO().apply {
+            id = expectedId
+            username = expectedUsername
+            currency = expectedCurrency
+        }
 
         // when
-        val result = http.get(usersEndPoint) {
+        val result = http.get(applicationProps.apiUrlPath("/users/current")) {
             param("current", "true")
         }
 
@@ -119,13 +99,13 @@ internal class UserControllerTest : BaseControllerTest() {
 
         assertThat(auth.captured)
             .isNotNull
-            .satisfies(Consumer { authenticatedUser(it) })
+            .satisfies(authenticatedUser)
 
         result.andExpect {
             status { isOk() }
-            jsonPath("$.id") { value(response.id) }
-            jsonPath("$.username") { value(response.username) }
-            jsonPath("$.currency") { value(response.currency) }
+            jsonPath("$.id") { value(expectedId) }
+            jsonPath("$.username") { value(expectedUsername) }
+            jsonPath("$.currency") { value(expectedCurrency) }
         }
     }
 }

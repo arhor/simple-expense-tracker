@@ -15,6 +15,7 @@ import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler
 import org.springframework.test.web.servlet.MockMvc
+import java.util.function.Consumer
 
 @Tag("contract")
 @EnableConfigurationProperties(ApplicationProps::class)
@@ -36,12 +37,12 @@ internal abstract class BaseControllerTest {
     @MockkBean
     protected lateinit var clientRegistrationRepository: ClientRegistrationRepository
 
-    fun authenticatedUser(auth: Authentication) {
+    protected val authenticatedUser = Consumer<Authentication> {
         assertSoftly { soft ->
-            soft.assertThat(auth.isAuthenticated)
+            soft.assertThat(it.isAuthenticated)
                 .describedAs("authenticated")
                 .isTrue
-            soft.assertThat(auth.name)
+            soft.assertThat(it.name)
                 .describedAs("authentication name")
                 .isEqualTo("user")
         }

@@ -23,7 +23,6 @@ import org.springframework.test.web.servlet.get
 import java.math.BigDecimal
 import java.time.LocalDate
 import java.util.TimeZone
-import java.util.function.Consumer
 
 @WebMvcTest(ExpenseController::class)
 internal class ExpenseControllerTest : BaseControllerTest() {
@@ -91,7 +90,7 @@ internal class ExpenseControllerTest : BaseControllerTest() {
 
         assertThat(authentication.captured)
             .isNotNull
-            .satisfies(Consumer { authenticatedUser(it) })
+            .satisfies(authenticatedUser)
 
         result.andExpect {
             status { isOk() }
