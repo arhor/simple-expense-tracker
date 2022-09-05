@@ -16,7 +16,7 @@ internal class InternalUserMapperTest : MapperTestBase() {
     private lateinit var userMapper: InternalUserMapper
 
     @Test
-    fun should_correctly_map_user_entity_to_response_dto() {
+    fun `should correctly map user entity to response dto`() {
         // given
         val user = InternalUser(
             id = Long.MAX_VALUE,
@@ -50,7 +50,7 @@ internal class InternalUserMapperTest : MapperTestBase() {
     }
 
     @Test
-    fun should_correctly_map_user_compact_projection_to_response_dto() {
+    fun `should correctly map user compact projection to response dto`() {
         // given
         val id = Long.MAX_VALUE
         val username = "test-username"
@@ -84,7 +84,7 @@ internal class InternalUserMapperTest : MapperTestBase() {
     }
 
     @Test
-    fun should_correctly_map_user_request_dto_to_entity_also_encoding_password() {
+    fun `should correctly map user request dto to entity also encoding password`() {
         // given
         val username = "test-username"
         val password = "test-password"
