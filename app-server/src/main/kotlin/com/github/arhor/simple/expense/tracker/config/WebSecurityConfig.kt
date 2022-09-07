@@ -10,13 +10,9 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.security.oauth2.client.web.OAuth2AuthorizationRequestRedirectFilter.DEFAULT_AUTHORIZATION_REQUEST_BASE_URI
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler
-import org.springframework.session.MapSessionRepository
-import org.springframework.session.config.annotation.web.http.EnableSpringHttpSession
-import java.util.concurrent.ConcurrentHashMap
 
 @Configuration
 @EnableWebSecurity
-@EnableSpringHttpSession
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 class WebSecurityConfig(
     private val applicationProps: ApplicationProps,
@@ -54,9 +50,6 @@ class WebSecurityConfig(
 
     @Configuration(proxyBeanMethods = false)
     class Beans {
-        @Bean
-        fun sessionRepository() = MapSessionRepository(ConcurrentHashMap())
-
         @Bean
         fun passwordEncoder() = BCryptPasswordEncoder()
     }
