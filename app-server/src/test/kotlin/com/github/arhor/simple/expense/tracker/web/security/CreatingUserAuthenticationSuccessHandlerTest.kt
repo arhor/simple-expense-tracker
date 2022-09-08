@@ -43,6 +43,6 @@ internal class CreatingUserAuthenticationSuccessHandlerTest {
         authenticationSuccessHandler.onAuthenticationSuccess(request, response, authentication)
 
         // then
-        verify(exactly = 1) { userService.createNewUserIfNecessary(authentication) }
+        verify(exactly = 1) { userService.createNewUserIfNecessary(auth = authentication) }
     }
 }

@@ -54,7 +54,7 @@ internal class ExpenseItemServiceImplTest {
                 endDate = expectedDateRangeEnd
             )
         }
-        verify { expenseItemMapper.mapToDTO(entity = any()) wasNot called }
+        verify { expenseItemMapper wasNot called }
 
         assertThat(result)
             .isEmpty()
@@ -163,9 +163,9 @@ internal class ExpenseItemServiceImplTest {
         )
 
         // then
-        verify(exactly = 1) { expenseItemMapper.mapToEntity(any(), any()) }
+        verify(exactly = 1) { expenseItemMapper.mapToEntity(dto = any(), expenseId = any()) }
         verify(exactly = 1) { expenseItemRepository.save(any()) }
-        verify(exactly = 1) { expenseItemMapper.mapToEntity(any(), any()) }
+        verify(exactly = 1) { expenseItemMapper.mapToEntity(dto = any(), expenseId = any()) }
 
         assertThat(createdExpenseItem)
             .returns(expectedExpenseItem.date, from { it.date })

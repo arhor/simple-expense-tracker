@@ -84,7 +84,7 @@ internal class ExpenseControllerTest : BaseControllerTest() {
         }
 
         // then
-        verify(exactly = 1) { userService.determineUserId(capture(lst = authentication)) }
+        verify(exactly = 1) { userService.determineUserId(auth = capture(authentication)) }
         verify(exactly = 1) { timeService.convertToDateRange(criteria = expectedCriteria, timezone = expectedTimeZone) }
         verify(exactly = 1) { expenseService.getUserExpenses(userId = expectedUserId, dateRange = expectedDateRange) }
 

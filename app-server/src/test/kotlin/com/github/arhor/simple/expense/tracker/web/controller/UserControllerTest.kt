@@ -93,7 +93,7 @@ internal class UserControllerTest : BaseControllerTest() {
         }
 
         // then
-        verify(exactly = 1) { userService.determineUser(capture(auth)) }
+        verify(exactly = 1) { userService.determineUser(auth = capture(auth)) }
 
         assertThat(auth.captured)
             .isNotNull
