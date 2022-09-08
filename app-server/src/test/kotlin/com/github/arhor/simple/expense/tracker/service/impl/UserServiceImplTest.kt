@@ -1,20 +1,27 @@
 package com.github.arhor.simple.expense.tracker.service.impl
 
+import com.github.arhor.simple.expense.tracker.data.model.InternalUser
 import com.github.arhor.simple.expense.tracker.data.model.projection.CompactInternalUserProjection
 import com.github.arhor.simple.expense.tracker.data.repository.InternalUserRepository
+import com.github.arhor.simple.expense.tracker.exception.EntityDuplicateException
 import com.github.arhor.simple.expense.tracker.exception.EntityNotFoundException
+import com.github.arhor.simple.expense.tracker.model.UserRequestDTO
 import com.github.arhor.simple.expense.tracker.model.UserResponseDTO
 import com.github.arhor.simple.expense.tracker.service.mapping.InternalUserMapper
 import io.mockk.called
+import io.mockk.clearAllMocks
+import io.mockk.confirmVerified
 import io.mockk.every
 import io.mockk.impl.annotations.InjectMockKs
 import io.mockk.impl.annotations.MockK
 import io.mockk.junit5.MockKExtension
 import io.mockk.mockk
+import io.mockk.slot
 import io.mockk.verify
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.catchThrowable
 import org.assertj.core.api.Assertions.from
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
@@ -44,6 +51,13 @@ internal class UserServiceImplTest {
 
     @InjectMockKs
     private lateinit var userService: UserServiceImpl
+
+    private val internalUserCapturingSlot = slot<InternalUser>()
+
+    @BeforeEach
+    fun setUp() {
+        clearAllMocks()
+    }
 
     @Test
     fun `should return an expected internal user id for a recognized OAuth2 authentication token`() {
@@ -253,5 +267,127 @@ internal class UserServiceImplTest {
             .isNotNull
             .isInstanceOf(IllegalArgumentException::class.java)
             .hasMessageContaining(unknownAuthentication::class.simpleName)
+    }
+
+    @Test
+    fun `should successfully a create new user`() {
+        // given
+        val expectedId = -1L
+        val expectedUsername = "username"
+        val expectedPassword = "password"
+        val expectedCurrency = "USD"
+
+        every { userRepository.existsByUsername(any()) } returns false
+        every { userMapper.mapToUser(any()) } answers {
+            arg<UserRequestDTO>(0).let {
+                InternalUser(
+                    username = it.username,
+                    password = it.password,
+                    currency = it.currency.get()
+                )
+            }
+        }
+        every { userRepository.save(any()) } answers {
+            arg<InternalUser>(0).copy(
+                id = expectedId
+            )
+        }
+        every { userMapper.mapToResponse(any<InternalUser>()) } answers {
+            arg<InternalUser>(0).let {
+                UserResponseDTO(
+                    it.id,
+                    it.username,
+                    it.currency,
+                )
+            }
+        }
+
+        // when
+        val result = userService.createNewUser(
+            UserRequestDTO(
+                expectedUsername,
+                expectedPassword,
+                expectedCurrency
+            )
+        )
+
+        // then
+        verify(exactly = 1) { userRepository.existsByUsername(username = expectedUsername) }
+        verify(exactly = 1) { userMapper.mapToUser(request = any()) }
+        verify(exactly = 1) { userRepository.save(any()) }
+        verify(exactly = 1) { userMapper.mapToResponse(entity = any()) }
+
+        confirmVerified(userRepository, userMapper)
+
+        assertThat(result)
+            .returns(expectedId, from { it.id })
+            .returns(expectedUsername, from { it.username })
+            .returns(expectedCurrency, from { it.currency })
+    }
+
+    @Test
+    fun `should throw EntityDuplicateException creating new user with existing username`() {
+        // given
+        val expectedUsername = "username"
+
+        every { userRepository.existsByUsername(any()) } returns true
+
+        // when
+        val result = catchThrowable {
+            userService.createNewUser(
+                UserRequestDTO(
+                    expectedUsername,
+                    "password",
+                    "USD",
+                )
+            )
+        }
+
+        // then
+        verify(exactly = 1) { userRepository.existsByUsername(username = expectedUsername) }
+
+        confirmVerified(userRepository, userMapper)
+
+        assertThat(result)
+            .isInstanceOf(EntityDuplicateException::class.java)
+    }
+
+    @Test
+    fun `should create internal user for an OAuth2 authentication which is not present in repository`() {
+        // given
+        val expectedCurrency = "USD"
+        val expectedExternalId = "external-id"
+        val expectedExternalProvider = "external-provider"
+
+        every { oAuth2Authentication.name } returns expectedExternalId
+        every { oAuth2Authentication.authorizedClientRegistrationId } returns expectedExternalProvider
+        every { userRepository.existsByExternalIdAndExternalProvider(any(), any()) } returns false
+        every { userRepository.save(any()) } answers { value }
+
+        // when
+        userService.createNewUserIfNecessary(oAuth2Authentication)
+
+        // then
+        verify { userRepository.existsByExternalIdAndExternalProvider(expectedExternalId, expectedExternalProvider) }
+        verify { userRepository.save(capture(internalUserCapturingSlot)) }
+
+        confirmVerified(userRepository)
+
+        assertThat(internalUserCapturingSlot.captured)
+            .returns(expectedCurrency, from { it.currency })
+            .returns(expectedExternalId, from { it.externalId })
+            .returns(expectedExternalProvider, from { it.externalProvider })
+    }
+
+    @Test
+    fun `should do nothing for unknown authentication object`() {
+        // given
+        val unknownAuthentication = mockk<Authentication>()
+
+        // when
+        userService.createNewUserIfNecessary(unknownAuthentication)
+
+        // then
+        verify { userRepository wasNot called }
     }
 }
