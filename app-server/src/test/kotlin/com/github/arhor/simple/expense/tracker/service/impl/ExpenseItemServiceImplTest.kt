@@ -72,8 +72,6 @@ internal class ExpenseItemServiceImplTest {
         val expectedCurrency = Currency.USD.name
         val expectedComment = "test-comment"
 
-        val expenseItemEntity = slot<ExpenseItem>()
-
         every { expenseItemRepository.findAllByExpenseIdAndDateRange(any(), any(), any()) } answers {
             Stream.of(
                 ExpenseItem(
@@ -85,8 +83,8 @@ internal class ExpenseItemServiceImplTest {
                 )
             )
         }
-        every { expenseItemMapper.mapToDTO(capture(expenseItemEntity)) } answers {
-            expenseItemEntity.captured.let {
+        every { expenseItemMapper.mapToDTO(entity = any()) } answers {
+            arg<ExpenseItem>(0).let {
                 ExpenseItemDTO(
                     it.date,
                     it.amount,
@@ -127,14 +125,10 @@ internal class ExpenseItemServiceImplTest {
             setComment("test comment")
         }
 
-        val expenseId = slot<Long>()
-        val expenseItemDto = slot<ExpenseItemDTO>()
-        val expenseItemEntity = slot<ExpenseItem>()
-
-        every { expenseItemMapper.mapToEntity(capture(expenseItemDto), capture(expenseId)) } answers {
-            expenseItemDto.captured.let {
+        every { expenseItemMapper.mapToEntity(dto = any(), expenseId = any()) } answers {
+            arg<ExpenseItemDTO>(0).let {
                 ExpenseItem(
-                    expenseId = expenseId.captured,
+                    expenseId = arg(1),
                     date = it.date,
                     amount = it.amount,
                     currency = it.currency.name,
@@ -142,11 +136,11 @@ internal class ExpenseItemServiceImplTest {
                 )
             }
         }
-        every { expenseItemRepository.save(capture(expenseItemEntity)) } answers {
-            expenseItemEntity.captured
+        every { expenseItemRepository.save(any()) } answers {
+            arg(0)
         }
-        every { expenseItemMapper.mapToDTO(capture(expenseItemEntity)) } answers {
-            expenseItemEntity.captured.let {
+        every { expenseItemMapper.mapToDTO(any()) } answers {
+            arg<ExpenseItem>(0).let {
                 ExpenseItemDTO(
                     it.date,
                     it.amount,
