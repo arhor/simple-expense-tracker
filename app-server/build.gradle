@@ -125,7 +125,7 @@ jacocoTestCoverageVerification {
     violationRules {
         rule {
             limit {
-                minimum = 0.30
+                minimum = 0.40
             }
         }
     }
@@ -145,6 +145,7 @@ void applyJaCoCoExclusions(ConfigurableFileCollection classDirectories) {
             dir: it,
             exclude: [
                 "com/github/arhor/simple/expense/tracker/Application.class",
+                "com/github/arhor/simple/expense/tracker/**/aop/*",
                 "com/github/arhor/simple/expense/tracker/**/config/*",
                 "com/github/arhor/simple/expense/tracker/**/error/*",
                 "com/github/arhor/simple/expense/tracker/**/exception/*",

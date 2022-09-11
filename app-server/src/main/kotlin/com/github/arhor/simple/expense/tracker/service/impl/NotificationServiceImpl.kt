@@ -30,6 +30,10 @@ class NotificationServiceImpl(
         subscribers.remove(subscriberId)
     }
 
+    override fun unsubscribeAll() {
+        subscribers.clear()
+    }
+
     override fun handleNotification(senderId: Long, userId: Long, dto: NotificationDTO) {
         applicationEventPublisher.publishEvent(
             NotificationEvent(senderId, userId, dto)
@@ -40,7 +44,7 @@ class NotificationServiceImpl(
     override fun sendNotification(senderId: Long, userId: Long, dto: NotificationDTO) {
         var sent = false
         try {
-            sent = sendInternal(userId, dto)
+            sent = sendInternal(userId = userId, notification = dto)
         } finally {
             if (!sent) {
                 val notification = notificationMapper.mapDtoToEntity(
@@ -59,18 +63,18 @@ class NotificationServiceImpl(
         val userIds = subscribers.keys
 
         if (!userIds.isEmpty()) {
-            val notifications = notificationRepository.findAllByTargetUserIdIn(userIds)
-
-            for (notification in notifications) {
-                var sent = false
-                try {
-                    sent = sendInternal(
-                        notification.targetUserId,
-                        notificationMapper.mapProjectionToDto(notification)
-                    )
-                } finally {
-                    if (sent) {
-                        notificationRepository.deleteById(notification.id)
+            notificationRepository.findAllByTargetUserIdIn(userIds).use { notifications ->
+                notifications.forEach {
+                    var sent = false
+                    try {
+                        sent = sendInternal(
+                            userId = it.targetUserId,
+                            notification = notificationMapper.mapProjectionToDto(it)
+                        )
+                    } finally {
+                        if (sent) {
+                            notificationRepository.deleteById(it.id)
+                        }
                     }
                 }
             }

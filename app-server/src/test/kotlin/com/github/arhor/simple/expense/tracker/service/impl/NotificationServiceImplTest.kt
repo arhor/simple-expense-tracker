@@ -1,9 +1,12 @@
 package com.github.arhor.simple.expense.tracker.service.impl
 
+import com.github.arhor.simple.expense.tracker.data.model.Notification
+import com.github.arhor.simple.expense.tracker.data.model.projection.CompactNotificationProjection
 import com.github.arhor.simple.expense.tracker.data.repository.NotificationRepository
 import com.github.arhor.simple.expense.tracker.model.NotificationDTO
 import com.github.arhor.simple.expense.tracker.service.event.NotificationEvent
 import com.github.arhor.simple.expense.tracker.service.mapping.NotificationMapper
+import com.github.arhor.simple.expense.tracker.util.currentLocalDateTime
 import io.mockk.called
 import io.mockk.every
 import io.mockk.impl.annotations.InjectMockKs
@@ -28,6 +31,9 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.springframework.context.ApplicationEventPublisher
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter
+import java.time.LocalDateTime
+import java.util.UUID
+import java.util.stream.Stream
 
 @ExtendWith(MockKExtension::class)
 internal class NotificationServiceImplTest {
@@ -92,19 +98,19 @@ internal class NotificationServiceImplTest {
     }
 
     @Test
-    fun `should successfully send notification via SSE emitter without persiting it`() {
+    fun `should successfully send notification via SSE emitter without persisting it`() {
         // given
         val expectedSourceUserId = 1L
         val expectedTargetUserId = 2L
         val expectedNotification = NotificationDTO("test-message", NotificationDTO.Severity.SUCCESS)
-        val sseEventBuilder = spyk(SseEmitter.event())
+        val eventBuilder = spyk(SseEmitter.event())
         val eventSource = notificationService.subscribe(expectedTargetUserId)
 
         mockkObject(eventSource)
         mockkStatic(SseEmitter::class)
 
         every { eventSource.send(any()) } just runs
-        every { SseEmitter.event() } returns sseEventBuilder
+        every { SseEmitter.event() } returns eventBuilder
 
         // when
         notificationService.sendNotification(
@@ -114,11 +120,10 @@ internal class NotificationServiceImplTest {
         )
 
         // then
-        verify(exactly = 1) { eventSource.send(sseEventBuilder) }
-        verify(exactly = 1) { sseEventBuilder.id(any()) }
-        verify(exactly = 1) { sseEventBuilder.name(any()) }
-        verify(exactly = 1) { sseEventBuilder.data(expectedNotification) }
-
+        verify(exactly = 1) { eventSource.send(eventBuilder) }
+        verify(exactly = 1) { eventBuilder.id(any()) }
+        verify(exactly = 1) { eventBuilder.name(any()) }
+        verify(exactly = 1) { eventBuilder.data(expectedNotification) }
         verify { applicationEventPublisher wasNot called }
         verify { notificationRepository wasNot called }
         verify { notificationMapper wasNot called }
@@ -126,5 +131,135 @@ internal class NotificationServiceImplTest {
         // finally
         unmockkObject(eventSource)
         unmockkStatic(SseEmitter::class)
+    }
+
+    @Test
+    fun `should persist notification when there are not target user within current notification subscribers`() {
+        // given
+        val expectedSourceUserId = 1L
+        val expectedTargetUserId = 2L
+        val expectedTimestamp = LocalDateTime.parse("2022-09-08T12:00:00")
+        val expectedSeverity = NotificationDTO.Severity.SUCCESS.name
+        val expectedMessage = "test-message"
+        val expectedNotification = NotificationDTO(expectedMessage, NotificationDTO.Severity.valueOf(expectedSeverity))
+
+        val notification = slot<Notification>()
+
+        mockkStatic("com.github.arhor.simple.expense.tracker.util.TimeUtilsKt")
+
+        every { currentLocalDateTime() } returns expectedTimestamp
+        every { notificationRepository.save(any()) } returnsArgument 0
+        every { notificationMapper.mapDtoToEntity(any(), any(), any(), any()) } answers {
+            Notification(
+                message = arg<NotificationDTO>(0).message.get(),
+                severity = arg<NotificationDTO>(0).severity.get().name,
+                targetUserId = arg(1),
+                sourceUserId = arg(2),
+                timestamp = arg(3),
+            )
+        }
+
+        // when
+        notificationService.sendNotification(
+            senderId = expectedSourceUserId,
+            userId = expectedTargetUserId,
+            dto = expectedNotification,
+        )
+
+        // then
+        verify(exactly = 1) {
+            notificationMapper.mapDtoToEntity(
+                dto = expectedNotification,
+                targetUserId = expectedTargetUserId,
+                sourceUserId = expectedSourceUserId,
+                timestamp = expectedTimestamp
+            )
+        }
+        verify(exactly = 1) { notificationRepository.save(capture(notification)) }
+        verify { applicationEventPublisher wasNot called }
+
+        assertThat(notification.captured)
+            .returns(expectedSourceUserId, from { it.sourceUserId })
+            .returns(expectedTargetUserId, from { it.targetUserId })
+            .returns(expectedTimestamp, from { it.timestamp })
+            .returns(expectedSeverity, from { it.severity })
+            .returns(expectedMessage, from { it.message })
+
+        // finally
+        unmockkStatic("com.github.arhor.simple.expense.tracker.util.TimeUtilsKt")
+    }
+
+    @Test
+    fun `should successfully send persisted notification via SSE emitter then delete it`() {
+        // given
+        val expectedId = UUID.randomUUID()
+        val expectedSeverity = NotificationDTO.Severity.SUCCESS.name
+        val expectedMessage = "test-message"
+        val expectedTargetUserId = 2L
+
+        val compactNotificationProjection = CompactNotificationProjection(
+            id = expectedId,
+            severity = expectedSeverity,
+            message = expectedMessage,
+            targetUserId = expectedTargetUserId
+        )
+
+        val eventSource = notificationService.subscribe(expectedTargetUserId)
+        val eventBuilder = spyk(SseEmitter.event())
+        val notification = slot<NotificationDTO>()
+
+        mockkObject(eventSource)
+        mockkStatic(SseEmitter::class)
+
+        every { notificationRepository.findAllByTargetUserIdIn(any()) } answers {
+            Stream.of(
+                compactNotificationProjection
+            )
+        }
+        every { notificationMapper.mapProjectionToDto(any()) } answers {
+            arg<CompactNotificationProjection>(0).let {
+                NotificationDTO(
+                    it.message,
+                    NotificationDTO.Severity.valueOf(it.severity),
+                )
+            }
+        }
+        every { eventSource.send(any()) } just runs
+        every { SseEmitter.event() } returns eventBuilder
+        every { notificationRepository.deleteById(any()) } just runs
+
+        // when
+        notificationService.sendNotifications()
+
+        // then
+        verify(exactly = 1) { notificationRepository.findAllByTargetUserIdIn(setOf(expectedTargetUserId)) }
+        verify(exactly = 1) { notificationMapper.mapProjectionToDto(compactNotificationProjection) }
+        verify(exactly = 1) { notificationRepository.deleteById(expectedId) }
+        verify(exactly = 1) { eventSource.send(eventBuilder) }
+        verify(exactly = 1) { eventBuilder.id(any()) }
+        verify(exactly = 1) { eventBuilder.name(any()) }
+        verify(exactly = 1) { eventBuilder.data(capture(notification)) }
+        verify { applicationEventPublisher wasNot called }
+
+        assertThat(notification.captured)
+            .isNotNull
+
+        // finally
+        unmockkObject(eventSource)
+        unmockkStatic(SseEmitter::class)
+    }
+
+    @Test
+    fun `should not interact with other components when there are not subscribers at all`() {
+        // given
+        notificationService.unsubscribeAll()
+
+        // when
+        notificationService.sendNotifications()
+
+        // then
+        verify { applicationEventPublisher wasNot called }
+        verify { notificationRepository wasNot called }
+        verify { notificationMapper wasNot called }
     }
 }
