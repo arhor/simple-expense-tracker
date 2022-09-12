@@ -27,7 +27,6 @@ jsonSchema2Pojo {
     includeGetters = true
     includeConstructors = true
     useOptionalForGetters = true
-    useBigDecimals = true
     useLongIntegers = true
     dateTimeType = "java.time.LocalDateTime"
     dateType = "java.time.LocalDate"

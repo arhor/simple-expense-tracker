@@ -20,7 +20,6 @@ import org.springframework.http.MediaType
 import org.springframework.security.core.Authentication
 import org.springframework.security.test.context.support.WithMockUser
 import org.springframework.test.web.servlet.get
-import java.math.BigDecimal
 import java.time.LocalDate
 import java.util.TimeZone
 
@@ -61,7 +60,7 @@ internal class ExpenseControllerTest : BaseControllerTest() {
         val expectedExpenseName = "test-name"
         val expectedExpenseIcon = "test-icon"
         val expectedExpenseColor = "test-color"
-        val expectedExpenseTotal = BigDecimal.TEN
+        val expectedExpenseTotal = 10.0
 
         val expectedExpenses = listOf(
             ExpenseResponseDTO(

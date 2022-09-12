@@ -11,13 +11,11 @@ import io.mockk.every
 import io.mockk.impl.annotations.InjectMockKs
 import io.mockk.impl.annotations.MockK
 import io.mockk.junit5.MockKExtension
-import io.mockk.slot
 import io.mockk.verify
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.from
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
-import java.math.BigDecimal
 import java.time.LocalDate
 import java.util.stream.Stream
 
@@ -68,7 +66,7 @@ internal class ExpenseItemServiceImplTest {
         val expectedDateRangeEnd = LocalDate.of(2022, 9, 7)
         val expectedDateRange = TemporalRange(expectedDateRangeStart, expectedDateRangeEnd)
         val expectedDate = LocalDate.of(2022, 9, 3)
-        val expectedAmount = BigDecimal.TEN
+        val expectedAmount = 10.0
         val expectedCurrency = Currency.USD.name
         val expectedComment = "test-comment"
 
@@ -77,7 +75,7 @@ internal class ExpenseItemServiceImplTest {
                 ExpenseItem(
                     expenseId = expectedExpenseId,
                     date = expectedDate,
-                    amount = expectedAmount,
+                    amount = expectedAmount.toBigDecimal(),
                     currency = expectedCurrency,
                     comment = expectedComment,
                 )
@@ -87,7 +85,7 @@ internal class ExpenseItemServiceImplTest {
             arg<ExpenseItem>(0).let {
                 ExpenseItemDTO(
                     it.date,
-                    it.amount,
+                    it.amount.toDouble(),
                     it.currency.let(Currency::fromValue),
                     it.comment,
                 )
@@ -120,7 +118,7 @@ internal class ExpenseItemServiceImplTest {
         // given
         val expectedExpenseItem = ExpenseItemDTO().apply {
             date = LocalDate.of(2022, 9, 5)
-            amount = BigDecimal.TEN
+            amount = 10.0
             currency = Currency.USD
             setComment("test comment")
         }
@@ -130,7 +128,7 @@ internal class ExpenseItemServiceImplTest {
                 ExpenseItem(
                     expenseId = arg(1),
                     date = it.date,
-                    amount = it.amount,
+                    amount = it.amount.toBigDecimal(),
                     currency = it.currency.name,
                     comment = it.comment.get(),
                 )
@@ -143,7 +141,7 @@ internal class ExpenseItemServiceImplTest {
             arg<ExpenseItem>(0).let {
                 ExpenseItemDTO(
                     it.date,
-                    it.amount,
+                    it.amount.toDouble(),
                     it.currency.let(Currency::fromValue),
                     it.comment,
                 )

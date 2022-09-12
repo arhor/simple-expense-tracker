@@ -1,6 +1,5 @@
 package com.github.arhor.simple.expense.tracker.service.impl
 
-
 import com.github.arhor.simple.expense.tracker.data.model.InternalUser
 import com.github.arhor.simple.expense.tracker.data.model.projection.AggregatedExpenseItemProjection
 import com.github.arhor.simple.expense.tracker.data.repository.ExpenseItemRepository
@@ -16,7 +15,6 @@ import com.github.arhor.simple.expense.tracker.util.TemporalRange
 import org.javamoney.moneta.Money
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
-import java.math.BigDecimal
 import java.time.LocalDate
 import javax.money.CurrencyUnit
 import javax.money.Monetary
@@ -34,10 +32,10 @@ class ExpenseServiceImpl(
         val expenses = expenseRepository.findAllByUserId(userId)
         val expenseTotalsById = getExpenseItemsTotal(userId, expenses.mapNotNull { it.id }, dateRange)
 
-        return expenses.map { expense ->
+        return expenses.map {
             expenseMapper.mapToDTO(
-                expense,
-                expenseTotalsById.getOrDefault(expense.id, BigDecimal.ZERO)
+                it,
+                expenseTotalsById.getOrDefault(it.id, 0.0)
             )
         }
     }
@@ -48,7 +46,7 @@ class ExpenseServiceImpl(
                 it,
                 getExpenseItemsTotal(it.userId, listOf(it.id!!), dateRange).getOrDefault(
                     it.id,
-                    BigDecimal.ZERO
+                    0.0
                 )
             )
         } ?: throw EntityNotFoundException("Expense", "id=$expenseId")
@@ -62,7 +60,7 @@ class ExpenseServiceImpl(
         val expense = expenseMapper.mapToEntity(requestDTO, userId)
         val result = expenseRepository.save(expense)
 
-        return expenseMapper.mapToDTO(result, BigDecimal.ZERO)
+        return expenseMapper.mapToDTO(result, 0.0)
     }
 
     private fun getUserCurrency(userId: Long): CurrencyUnit {
@@ -76,7 +74,7 @@ class ExpenseServiceImpl(
         userId: Long,
         expenseIds: Collection<Long>,
         dateRange: TemporalRange<LocalDate>
-    ): Map<Long, BigDecimal> {
+    ): Map<Long, Double> {
         if (expenseIds.isEmpty()) {
             return emptyMap()
         }
@@ -96,9 +94,9 @@ class ExpenseServiceImpl(
             expenseTotalCalculator.add(expenseItem)
         }
 
-        val result = HashMap<Long, BigDecimal>()
+        val result = HashMap<Long, Double>()
         for ((expenseId, context) in totalByExpense) {
-            result[expenseId] = context.total.numberStripped
+            result[expenseId] = context.total.number.doubleValueExact()
         }
         return result
     }

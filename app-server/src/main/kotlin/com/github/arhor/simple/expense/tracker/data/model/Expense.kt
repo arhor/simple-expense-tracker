@@ -14,8 +14,8 @@ data class Expense(
     val id: Long? = null,
     val userId: Long,
     val name: String,
-    val icon: String?,
-    val color: String?,
+    val icon: String? = null,
+    val color: String? = null,
     @CreatedDate
     val created: LocalDateTime? = null,
     @LastModifiedDate

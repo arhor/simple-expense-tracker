@@ -14,5 +14,5 @@ interface ExpenseMapper {
     @Mapping(target = "id", ignore = true)
     fun mapToEntity(dto: ExpenseRequestDTO, userId: Long): Expense
 
-    fun mapToDTO(entity: Expense, total: BigDecimal): ExpenseResponseDTO
+    fun mapToDTO(entity: Expense, total: Double): ExpenseResponseDTO
 }
