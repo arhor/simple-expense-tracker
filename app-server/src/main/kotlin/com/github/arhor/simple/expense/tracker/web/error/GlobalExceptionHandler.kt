@@ -161,11 +161,12 @@ class GlobalExceptionHandler(
         )
 
         return handleErrorCode(
-            exception,
-            ErrorCode.VALIDATION_FAILED,
-            locale,
-            timeZone,
-            (fieldErrors + globalErrors)
+            exception = exception,
+            errorCode = ErrorCode.VALIDATION_FAILED,
+            locale = locale,
+            timeZone = timeZone,
+            details = (fieldErrors + globalErrors),
+            bindingResult.objectName,
         )
     }
 

@@ -38,7 +38,7 @@ export default class UserStore {
     async fetchData(): Promise<void> {
         if (!this.authenticated) {
             try {
-                const { data } = await client.get('/users?current');
+                const { data } = await client.get('/users/current');
                 log.debug('Successfully fetched current user');
                 this.setData(data);
             } catch (e) {

@@ -48,3 +48,12 @@ task stage(type: Jar, dependsOn: [":app-client:build", ":app-server:build"]) {
         }
     }
 }
+
+task runCompositeJar(type: JavaExec, dependsOn: stage) {
+    group = "application"
+    description = "Runs created composite Jar file with Spring Boot application"
+
+    mainClass.set("-jar")
+
+    args "${rootProject.buildDir}/libs/${rootProject.name}.jar"
+}
