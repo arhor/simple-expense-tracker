@@ -2,7 +2,7 @@ import { existsSync, lstatSync, mkdirSync, readdirSync, rmSync, writeFileSync } 
 import { compileFromFile } from 'json-schema-to-typescript';
 import path from 'path';
 
-const RESOURCES_ROOT = 'src/main/resources/json';
+const RESOURCES_ROOT = 'schema';
 const GENERATED_DIST = 'build/generated/sources/js2ts';
 
 rmSync(GENERATED_DIST, { force: true, recursive: true });

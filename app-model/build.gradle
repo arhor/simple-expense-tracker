@@ -18,6 +18,7 @@ dependencies {
 }
 
 jsonSchema2Pojo {
+    source.from = files("${projectDir}/schema")
     targetVersion = property("version.java")
     targetPackage = "com.github.arhor.simple.expense.tracker.model"
     removeOldOutput = true

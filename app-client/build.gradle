@@ -2,9 +2,8 @@ plugins {
     id "simple-expense-tracker.node-conventions"
 }
 
-description = "Client-side application based on React.js %s and Node.js %s".formatted(
-    property("version.react"),
-    property("version.node"),
+description = "Client-side application based on React.js and Node.js %s".formatted(
+    property("version.node")
 )
 
 def generatedSourcesDir = "src/generated"
