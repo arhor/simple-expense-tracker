@@ -132,11 +132,11 @@ jacocoTestCoverageVerification {
 }
 
 check {
-    dependsOn = [
+    dependsOn(
         test,
         jacocoTestReport,
         jacocoTestCoverageVerification,
-    ]
+    )
 }
 
 void applyJaCoCoExclusions(ConfigurableFileCollection classDirectories) {
@@ -157,17 +157,8 @@ void applyJaCoCoExclusions(ConfigurableFileCollection classDirectories) {
 
 tasks.withType(JavaCompile) {
     options.compilerArgs = [
-        "-Xlint:cast",
         "-Xlint:deprecation",
-        "-Xlint:empty",
         "-Xlint:fallthrough",
-        "-Xlint:overloads",
-        "-Xlint:overrides",
-        "-Xlint:rawtypes",
-        "-Xlint:removal",
-        "-Xlint:static",
-        "-Xlint:try",
-        "-Xlint:varargs",
         "-Xlint:unchecked",
         "-parameters",
     ]

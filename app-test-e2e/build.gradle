@@ -23,6 +23,7 @@ dockerCompose {
 
     forceRecreate = true
     useComposeFiles = ["docker-compose.test.yml"]
+    removeImages = com.avast.gradle.dockercompose.RemoveImages.Local
 }
 
 composeBuild {
