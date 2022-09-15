@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory
 import org.springframework.context.MessageSource
 import org.springframework.dao.DataAccessException
 import org.springframework.http.HttpStatus
+import org.springframework.security.access.AccessDeniedException
 import org.springframework.security.core.userdetails.UsernameNotFoundException
 import org.springframework.validation.FieldError
 import org.springframework.validation.ObjectError
@@ -21,7 +22,8 @@ import org.springframework.web.servlet.ModelAndView
 import org.springframework.web.servlet.NoHandlerFoundException
 import java.io.FileNotFoundException
 import java.lang.invoke.MethodHandles
-import java.util.*
+import java.util.Locale
+import java.util.TimeZone
 
 @RestControllerAdvice
 class GlobalExceptionHandler(
