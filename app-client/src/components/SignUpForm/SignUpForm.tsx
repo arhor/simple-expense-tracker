@@ -1,7 +1,7 @@
 import { FormEvent, useState } from 'react';
 
 import { observer } from 'mobx-react';
-import { Link as RouterLink, Navigate, useNavigate } from 'react-router-dom';
+import { Link as RouterLink, useNavigate } from 'react-router-dom';
 
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Avatar from '@mui/material/Avatar';
@@ -69,9 +69,7 @@ const SignUpForm = () => {
         }
     };
 
-    return user.authenticated ? (
-        <Navigate to={{ pathname: '/' }} />
-    ) : (
+    return (
         <Box
             sx={{
                 display: 'flex',

@@ -9,7 +9,9 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.security.oauth2.client.web.OAuth2AuthorizationRequestRedirectFilter.DEFAULT_AUTHORIZATION_REQUEST_BASE_URI
+import org.springframework.security.web.authentication.AbstractAuthenticationTargetUrlRequestHandler
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler
+import org.springframework.security.web.authentication.logout.SimpleUrlLogoutSuccessHandler
 
 @Configuration
 @EnableWebSecurity
@@ -30,12 +32,12 @@ class WebSecurityConfig(
             .and()
             .logout()
             .logoutUrl(URL_PATH_SIGN_OUT.withApiPrefix())
+            .logoutSuccessHandler(SimpleUrlLogoutSuccessHandler().apply { configure() })
             .logoutSuccessUrl(URL_PATH_ROOT)
             .and()
             .formLogin()
             .loginPage(URL_PATH_SIGN_IN)
             .loginProcessingUrl(URL_PATH_SIGN_IN.withApiPrefix())
-            .successHandler(authenticationSuccessHandler)
             .and()
             .oauth2Login()
             .loginPage(URL_PATH_SIGN_IN)
@@ -51,6 +53,10 @@ class WebSecurityConfig(
     }
 
     private fun String.withApiPrefix() = applicationProps.apiUrlPath(this)
+
+    private fun AbstractAuthenticationTargetUrlRequestHandler?.configure() {
+        this?.setUseReferer(true)
+    }
 
     @Configuration(proxyBeanMethods = false)
     class Beans {

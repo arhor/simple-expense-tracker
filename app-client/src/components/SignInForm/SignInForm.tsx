@@ -1,4 +1,4 @@
-import { Link as RouterLink, Navigate } from 'react-router-dom';
+import { Link as RouterLink, useSearchParams } from 'react-router-dom';
 
 import GitHubIcon from '@mui/icons-material/GitHub';
 import GoogleIcon from '@mui/icons-material/Google';    
@@ -13,14 +13,11 @@ import Stack from '@mui/material/Stack';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 
-import { useStore } from '@/store';
-
 const SignInForm = () => {
-    const { user } = useStore();
+    const [ searchParams ] = useSearchParams();
+    const errorParam = searchParams.get('error');
 
-    return user.authenticated ? (
-        <Navigate to={{ pathname: '/' }} />
-    ) : (
+    return (
         <Box
             sx={{
                 display: 'flex',
@@ -38,6 +35,13 @@ const SignInForm = () => {
             </Typography>
             <Box component="form" action="/api/sign-in" method="POST" noValidate sx={{ mt: 1 }}>
                 <Grid container justifyContent="center">
+                    {(errorParam !== null && errorParam !== undefined) && (
+                        <Grid item xs={10}>
+                            <Typography component="p" variant="h5">
+                                Incorrect Username or Password
+                            </Typography>
+                        </Grid>
+                    )}
                     <Grid item xs={10}>
                         <TextField
                             margin="normal"
