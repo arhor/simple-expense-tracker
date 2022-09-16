@@ -46,7 +46,7 @@ const AppSettings = () => {
                                 />
                             </Grid>
                         </Grid>
-                        <Button color="inherit" href="/api/logout">
+                        <Button color="inherit" href="/api/sign-out">
                             {t('Sign-Out')}
                         </Button>
                     </Box>

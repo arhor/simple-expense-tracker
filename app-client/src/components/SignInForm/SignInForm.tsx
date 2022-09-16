@@ -36,7 +36,7 @@ const SignInForm = () => {
             <Typography component="h1" variant="h5">
                 Sign in
             </Typography>
-            <Box component="form" action="/api/login" method="POST" noValidate sx={{ mt: 1 }}>
+            <Box component="form" action="/api/sign-in" method="POST" noValidate sx={{ mt: 1 }}>
                 <Grid container justifyContent="center">
                     <Grid item xs={10}>
                         <TextField

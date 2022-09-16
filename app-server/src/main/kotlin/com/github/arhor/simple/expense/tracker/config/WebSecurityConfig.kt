@@ -29,16 +29,18 @@ class WebSecurityConfig(
             .permitAll()
             .and()
             .logout()
-            .logoutUrl(applicationProps.apiUrlPath("/logout"))
-            .logoutSuccessUrl("/")
+            .logoutUrl(URL_PATH_SIGN_OUT.withApiPrefix())
+            .logoutSuccessUrl(URL_PATH_ROOT)
             .and()
             .formLogin()
-            .loginProcessingUrl(applicationProps.apiUrlPath("/login"))
+            .loginPage(URL_PATH_SIGN_IN)
+            .loginProcessingUrl(URL_PATH_SIGN_IN.withApiPrefix())
             .successHandler(authenticationSuccessHandler)
             .and()
             .oauth2Login()
+            .loginPage(URL_PATH_SIGN_IN)
             .authorizationEndpoint()
-            .baseUri(applicationProps.apiUrlPath(DEFAULT_AUTHORIZATION_REQUEST_BASE_URI))
+            .baseUri(DEFAULT_AUTHORIZATION_REQUEST_BASE_URI.withApiPrefix())
             .and()
             .successHandler(authenticationSuccessHandler)
             .and()
@@ -48,9 +50,17 @@ class WebSecurityConfig(
             .contentSecurityPolicy("script-src 'self' 'unsafe-inline'")
     }
 
+    private fun String.withApiPrefix() = applicationProps.apiUrlPath(this)
+
     @Configuration(proxyBeanMethods = false)
     class Beans {
         @Bean
         fun passwordEncoder() = BCryptPasswordEncoder()
+    }
+
+    companion object {
+        private const val URL_PATH_ROOT = "/"
+        private const val URL_PATH_SIGN_IN = "/sign-in"
+        private const val URL_PATH_SIGN_OUT = "/sign-out"
     }
 }
