@@ -15,7 +15,7 @@ import Typography from '@mui/material/Typography';
 
 const SignInForm = () => {
     const [ searchParams ] = useSearchParams();
-    const errorParam = searchParams.get('error');
+    const hasError = searchParams.has('error');
 
     return (
         <Box
@@ -35,13 +35,6 @@ const SignInForm = () => {
             </Typography>
             <Box component="form" action="/api/sign-in" method="POST" noValidate sx={{ mt: 1 }}>
                 <Grid container justifyContent="center">
-                    {(errorParam !== null && errorParam !== undefined) && (
-                        <Grid item xs={10}>
-                            <Typography component="p" variant="h5">
-                                Incorrect Username or Password
-                            </Typography>
-                        </Grid>
-                    )}
                     <Grid item xs={10}>
                         <TextField
                             margin="normal"
@@ -62,6 +55,8 @@ const SignInForm = () => {
                             label="Password"
                             type="password"
                             id="password"
+                            error={hasError}
+                            helperText={hasError ? 'Incorrect Username or Password' : undefined}
                             autoComplete="current-password"
                         />
                     </Grid>

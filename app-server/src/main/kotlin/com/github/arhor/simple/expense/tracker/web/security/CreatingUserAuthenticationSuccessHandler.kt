@@ -18,11 +18,16 @@ class CreatingUserAuthenticationSuccessHandler(
         this.setUseReferer(true)
         this.redirectStrategy = object : DefaultRedirectStrategy() {
             override fun calculateRedirectUrl(contextPath: String?, url: String?): String {
-                return super.calculateRedirectUrl(contextPath, url)
-                    .let(UriComponentsBuilder::fromUriString)
-                    .queryParam("success")
-                    .build()
-                    .toString()
+                return super.calculateRedirectUrl(contextPath, url).let { path ->
+                    if (path.endsWith("/sign-in")) {// TODO: use tha same constant as for WebSecurityConfig
+                        path.let(UriComponentsBuilder::fromUriString)
+                            .queryParam("success")
+                            .build()
+                            .toString()
+                    } else {
+                        path
+                    }
+                }
             }
         }
     }

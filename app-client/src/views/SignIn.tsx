@@ -11,9 +11,7 @@ const SignIn = () => {
     const [ searchParams ] = useSearchParams();
     const { user } = useStore();
 
-    const successParam = searchParams.get('success');
-
-    if (successParam !== null && successParam !== undefined) {
+    if (searchParams.has('success')) {
         return (
             <Navigate to={{ pathname: '/' }} />
         );
