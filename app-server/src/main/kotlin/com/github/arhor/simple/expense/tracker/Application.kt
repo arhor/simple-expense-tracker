@@ -2,27 +2,31 @@ package com.github.arhor.simple.expense.tracker
 
 import com.github.arhor.simple.expense.tracker.config.props.ApplicationProps
 import org.slf4j.LoggerFactory
-import org.springframework.boot.ApplicationArguments
 import org.springframework.boot.ApplicationRunner
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.context.properties.ConfigurationPropertiesScan
 import org.springframework.boot.runApplication
-import org.springframework.core.env.Environment
+import org.springframework.boot.web.context.WebServerApplicationContext
+import org.springframework.context.annotation.Bean
+import org.springframework.context.annotation.Profile
+import org.springframework.web.context.WebApplicationContext
 import java.lang.invoke.MethodHandles
 
 private val log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass())
 
 @SpringBootApplication(proxyBeanMethods = false)
 @ConfigurationPropertiesScan(basePackageClasses = [ApplicationProps::class])
-class Application(private val env: Environment) : ApplicationRunner {
+class Application {
 
-    override fun run(args: ApplicationArguments) {
-        val port = env.getProperty("server.port")
-        val path = env.getProperty("server.servlet.context-path", "/")
+    @Bean
+    @Profile("dev")
+    fun <T> applicationRunner(context: T)
+        where T : WebApplicationContext, T : WebServerApplicationContext = ApplicationRunner {
 
-        if (port != null) {
-            log.info("Local access URL: http://localhost:{}{}", port, path)
-        }
+        val port = context.webServer.port
+        val path = context.servletContext?.contextPath ?: ""
+
+        log.info("Local access URL: http://localhost:{}{}", port, path)
     }
 }
 
