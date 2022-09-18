@@ -20,7 +20,7 @@ class Application {
 
     @Bean
     @Profile("dev")
-    fun <T> applicationRunner(context: T)
+    fun <T> displayApplicationInfo(context: T)
         where T : WebApplicationContext, T : WebServerApplicationContext = ApplicationRunner {
 
         val port = context.webServer.port
