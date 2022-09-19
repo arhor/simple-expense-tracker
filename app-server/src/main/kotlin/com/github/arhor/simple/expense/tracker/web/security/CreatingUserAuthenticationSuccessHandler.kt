@@ -19,7 +19,7 @@ class CreatingUserAuthenticationSuccessHandler(
         this.redirectStrategy = object : DefaultRedirectStrategy() {
             override fun calculateRedirectUrl(contextPath: String?, url: String?): String {
                 return super.calculateRedirectUrl(contextPath, url).let { path ->
-                    if (path.endsWith("/sign-in")) {// TODO: use tha same constant as for WebSecurityConfig
+                    if (path.endsWith(URL_PATH_SIGN_IN)) {
                         path.let(UriComponentsBuilder::fromUriString)
                             .queryParam("success")
                             .build()
@@ -35,5 +35,9 @@ class CreatingUserAuthenticationSuccessHandler(
     override fun onAuthenticationSuccess(req: HttpServletRequest, res: HttpServletResponse, auth: Authentication) {
         service.createNewUserIfNecessary(auth)
         super.onAuthenticationSuccess(req, res, auth)
+    }
+
+    companion object {
+        private const val URL_PATH_SIGN_IN = "/sign-in"
     }
 }

@@ -21,7 +21,8 @@ class Application {
     @Bean
     @Profile("dev")
     fun <T> displayApplicationInfo(context: T)
-        where T : WebApplicationContext, T : WebServerApplicationContext = ApplicationRunner {
+        where T : WebApplicationContext,
+              T : WebServerApplicationContext = ApplicationRunner {
 
         val port = context.webServer.port
         val path = context.servletContext?.contextPath ?: ""
