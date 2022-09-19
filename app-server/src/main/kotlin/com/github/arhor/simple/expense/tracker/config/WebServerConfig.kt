@@ -8,7 +8,7 @@ import org.springframework.core.io.ResourceLoader
 import org.springframework.core.io.support.ResourcePatternResolver
 import org.springframework.core.io.support.ResourcePatternUtils
 import org.springframework.web.bind.annotation.RestController
-import org.springframework.web.method.HandlerTypePredicate
+import org.springframework.web.method.HandlerTypePredicate.forAnnotation
 import org.springframework.web.servlet.config.annotation.PathMatchConfigurer
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry
@@ -23,7 +23,7 @@ class WebServerConfig(private val applicationProps: ApplicationProps) : WebMvcCo
 
     override fun configurePathMatch(configurer: PathMatchConfigurer) {
         applicationProps.apiPathPrefix?.let {
-            configurer.addPathPrefix(it, HandlerTypePredicate.forAnnotation(RestController::class.java))
+            configurer.addPathPrefix(it, forAnnotation(RestController::class.java))
         }
     }
 

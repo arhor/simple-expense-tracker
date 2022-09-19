@@ -32,7 +32,7 @@ dependencies {
 
 task stage(type: Jar, dependsOn: [":app-client:build", ":app-server:build"]) {
     group = "build"
-    description = "Created composite Jar file including client and server part"
+    description = "Creates composite Jar file including client and server part"
 
     entryCompression = ZipEntryCompression.STORED
 
