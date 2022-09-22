@@ -10,13 +10,13 @@ plugins {
 }
 
 description = "Server-side application based on Spring Boot %s and Java %s".formatted(
-    property("version.springBoot"),
-    property("version.java"),
+    property("versions.springBoot"),
+    property("versions.java"),
 )
 
 java {
-    sourceCompatibility = property("version.java")
-    targetCompatibility = property("version.java")
+    sourceCompatibility = property("versions.java")
+    targetCompatibility = property("versions.java")
 }
 
 kapt {
@@ -24,7 +24,7 @@ kapt {
 }
 
 jacoco {
-    toolVersion = property("version.jacoco")
+    toolVersion = property("versions.jacoco")
 }
 
 flyway {
@@ -105,7 +105,7 @@ dependencies {
 
 dependencyManagement {
     imports {
-        mavenBom "org.testcontainers:testcontainers-bom:${property("version.testcontainers")}"
+        mavenBom "org.testcontainers:testcontainers-bom:${property("versions.testcontainers")}"
     }
 }
 
@@ -170,7 +170,7 @@ tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile) {
             "-Xjsr305=strict",
             "-Xjvm-default=all",
         ]
-        jvmTarget = project.property("version.java")
+        jvmTarget = project.property("versions.java")
         javaParameters = true
     }
 }

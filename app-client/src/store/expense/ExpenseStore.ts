@@ -2,7 +2,8 @@ import log from 'loglevel';
 import { action, computed, makeObservable, observable } from 'mobx';
 
 import client from '@/api/client.js';
-import { ExpenseItemDTO } from '@/generated/ExpenseItemDTO';
+import { ExpenseItemRequestDTO } from '@/generated/ExpenseItemRequestDTO';
+import { ExpenseItemResponseDTO } from '@/generated/ExpenseItemResponseDTO';
 import { ExpenseRequestDTO } from '@/generated/ExpenseRequestDTO';
 import { ExpenseResponseDTO } from '@/generated/ExpenseResponseDTO';
 import { Store } from '@/store/Store';
@@ -11,7 +12,7 @@ export default class ExpenseStore {
     root?: Store;
 
     expenses: ExpenseResponseDTO[] = [];
-    expenseItems: Map<number, ExpenseItemDTO[]> = new Map();
+    expenseItems: Map<number, ExpenseItemResponseDTO[]> = new Map();
     loaded = false;
 
     constructor() {
@@ -70,7 +71,7 @@ export default class ExpenseStore {
         }
     }
 
-    async createExpenseItem(expenseId: number, expenseItem: ExpenseItemDTO): Promise<void> {
+    async createExpenseItem(expenseId: number, expenseItem: ExpenseItemRequestDTO): Promise<void> {
         try {
             const { data } = await client.post(`/expenses/${expenseId}/items`, expenseItem);
             log.debug('Successfully created expense item');

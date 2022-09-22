@@ -19,7 +19,7 @@ dependencies {
 
 jsonSchema2Pojo {
     source.from = files("${projectDir}/schema")
-    targetVersion = property("version.java")
+    targetVersion = property("versions.java")
     targetPackage = "com.github.arhor.simple.expense.tracker.model"
     removeOldOutput = true
     includeJsr303Annotations = true

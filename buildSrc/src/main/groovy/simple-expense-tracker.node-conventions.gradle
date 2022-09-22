@@ -4,7 +4,7 @@ plugins {
 }
 
 node {
-    version = property("version.node")
+    version = property("versions.node")
     download = true
 }
 

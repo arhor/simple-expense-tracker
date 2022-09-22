@@ -1,16 +1,16 @@
 pluginManagement {
     plugins {
         // @formatter:off
-        id "com.adarshr.test-logger"            version settings["version.gradleTestLogger"]
-        id "com.avast.gradle.docker-compose"    version settings["version.dockerComposeGradlePlugin"]
-        id "com.github.node-gradle.node"        version settings["version.nodeGradlePlugin"]
-        id "io.spring.dependency-management"    version settings["version.springDependencyManagement"]
-        id "org.flywaydb.flyway"                version settings["version.flyway"]
-        id "org.jsonschema2dataclass"           version settings["version.json2pojo"]
-        id "org.jetbrains.kotlin.kapt"          version settings["version.kotlin"]
-        id "org.jetbrains.kotlin.jvm"           version settings["version.kotlin"]
-        id "org.jetbrains.kotlin.plugin.spring" version settings["version.kotlin"]
-        id "org.springframework.boot"           version settings["version.springBoot"]
+        id "com.adarshr.test-logger"            version settings["versions.gradleTestLogger"]
+        id "com.avast.gradle.docker-compose"    version settings["versions.dockerComposeGradlePlugin"]
+        id "com.github.node-gradle.node"        version settings["versions.nodeGradlePlugin"]
+        id "io.spring.dependency-management"    version settings["versions.springDependencyManagement"]
+        id "org.flywaydb.flyway"                version settings["versions.flyway"]
+        id "org.jsonschema2dataclass"           version settings["versions.json2pojo"]
+        id "org.jetbrains.kotlin.kapt"          version settings["versions.kotlin"]
+        id "org.jetbrains.kotlin.jvm"           version settings["versions.kotlin"]
+        id "org.jetbrains.kotlin.plugin.spring" version settings["versions.kotlin"]
+        id "org.springframework.boot"           version settings["versions.springBoot"]
         // @formatter:on
     }
     repositories {
@@ -31,8 +31,8 @@ dependencyResolutionManagement {
     versionCatalogs {
         libs {
             this.properties.each { name, value ->
-                if (name.startsWith "version.") {
-                    version(name - "version.", value)
+                if (name.startsWith "versions.") {
+                    version(name - "versions.", value)
                 }
             }
         }
