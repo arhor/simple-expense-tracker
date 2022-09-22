@@ -151,8 +151,8 @@ internal class NotificationServiceImplTest {
         every { notificationRepository.save(any()) } returnsArgument 0
         every { notificationMapper.mapDtoToEntity(any(), any(), any(), any()) } answers {
             Notification(
-                message = arg<NotificationDTO>(0).message.get(),
-                severity = arg<NotificationDTO>(0).severity.get().name,
+                message = arg<NotificationDTO>(0).message!!,
+                severity = arg<NotificationDTO>(0).severity!!.name,
                 targetUserId = arg(1),
                 sourceUserId = arg(2),
                 timestamp = arg(3),

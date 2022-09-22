@@ -1,7 +1,8 @@
 package com.github.arhor.simple.expense.tracker.service.impl
 
 import com.github.arhor.simple.expense.tracker.data.repository.ExpenseItemRepository
-import com.github.arhor.simple.expense.tracker.model.ExpenseItemDTO
+import com.github.arhor.simple.expense.tracker.model.ExpenseItemRequestDTO
+import com.github.arhor.simple.expense.tracker.model.ExpenseItemResponseDTO
 import com.github.arhor.simple.expense.tracker.service.ExpenseItemService
 import com.github.arhor.simple.expense.tracker.service.mapping.ExpenseItemMapper
 import com.github.arhor.simple.expense.tracker.util.TemporalRange
@@ -16,7 +17,7 @@ class ExpenseItemServiceImpl(
 ) : ExpenseItemService {
 
     @Transactional(readOnly = true)
-    override fun getExpenseItems(expenseId: Long, dateRange: TemporalRange<LocalDate>): List<ExpenseItemDTO> {
+    override fun getExpenseItems(expenseId: Long, dateRange: TemporalRange<LocalDate>): List<ExpenseItemResponseDTO> {
         return expenseItemRepository.findAllByExpenseIdAndDateRange(
             expenseId,
             dateRange.start,
@@ -27,7 +28,7 @@ class ExpenseItemServiceImpl(
     }
 
     @Transactional
-    override fun createExpenseItem(expenseId: Long, dto: ExpenseItemDTO): ExpenseItemDTO {
+    override fun createExpenseItem(userId: Long, expenseId: Long, dto: ExpenseItemRequestDTO): ExpenseItemResponseDTO {
         val entity = expenseItemMapper.mapToEntity(dto, expenseId)
         val result = expenseItemRepository.save(entity)
 

@@ -19,7 +19,7 @@ abstract class InternalUserMapper {
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "externalId", ignore = true)
     @Mapping(target = "externalProvider", ignore = true)
-    @Mapping(target = "password", expression = "java(encoder.encode(request.getPassword()))")
+    @Mapping(target = "password", expression = "java(encoder.encode(request.password))")
     @Mapping(target = "currency", defaultValue = "USD")
     abstract fun mapToUser(request: UserRequestDTO): InternalUser
 

@@ -40,16 +40,14 @@ internal class NotificationMapperTest : MapperTestBase() {
             .isNotNull
             .satisfies(
                 Consumer {
-                    assertThat(it.severity)
+                    assertThat(it.severity!!.name)
                         .describedAs("severity")
-                        .map(Severity::name)
-                        .contains(notification.severity)
+                        .isEqualTo(notification.severity)
                 },
                 {
                     assertThat(it.message)
                         .describedAs("message")
-                        .isNotEmpty
-                        .contains(notification.message)
+                        .isEqualTo(notification.message)
                 }
             )
     }
@@ -64,8 +62,8 @@ internal class NotificationMapperTest : MapperTestBase() {
         val targetUserId = -2L
 
         val dto = NotificationDTO().apply {
-            setSeverity(severity)
-            setMessage(message)
+            this.severity = severity
+            this.message = message
         }
 
         // when

@@ -3,7 +3,8 @@ package com.github.arhor.simple.expense.tracker.service.impl
 import com.github.arhor.simple.expense.tracker.data.model.ExpenseItem
 import com.github.arhor.simple.expense.tracker.data.repository.ExpenseItemRepository
 import com.github.arhor.simple.expense.tracker.model.Currency
-import com.github.arhor.simple.expense.tracker.model.ExpenseItemDTO
+import com.github.arhor.simple.expense.tracker.model.ExpenseItemRequestDTO
+import com.github.arhor.simple.expense.tracker.model.ExpenseItemResponseDTO
 import com.github.arhor.simple.expense.tracker.service.mapping.ExpenseItemMapper
 import com.github.arhor.simple.expense.tracker.util.TemporalRange
 import io.mockk.called
@@ -83,7 +84,8 @@ internal class ExpenseItemServiceImplTest {
         }
         every { expenseItemMapper.mapToDTO(entity = any()) } answers {
             arg<ExpenseItem>(0).let {
-                ExpenseItemDTO(
+                ExpenseItemResponseDTO(
+                    it.id,
                     it.date,
                     it.amount.toDouble(),
                     it.currency.let(Currency::fromValue),
@@ -110,27 +112,27 @@ internal class ExpenseItemServiceImplTest {
             .returns(expectedDate, from { it.date })
             .returns(expectedAmount, from { it.amount })
             .returns(expectedCurrency, from { it.currency.name })
-            .returns(expectedComment, from { it.comment.get() })
+            .returns(expectedComment, from { it.comment })
     }
 
     @Test
     fun `should correctly save new expense item entity using provided DTO`() {
         // given
-        val expectedExpenseItem = ExpenseItemDTO().apply {
+        val expectedExpenseItem = ExpenseItemRequestDTO().apply {
             date = LocalDate.of(2022, 9, 5)
             amount = 10.0
             currency = Currency.USD
-            setComment("test comment")
+            comment = "test comment"
         }
 
         every { expenseItemMapper.mapToEntity(dto = any(), expenseId = any()) } answers {
-            arg<ExpenseItemDTO>(0).let {
+            arg<ExpenseItemRequestDTO>(0).let {
                 ExpenseItem(
                     expenseId = arg(1),
                     date = it.date,
                     amount = it.amount.toBigDecimal(),
                     currency = it.currency.name,
-                    comment = it.comment.get(),
+                    comment = it.comment,
                 )
             }
         }
@@ -139,7 +141,8 @@ internal class ExpenseItemServiceImplTest {
         }
         every { expenseItemMapper.mapToDTO(any()) } answers {
             arg<ExpenseItem>(0).let {
-                ExpenseItemDTO(
+                ExpenseItemResponseDTO(
+                    it.id,
                     it.date,
                     it.amount.toDouble(),
                     it.currency.let(Currency::fromValue),
@@ -150,6 +153,7 @@ internal class ExpenseItemServiceImplTest {
 
         // when
         val createdExpenseItem = expenseItemService.createExpenseItem(
+            userId = -1L,
             expenseId = -1L,
             dto = expectedExpenseItem
         )

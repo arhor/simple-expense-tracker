@@ -24,10 +24,9 @@ jsonSchema2Pojo {
     removeOldOutput = true
     includeJsr303Annotations = true
     includeJsr305Annotations = true
-    includeSetters = true
-    includeGetters = true
+    includeSetters = false
+    includeGetters = false
     includeConstructors = true
-    useOptionalForGetters = true
     useLongIntegers = true
     dateTimeType = "java.time.LocalDateTime"
     dateType = "java.time.LocalDate"

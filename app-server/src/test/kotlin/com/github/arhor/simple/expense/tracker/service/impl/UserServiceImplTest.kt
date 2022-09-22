@@ -5,7 +5,6 @@ import com.github.arhor.simple.expense.tracker.data.model.projection.CompactInte
 import com.github.arhor.simple.expense.tracker.data.repository.InternalUserRepository
 import com.github.arhor.simple.expense.tracker.exception.EntityDuplicateException
 import com.github.arhor.simple.expense.tracker.exception.EntityNotFoundException
-import com.github.arhor.simple.expense.tracker.model.Currency
 import com.github.arhor.simple.expense.tracker.model.UserRequestDTO
 import com.github.arhor.simple.expense.tracker.model.UserResponseDTO
 import com.github.arhor.simple.expense.tracker.service.mapping.InternalUserMapper
@@ -306,7 +305,7 @@ internal class UserServiceImplTest {
                     InternalUser(
                         username = it.username,
                         password = it.password,
-                        currency = it.currency.get()
+                        currency = it.currency!!,
                     )
                 }
             }

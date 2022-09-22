@@ -63,7 +63,7 @@ internal class UserControllerTest : BaseControllerTest() {
         assertThat(user.captured)
             .returns(expectedUsername, from { it.username })
             .returns(expectedPassword, from { it.password })
-            .returns(expectedCurrency, from { it.currency.get() })
+            .returns(expectedCurrency, from { it.currency })
 
         awaitResult.andExpect {
             status { isCreated() }
