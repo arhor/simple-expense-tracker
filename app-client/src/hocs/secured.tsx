@@ -1,5 +1,6 @@
 import { ComponentType, Suspense, useEffect, useState } from 'react';
 
+import { autorun } from 'mobx';
 import { observer } from 'mobx-react';
 import { Navigate } from 'react-router';
 
@@ -9,16 +10,19 @@ import { Optional } from '@/utils/core-utils';
 
 const REACT_LAZY_TYPE = Symbol.for('react.lazy');
 
-export default function withSecurity<T>(
+export default function secured<T extends JSX.IntrinsicAttributes>(
     WrappedComponent: ComponentType<T> & { $$typeof: Optional<symbol | number> },
 ): ComponentType<T> {
     const SecuredComponent = (props: T) => {
-        const [loading, setLoading] = useState(true);
+        const [ loading, setLoading ] = useState(true);
         const { user } = useStore();
 
         useEffect(() => {
-            user.fetchData().finally(() => {
-                setLoading(false);
+            autorun(() => {
+                user.fetchData()
+                    .finally(() => {
+                        setLoading(false);
+                    });
             });
         }, []);
 
@@ -40,7 +44,7 @@ export default function withSecurity<T>(
             return <Navigate to={{ pathname: '/sign-in' }} />;
         }
     };
-    SecuredComponent.displayName = `withSecurity(${
+    SecuredComponent.displayName = `secured(${
         WrappedComponent.displayName || WrappedComponent.name || 'Component'
     })`;
     return observer(SecuredComponent);

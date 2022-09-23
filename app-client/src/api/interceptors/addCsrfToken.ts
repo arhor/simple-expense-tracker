@@ -1,8 +1,7 @@
 import { AxiosRequestConfig } from 'axios';
+import * as uuid from 'uuid';
 
-import { generateUUID } from '@/utils/core-utils';
-
-export const CSRF_TOKEN = generateUUID();
+export const CSRF_TOKEN = uuid.v4();
 
 const SAFE_METHODS: Readonly<Record<string, boolean>> = {
     GET: true,

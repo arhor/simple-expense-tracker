@@ -3,7 +3,7 @@ import React, { MouseEventHandler } from 'react';
 import Button from '@mui/material/Button';
 
 import client from '@/api/client';
-import { useObjectURL } from '@/utils/core-utils';
+import { withObjectURL } from '@/utils/core-utils';
 import { deserialize } from '@/utils/string-utils';
 
 export type Props = {
@@ -15,9 +15,9 @@ const DownloadButton = ({ url, text }: Props) => {
     const download: MouseEventHandler = async () => {
         const { data, headers } = await client.get(url, { responseType: 'blob' });
         const contentDisposition = deserialize(headers['content-disposition']);
-        const filename = contentDisposition['filename'] ?? 'charsheet.pdf';
+        const filename = contentDisposition['filename'] ?? 'unknown';
 
-        useObjectURL(data, (objectURL) => {
+        withObjectURL(data, (objectURL) => {
             const link = document.createElement('a');
 
             link.setAttribute('href', objectURL);

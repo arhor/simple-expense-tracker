@@ -40,15 +40,15 @@ const ExpenseCreateForm = () => {
 
         const currentErrors = validator({ name, icon, color });
 
-        setErrors(currentErrors);
-
-        if (formIsValid(errors)) {
+        if (formIsValid(currentErrors)) {
             await expense.createExpense({ 
                 name: name as string,
                 icon: icon as string | undefined,
                 color: color as string | undefined,
             });
             navigate('/');
+        } else {
+            setErrors(currentErrors);
         }
     };
 

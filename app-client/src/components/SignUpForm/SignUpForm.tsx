@@ -58,14 +58,14 @@ const SignUpForm = () => {
 
         const currentErrors = validator({ username, password });
 
-        setErrors(currentErrors);
-
-        if (formIsValid(errors)) {
+        if (formIsValid(currentErrors)) {
             await user.signUp(
                 username as string,
                 password as string,
             );
             navigate('/sign-in');
+        } else {
+            setErrors(currentErrors);
         }
     };
 

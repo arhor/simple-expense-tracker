@@ -13,20 +13,19 @@ export default class ExpenseStore {
 
     expenses: ExpenseResponseDTO[] = [];
     expenseItems: Map<number, ExpenseItemResponseDTO[]> = new Map();
-    loaded = false;
+    loading = false;
 
     constructor() {
         makeObservable(this, {
             root: false,
             expenses: observable,
             expenseItems: observable,
-            loaded: observable,
+            loading: observable,
             totalAmount: computed,
             fetchExpenses: action.bound,
             createExpense: action.bound,
             fetchExpenseItems: action.bound,
             createExpenseItem: action.bound,
-            setData: action.bound,
             clear: action.bound,
         });
     }
@@ -36,24 +35,26 @@ export default class ExpenseStore {
     }
 
     async fetchExpenses(): Promise<void> {
-        if (this.loaded) {
+        if (this.loading) {
             return;
         }
         try {
+            this.loading = true;
             const { data } = await client.get('/expenses');
             log.debug('Successfully fetched current user expenses');
-            this.setData(data);
+            this.expenses = data;
         } catch (e) {
             log.error('Unable to fetch current user expenses', e);
             this.clear();
+        } finally {
+            this.loading = false;
         }
     }
 
     async createExpense(expense: ExpenseRequestDTO): Promise<void> {
         try {
-            const { data } = await client.post('/expenses', expense);
+            await client.post('/expenses', expense);
             log.debug('Successfully created user expense');
-            this.setData([...this.expenses, data]);
         } catch (e) {
             log.error('Unable to create user expense', e);
         }
@@ -81,13 +82,8 @@ export default class ExpenseStore {
         }
     }
 
-    setData(expenses: ExpenseResponseDTO[], loaded = true): void {
-        this.expenses = expenses;
-        this.loaded = loaded;
-    }
-
     clear(): void {
-        this.setData([], false);
+        this.expenses = [];
         this.expenseItems.clear();
     }
 }

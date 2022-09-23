@@ -20,14 +20,11 @@ function determineColorMode(shouldUseDarkTheme: boolean) {
 const AppThemeProvider = (props: { children: ReactNode }) => {
     const [colorMode, setColorMode] = useState<'light' | 'dark'>();
     const darkThemePreferred = useMediaQuery('(prefers-color-scheme: dark)');
-    const theme = useMemo(
-        () => createTheme({
-            palette: {
-                mode: colorMode ?? determineColorMode(darkThemePreferred),
-            },
-        }),
-        [colorMode, darkThemePreferred]
-    );
+    const theme = useMemo(() => createTheme({
+        palette: {
+            mode: colorMode ?? determineColorMode(darkThemePreferred),
+        },
+    }), [colorMode, darkThemePreferred]);
     const appThemeControl: AppThemeControl = {
         toggleColorMode: () => {
             setColorMode((prev) => determineColorMode(prev === 'light'));

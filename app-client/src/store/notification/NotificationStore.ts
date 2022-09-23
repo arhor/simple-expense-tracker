@@ -1,7 +1,8 @@
 import { action, makeObservable, observable } from 'mobx';
+import * as uuid from 'uuid';
 
 import { Store } from '@/store/Store';
-import { generateUUID, Optional } from '@/utils/core-utils';
+import { Optional } from '@/utils/core-utils';
 
 type Notification = {
     message: string;
@@ -28,7 +29,7 @@ export default class NotificationStore {
 
     enqueue(item: Notification) {
         this.items.push({
-            id: generateUUID(),
+            id: uuid.v4(),
             ...item,
         });
     }

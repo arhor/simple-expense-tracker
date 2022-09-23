@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 
+import { autorun } from 'mobx';
 import { observer } from 'mobx-react';
 import { Navigate } from 'react-router';
 import { useSearchParams } from 'react-router-dom';
@@ -17,7 +18,9 @@ const SignIn = () => {
         );
     } else {
         useEffect(() => {
-            user.fetchData();
+            autorun(() => {
+                user.fetchData();
+            });
         }, []);
     
         return user.authenticated ? (

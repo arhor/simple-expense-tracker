@@ -1,20 +1,19 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 
+import { autorun } from 'mobx';
 import { observer } from 'mobx-react';
 import { useNavigate } from 'react-router';
 
 import ExpenseItemList from '@/components/ExpenseItemList';
-import Loading from '@/components/Loading';
 import { useStore } from '@/store';
 
 const Home = () => {
-    const [ loading, setLoading ] = useState(true);
-    const { expense } = useStore();
     const navigate = useNavigate();
+    const { expense } = useStore();
 
     useEffect(() => {
-        expense.fetchExpenses().finally(() => {
-            setLoading(false);
+        autorun(() => {
+            expense.fetchExpenses();
         });
     }, []);
 
@@ -25,9 +24,13 @@ const Home = () => {
         navigate(`/expenses/${expenseId}`);
     };
 
-    return loading
-        ? <Loading />
-        : <ExpenseItemList expenses={expense.expenses} onCreate={handleCreate} onUpdate={handleUpdate} />;
+    return (
+        <ExpenseItemList
+            expenses={expense.expenses}
+            onCreate={handleCreate}
+            onUpdate={handleUpdate}
+        />
+    );
 };
 
 export default observer(Home);
