@@ -26,7 +26,6 @@ export default class ExpenseStore {
             createExpense: action.bound,
             fetchExpenseItems: action.bound,
             createExpenseItem: action.bound,
-            clear: action.bound,
         });
     }
 
@@ -44,8 +43,7 @@ export default class ExpenseStore {
             log.debug('Successfully fetched current user expenses');
             this.expenses = data;
         } catch (e) {
-            log.error('Unable to fetch current user expenses', e);
-            this.clear();
+            log.error('Unable to fetch current user expenses, still using previously loaded data', e);
         } finally {
             this.loading = false;
         }
@@ -80,10 +78,5 @@ export default class ExpenseStore {
         } catch (e) {
             log.error('Unable to create expense item', e);
         }
-    }
-
-    clear(): void {
-        this.expenses = [];
-        this.expenseItems.clear();
     }
 }
