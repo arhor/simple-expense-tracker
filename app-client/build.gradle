@@ -35,8 +35,8 @@ task build(type: com.github.gradle.node.npm.task.NpmTask, dependsOn: test) {
     args = ["run", "build"]
 }
 
-task start(type: com.github.gradle.node.npm.task.NpmTask, dependsOn: npmInstall) {
+task serve(type: com.github.gradle.node.npm.task.NpmTask, dependsOn: npmInstall) {
     group = "application"
     workingDir.fileValue(projectDir)
-    args = ["run", "start"]
+    args = ["run", "serve"]
 }

@@ -1,17 +1,13 @@
 import { StrictMode } from 'react';
 
-import ReactDOM from 'react-dom';
+import { createRoot } from 'react-dom/client';
 
 import App from '@/App';
 import '@/config/i18n';
 import '@/config/logging';
-import { withOptional } from '@/utils/core-utils';
 
-withOptional(document.getElementById('root'), (root) => {
-    ReactDOM.render(
-        <StrictMode>
-            <App />
-        </StrictMode>,
-        root,
-    );
-});
+createRoot(document.getElementById('root') as HTMLElement).render(
+    <StrictMode>
+        <App />
+    </StrictMode>,
+);

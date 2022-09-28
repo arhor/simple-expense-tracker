@@ -10,7 +10,7 @@
       </option>
       <option name="taskNames">
         <list>
-          <option value="start" />
+          <option value="serve" />
         </list>
       </option>
       <option name="vmOptions" />
