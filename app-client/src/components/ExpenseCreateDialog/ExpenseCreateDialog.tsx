@@ -34,9 +34,9 @@ export type Props = {
     onCancel: () => void;
 };
 
-const ExpenseCreateForm = ({ open, onSubmit, onCancel }: Props) => {
-    const [ entity, setEntity ] = useState<Partial<ExpenseRequestDTO>>({ name: null, icon: null, color: null });
-    const [ errors, setErrors ] = useState<Partial<ExpenseRequestDTO>>({});
+const ExpenseCreateDialog = ({ open, onSubmit, onCancel }: Props) => {
+    const [ entity, setEntity ] = useState({ name: '', icon: '', color: '' });
+    const [ errors, setErrors ] = useState({} as Partial<ExpenseRequestDTO>);
 
     const { t } = useTranslation();
     const { expense } = useStore();
@@ -57,7 +57,7 @@ const ExpenseCreateForm = ({ open, onSubmit, onCancel }: Props) => {
     ];
 
     const clearState = () => {
-        setEntity({});
+        setEntity({ name: '', icon: '', color: '' });
         setErrors({});
     };
     const handleSubmit = async () => {
@@ -109,4 +109,4 @@ const ExpenseCreateForm = ({ open, onSubmit, onCancel }: Props) => {
     );
 };
 
-export default observer(ExpenseCreateForm);
+export default observer(ExpenseCreateDialog);
