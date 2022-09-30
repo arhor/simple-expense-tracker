@@ -11,8 +11,9 @@ node {
 idea {
     module {
         excludeDirs += files(
-            "$projectDir/node_modules",
+            "$projectDir/coverage",
             "$projectDir/dist",
+            "$projectDir/node_modules",
         )
     }
 }
