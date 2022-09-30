@@ -1,6 +1,6 @@
 import { forwardRef, ReactElement, Ref, useState } from 'react';
 
-import { observer } from 'mobx-react';
+import { observer } from 'mobx-react-lite';
 import { useTranslation } from 'react-i18next';
 
 import Button from '@mui/material/Button';

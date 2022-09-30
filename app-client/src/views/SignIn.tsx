@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 
 import { autorun } from 'mobx';
-import { observer } from 'mobx-react';
+import { observer } from 'mobx-react-lite';
 import { Navigate } from 'react-router';
 import { useSearchParams } from 'react-router-dom';
 

@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-import { observer } from 'mobx-react';
+import { observer } from 'mobx-react-lite';
 
 import ExpenseCreateDialog from '@/components/ExpenseCreateDialog';
 import ExpenseItemList from '@/components/ExpenseItemList';

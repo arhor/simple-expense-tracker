@@ -1,7 +1,7 @@
 import { ComponentType, Suspense, useEffect, useState } from 'react';
 
 import { autorun } from 'mobx';
-import { observer } from 'mobx-react';
+import { observer } from 'mobx-react-lite';
 import { Navigate } from 'react-router';
 
 import Loading from '@/components/Loading';

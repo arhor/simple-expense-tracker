@@ -13,9 +13,7 @@
     "preview": "vite preview",
     "lint": "eslint src --ext .js,.jsx,.ts,.tsx",
     "lint:fix": "eslint src --ext .js,.jsx,.ts,.tsx --fix",
-    "test": "vitest",
-    "test:ui": "vitest --ui",
-    "test:coverage": "vitest run --coverage"
+    "test": "vitest"
   },
   "dependencies": {
     "@emotion/react": "^11.10.4",
@@ -24,10 +22,9 @@
     "@mui/material": "^5.10.7",
     "axios": "^0.27.2",
     "i18next": "^21.6.16",
-    "lodash": "^4.17.21",
     "loglevel": "^1.8.0",
-    "mobx": "^6.5.0",
-    "mobx-react": "^7.3.0",
+    "mobx": "^6.6.2",
+    "mobx-react-lite": "^3.4.0",
     "notistack": "^2.0.4",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
@@ -47,7 +44,6 @@
     "@typescript-eslint/eslint-plugin": "^5.22.0",
     "@typescript-eslint/parser": "^5.22.0",
     "@vitejs/plugin-react": "^2.1.0",
-    "@vitest/ui": "latest",
     "eslint": "^8.14.0",
     "eslint-import-resolver-typescript": "^2.7.1",
     "eslint-plugin-import": "^2.26.0",

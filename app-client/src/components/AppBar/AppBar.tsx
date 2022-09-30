@@ -1,4 +1,4 @@
-import { observer } from 'mobx-react';
+import { observer } from 'mobx-react-lite';
 import { useTranslation } from 'react-i18next';
 
 import MUIAppBar from '@mui/material/AppBar';
