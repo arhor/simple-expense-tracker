@@ -22,7 +22,7 @@ export default defineConfig(({ mode }) => {
         },
         server: {
             proxy: {
-                '^/api|oauth2': {
+                '^/api': {
                     target: process.env.API_BASE_URL,
                     changeOrigin: true,
                 },

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { forwardRef, ReactElement, Ref, useState } from 'react';
 
 import { observer } from 'mobx-react';
 import { useTranslation } from 'react-i18next';
@@ -9,11 +9,22 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
 import Grid from '@mui/material/Grid';
+import Slide from '@mui/material/Slide';
 import TextField from '@mui/material/TextField';
+import { TransitionProps } from '@mui/material/transitions';
 
 import { ExpenseRequestDTO } from '@/generated/ExpenseRequestDTO';
 import { useStore } from '@/store';
 import { defineValidator, formIsValid } from '@/utils/validation-utils';
+
+const Transition = forwardRef(function Transition(
+    props: TransitionProps & {
+        children: ReactElement;
+    },
+    ref: Ref<unknown>,
+) {
+    return <Slide direction="up" ref={ref} {...props} />;
+});
 
 const validator = defineValidator<ExpenseRequestDTO>({
     name: [
@@ -77,8 +88,8 @@ const ExpenseCreateDialog = ({ open, onSubmit, onCancel }: Props) => {
     };
 
     return (
-        <Dialog open={open} onClose={handleCancel}>
-            <DialogTitle>Create Expense</DialogTitle>
+        <Dialog open={open} onClose={handleCancel} TransitionComponent={Transition}>
+            <DialogTitle>{t('Create Expense')}</DialogTitle>
             <DialogContent>
                 <Grid container justifyContent="center">
                     <Grid item xs={10}>
