@@ -73,21 +73,13 @@ application-props:
   resources:
     patterns:
       - /index.html
-      - /favicon.ico
+      - /favicon.svg
       - /assets/**
-      - /css/**
-      - /img/**
-      - /js/**
-      - /pics/**
-      - /data/**
+      - /locales/**
     location:
       - classpath:/static/
       - classpath:/static/assets/
-      - classpath:/static/css/
-      - classpath:/static/img/
-      - classpath:/static/js/
-      - classpath:/static/pics/
-      - classpath:/static/data/
+      - classpath:/static/locales/
   conversion-rates:
     pattern: classpath*:conversion-rates/defaults/exchange.host/*.csv
     preload: 5

@@ -28,7 +28,7 @@ const SignIn = () => {
         ) : (
             <SignInForm />
         );
-    }    
+    }
 };
 
 export default observer(SignIn);
