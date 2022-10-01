@@ -20,6 +20,32 @@ export default defineConfig(({ mode }) => {
                 '@': fileURLToPath(new URL('src', import.meta.url)),
             },
         },
+        build: {
+            rollupOptions: {
+                output: {
+                    manualChunks: {
+                        'bundle-react': [
+                            'react',
+                            'react-dom',
+                            'react-router',
+                            'react-router-dom',
+                        ],
+                        'bundle-emotion': [
+                            '@emotion/react',
+                            '@emotion/styled',
+                        ],
+                        'bundle-material': [
+                            '@mui/material',
+                            '@mui/icons-material',
+                        ],
+                        'bundle-mobx': [
+                            'mobx',
+                            'mobx-react-lite',
+                        ],
+                    },
+                },
+            },
+        },
         server: {
             proxy: {
                 '^/api': {
