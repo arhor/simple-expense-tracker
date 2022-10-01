@@ -63,7 +63,7 @@ const SignUpForm = () => {
                 username as string,
                 password as string,
             );
-            navigate('/sign-in');
+            navigate('/sign-in', { state: { doNotCallAuth: true } });
         } else {
             setErrors(currentErrors);
         }
@@ -125,7 +125,7 @@ const SignUpForm = () => {
                         </Button>
                     </Grid>
                     <Grid item>
-                        <Link to="/sign-in" component={RouterLink} variant="body2">
+                        <Link to="/sign-in" state={{ doNotCallAuth: true }} component={RouterLink} variant="body2">
                             {"Already have an account? Sign in"}
                         </Link>
                     </Grid>

@@ -41,7 +41,7 @@ export default function secured<T extends JSX.IntrinsicAttributes>(
                 return <WrappedComponent {...props} />;
             }
         } else {
-            return <Navigate to={{ pathname: '/sign-in' }} />;
+            return <Navigate to="/sign-in" state={{ doNotCallAuth: true }} />;
         }
     };
     SecuredComponent.displayName = `secured(${

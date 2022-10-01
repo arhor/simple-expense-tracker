@@ -2,19 +2,23 @@ import { useEffect } from 'react';
 
 import { autorun } from 'mobx';
 import { observer } from 'mobx-react-lite';
-import { Navigate } from 'react-router';
-import { useSearchParams } from 'react-router-dom';
+import { Navigate, useLocation, useSearchParams } from 'react-router-dom';
 
 import SignInForm from '@/components/SignInForm';
 import { useStore } from '@/store';
 
 const SignIn = () => {
     const [ searchParams ] = useSearchParams();
-    const { user } = useStore();
+    const { state } = useLocation() as { state: { doNotCallAuth?: boolean } };
+    const { user } = useStore();    
 
     if (searchParams.has('success')) {
         return (
-            <Navigate to={{ pathname: '/' }} />
+            <Navigate to="/" />
+        );
+    } else if (state.doNotCallAuth) {
+        return (
+            <SignInForm />
         );
     } else {
         useEffect(() => {
@@ -24,7 +28,7 @@ const SignIn = () => {
         }, []);
     
         return user.authenticated ? (
-            <Navigate to={{ pathname: '/' }} />
+            <Navigate to="/" />
         ) : (
             <SignInForm />
         );
