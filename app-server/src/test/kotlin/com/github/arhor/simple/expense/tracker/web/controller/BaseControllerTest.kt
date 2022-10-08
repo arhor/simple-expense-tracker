@@ -1,8 +1,8 @@
 package com.github.arhor.simple.expense.tracker.web.controller
 
 import com.github.arhor.simple.expense.tracker.config.ConfigureLocalization
+import com.github.arhor.simple.expense.tracker.config.ConfigureWebSecurity
 import com.github.arhor.simple.expense.tracker.config.props.ApplicationProps
-import com.github.arhor.simple.expense.tracker.service.impl.TimeServiceImpl
 import com.ninjasquad.springmockk.MockkBean
 import org.assertj.core.api.SoftAssertions.assertSoftly
 import org.junit.jupiter.api.Tag
@@ -19,7 +19,7 @@ import java.util.function.Consumer
 
 @Tag("contract")
 @EnableConfigurationProperties(ApplicationProps::class)
-@Import(ConfigureLocalization::class, TimeServiceImpl::class)
+@Import(ConfigureWebSecurity::class, ConfigureLocalization::class)
 internal abstract class BaseControllerTest {
 
     @Autowired

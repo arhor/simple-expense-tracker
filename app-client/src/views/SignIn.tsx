@@ -9,14 +9,14 @@ import { useStore } from '@/store';
 
 const SignIn = () => {
     const [ searchParams ] = useSearchParams();
-    const { state } = useLocation() as { state: { doNotCallAuth?: boolean } };
+    const { state } = useLocation() as { state: { doNotCallAuth?: boolean } | null };
     const { user } = useStore();    
 
     if (searchParams.has('success')) {
         return (
             <Navigate to="/" />
         );
-    } else if (state.doNotCallAuth) {
+    } else if (state?.doNotCallAuth) {
         return (
             <SignInForm />
         );

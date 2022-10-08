@@ -8,10 +8,10 @@ import SignUpForm from '@/components/SignUpForm';
 import { useStore } from '@/store';
 
 const SignUp = () => {
-    const { state } = useLocation() as { state: { doNotCallAuth?: boolean } };
+    const { state } = useLocation() as { state: { doNotCallAuth?: boolean } | null };
     const { user } = useStore();
 
-    if (state.doNotCallAuth) {
+    if (state?.doNotCallAuth) {
         return (
             <SignUpForm />
         );
