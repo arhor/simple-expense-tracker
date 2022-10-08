@@ -34,7 +34,7 @@ internal class CreatingUserAuthenticationSuccessHandlerTest {
     private lateinit var authenticationSuccessHandler: CreatingUserAuthenticationSuccessHandler
 
     @Test
-    fun `should call createNewUserIfNecessary on UserService on authentication success`() {
+    fun `should call UserService # createNewUserIfNecessary on authentication success`() {
         // given
         every { userService.createNewUserIfNecessary(any()) } just runs
         every { request.getSession(any()) } answers { callOriginal() }

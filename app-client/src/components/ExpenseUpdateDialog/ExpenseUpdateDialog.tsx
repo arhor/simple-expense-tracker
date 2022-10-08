@@ -52,7 +52,7 @@ const ExpenseUpdateDialog = ({ id, open, onSubmit, onCancel }: Props) => {
 
     return (
         <Dialog open={open} onClose={() => {clearState(); onCancel();}}>
-            <DialogTitle>Update Expense</DialogTitle>
+            <DialogTitle>{`Update Expense ${id}`}</DialogTitle>
             <DialogContent>
                 <Grid container justifyContent="center">
                     <Grid item xs={10}>

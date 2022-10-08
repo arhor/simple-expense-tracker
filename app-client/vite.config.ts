@@ -27,20 +27,25 @@ export default defineConfig(({ mode }) => {
                         'bundle-react': [
                             'react',
                             'react-dom',
+                            'react-i18next',
                             'react-router',
                             'react-router-dom',
                         ],
-                        'bundle-emotion': [
+                        'bundle-material-ui': [
                             '@emotion/react',
                             '@emotion/styled',
-                        ],
-                        'bundle-material': [
                             '@mui/material',
                             '@mui/icons-material',
                         ],
                         'bundle-mobx': [
                             'mobx',
                             'mobx-react-lite',
+                        ],
+                        'bundle-misc': [
+                            'axios',
+                            'i18next',
+                            'i18next-http-backend',
+                            'uuid',
                         ],
                     },
                 },
@@ -49,7 +54,7 @@ export default defineConfig(({ mode }) => {
         server: {
             proxy: {
                 '^/api': {
-                    target: process.env.API_BASE_URL,
+                    target: process.env.API_BASE_URL || 'http://localhost:5000',
                     changeOrigin: true,
                 },
             },
