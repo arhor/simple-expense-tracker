@@ -19,7 +19,7 @@ private val log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass())
 class Application {
 
     @Bean
-    @Profile("dev")
+    @Profile(ApplicationProfiles.DEV)
     fun <T> displayApplicationInfo(context: T)
         where T : WebApplicationContext,
               T : WebServerApplicationContext = ApplicationRunner {

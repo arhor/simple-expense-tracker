@@ -1,6 +1,6 @@
 package com.github.arhor.simple.expense.tracker.data.repository
 
-import com.github.arhor.simple.expense.tracker.config.DatabaseConfig
+import com.github.arhor.simple.expense.tracker.config.ConfigureDatabase
 import com.github.arhor.simple.expense.tracker.data.model.Expense
 import com.github.arhor.simple.expense.tracker.data.model.ExpenseItem
 import com.github.arhor.simple.expense.tracker.data.model.InternalUser
@@ -24,7 +24,7 @@ import java.util.stream.Stream
 @DirtiesContext
 @Tag("integration")
 @Testcontainers(disabledWithoutDocker = true)
-@ContextConfiguration(classes = [DatabaseConfig::class])
+@ContextConfiguration(classes = [ConfigureDatabase::class])
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 internal abstract class RepositoryTestBase {
 

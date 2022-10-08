@@ -15,7 +15,7 @@ import org.springframework.web.servlet.config.annotation.ViewControllerRegistry
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer
 
 @Configuration(proxyBeanMethods = false)
-class WebServerConfig(private val applicationProps: ApplicationProps) : WebMvcConfigurer {
+class ConfigureWebServer(private val applicationProps: ApplicationProps) : WebMvcConfigurer {
 
     override fun addViewControllers(registry: ViewControllerRegistry) {
         registry.addViewController("/{path:[^\\.]*}").setViewName("forward:/")

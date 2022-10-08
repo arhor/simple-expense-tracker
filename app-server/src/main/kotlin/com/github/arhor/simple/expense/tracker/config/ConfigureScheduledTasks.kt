@@ -10,7 +10,7 @@ import java.util.concurrent.TimeUnit
 @EnableScheduling
 @Configuration(proxyBeanMethods = false)
 @ConditionalOnProperty(prefix = "application-props", name = ["enable-scheduled-tasks"])
-class ScheduledTasksConfig(private val notificationService: NotificationService) {
+class ConfigureScheduledTasks(private val notificationService: NotificationService) {
 
     @Scheduled(fixedDelay = 30, initialDelay = 10, timeUnit = TimeUnit.SECONDS)
     fun findAndSendNotificationsToSubscribers() {

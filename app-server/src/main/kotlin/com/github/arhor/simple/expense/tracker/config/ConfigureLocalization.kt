@@ -9,7 +9,7 @@ import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean
 import java.util.*
 
 @Configuration(proxyBeanMethods = false)
-class LocalizationConfig {
+class ConfigureLocalization {
 
     @Bean
     fun messageSource(webProperties: Optional<WebProperties>): MessageSource {

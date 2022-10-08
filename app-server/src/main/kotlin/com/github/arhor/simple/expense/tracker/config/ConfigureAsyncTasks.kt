@@ -13,7 +13,7 @@ import java.util.concurrent.Executor
 
 @EnableAsync
 @Configuration(proxyBeanMethods = false)
-class AsyncTasksConfig : AsyncConfigurer {
+class ConfigureAsyncTasks : AsyncConfigurer {
 
     override fun getAsyncUncaughtExceptionHandler(): AsyncUncaughtExceptionHandler {
         return SimpleAsyncUncaughtExceptionHandler()

@@ -1,6 +1,6 @@
 package com.github.arhor.simple.expense.tracker.web.error
 
-import com.github.arhor.simple.expense.tracker.config.LocalizationConfig
+import com.github.arhor.simple.expense.tracker.config.ConfigureLocalization
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.EnumSource
@@ -9,7 +9,7 @@ import org.springframework.context.MessageSource
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig
 import java.util.Locale
 
-@SpringJUnitConfig(LocalizationConfig::class)
+@SpringJUnitConfig(ConfigureLocalization::class)
 internal class ErrorCodeTest {
 
     @Autowired

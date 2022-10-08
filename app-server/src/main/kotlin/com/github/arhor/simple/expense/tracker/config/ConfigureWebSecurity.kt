@@ -9,14 +9,13 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.security.oauth2.client.web.OAuth2AuthorizationRequestRedirectFilter.DEFAULT_AUTHORIZATION_REQUEST_BASE_URI
-import org.springframework.security.web.authentication.AbstractAuthenticationTargetUrlRequestHandler
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler
 import org.springframework.security.web.authentication.logout.SimpleUrlLogoutSuccessHandler
 
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
-class WebSecurityConfig(
+class ConfigureWebSecurity(
     private val applicationProps: ApplicationProps,
     private val authenticationSuccessHandler: AuthenticationSuccessHandler,
 ) : WebSecurityConfigurerAdapter() {
@@ -32,7 +31,7 @@ class WebSecurityConfig(
             .and()
             .logout()
             .logoutUrl(URL_PATH_SIGN_OUT.withApiPrefix())
-            .logoutSuccessHandler(SimpleUrlLogoutSuccessHandler().apply { configure() })
+            .logoutSuccessHandler(simpleUrlLogoutSuccessHandlerUsingReferer())
             .logoutSuccessUrl(URL_PATH_ROOT)
             .and()
             .formLogin()
@@ -45,17 +44,12 @@ class WebSecurityConfig(
             .baseUri(DEFAULT_AUTHORIZATION_REQUEST_BASE_URI.withApiPrefix())
             .and()
             .successHandler(authenticationSuccessHandler)
-            .and()
-            .headers()
-            .xssProtection()
-            .and()
-            .contentSecurityPolicy("script-src 'self' 'unsafe-inline'")
     }
 
     private fun String.withApiPrefix() = applicationProps.apiUrlPath(this)
 
-    private fun AbstractAuthenticationTargetUrlRequestHandler?.configure() {
-        this?.setUseReferer(true)
+    private fun simpleUrlLogoutSuccessHandlerUsingReferer() = SimpleUrlLogoutSuccessHandler().apply {
+        setUseReferer(true)
     }
 
     @Configuration(proxyBeanMethods = false)
