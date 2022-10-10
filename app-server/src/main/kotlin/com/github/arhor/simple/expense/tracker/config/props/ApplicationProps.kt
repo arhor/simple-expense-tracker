@@ -2,6 +2,7 @@ package com.github.arhor.simple.expense.tracker.config.props
 
 import org.springframework.boot.context.properties.ConfigurationProperties
 import org.springframework.boot.context.properties.ConstructorBinding
+import org.springframework.security.oauth2.client.web.OAuth2AuthorizationRequestRedirectFilter
 
 @ConstructorBinding
 @ConfigurationProperties("application-props")
@@ -10,6 +11,9 @@ data class ApplicationProps(
     val resources: Resources?,
     val conversionRates: ConversionRates?
 ) {
+
+    val authorizationEndpointBaseUri: String
+        get() = apiUrlPath(OAuth2AuthorizationRequestRedirectFilter.DEFAULT_AUTHORIZATION_REQUEST_BASE_URI)
 
     fun apiUrlPath(url: String): String {
         return (apiPathPrefix ?: "") + url

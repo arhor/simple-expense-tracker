@@ -1,17 +1,15 @@
 import { Link as RouterLink, useSearchParams } from 'react-router-dom';
 
-import GitHubIcon from '@mui/icons-material/GitHub';
-import GoogleIcon from '@mui/icons-material/Google';    
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Avatar from '@mui/material/Avatar';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Grid from '@mui/material/Grid';
-import IconButton from '@mui/material/IconButton';
 import Link from '@mui/material/Link';
-import Stack from '@mui/material/Stack';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
+
+import AuthProviderList from '@/components/AuthProviderList'
 
 const SignInForm = () => {
     const [ searchParams ] = useSearchParams();
@@ -77,14 +75,7 @@ const SignInForm = () => {
                     </Grid>
                 </Grid>
             </Box>
-            <Stack direction="row" alignItems="center" spacing={2} sx={{ padding: 2 }}>
-                <IconButton href="/api/oauth2/authorization/github">
-                    <GitHubIcon />
-                </IconButton>
-                <IconButton href="/api/oauth2/authorization/google">
-                    <GoogleIcon />
-                </IconButton>
-            </Stack>
+            <AuthProviderList />
         </Box>
     );
 };

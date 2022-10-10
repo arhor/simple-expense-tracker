@@ -4,6 +4,8 @@ import AddIcon from '@mui/icons-material/Add';
 import CheckroomIcon from '@mui/icons-material/Checkroom';
 import CoffeeIcon from '@mui/icons-material/Coffee';
 import FastfoodIcon from '@mui/icons-material/Fastfood';
+import GitHubIcon from '@mui/icons-material/GitHub';
+import GoogleIcon from '@mui/icons-material/Google';  
 import HomeIcon from '@mui/icons-material/Home';
 import QuestionMarkIcon from '@mui/icons-material/QuestionMark';
 
@@ -16,6 +18,8 @@ export const availableIcons = Object.freeze<{ [name: string]: ComponentType }>({
     fastfood: FastfoodIcon,
     home: HomeIcon,
     question: QuestionMarkIcon,
+    github: GitHubIcon,
+    google: GoogleIcon,
 });
 
 export function getIconByName(iconName: Optional<string>): ComponentType {

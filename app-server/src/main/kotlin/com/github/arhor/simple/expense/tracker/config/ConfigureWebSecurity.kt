@@ -9,7 +9,6 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
 import org.springframework.security.core.Authentication
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
-import org.springframework.security.oauth2.client.web.OAuth2AuthorizationRequestRedirectFilter.DEFAULT_AUTHORIZATION_REQUEST_BASE_URI
 import org.springframework.security.web.DefaultRedirectStrategy
 import org.springframework.security.web.SecurityFilterChain
 import org.springframework.security.web.authentication.AbstractAuthenticationTargetUrlRequestHandler
@@ -46,7 +45,7 @@ class ConfigureWebSecurity {
             }
             .oauth2Login {
                 it.loginPage(URL_PATH_SIGN_IN)
-                it.authorizationEndpoint().baseUri(appProps.apiUrlPath(DEFAULT_AUTHORIZATION_REQUEST_BASE_URI))
+                it.authorizationEndpoint().baseUri(appProps.authorizationEndpointBaseUri)
                 it.successHandler(CustomSuccessHandler(userService::createNewUserIfNecessary).also(::configure))
             }
         return http.build()
