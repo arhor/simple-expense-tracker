@@ -16,7 +16,7 @@ class AuthProviderController(appProps: ApplicationProps, clientRegistrations: It
         clientRegistrations.map {
             AuthProviderDTO(
                 /* name = */ it.registrationId,
-                /* href = */ appProps.authorizationEndpointBaseUri + "/" + it.registrationId,
+                /* href = */ appProps.authRequestBaseUri + "/" + it.registrationId,
             )
         }
     )

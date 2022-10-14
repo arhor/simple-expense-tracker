@@ -35,9 +35,6 @@ internal class ExpenseControllerTest : BaseControllerTest() {
     @MockkBean
     private lateinit var timeService: TimeService
 
-    @MockkBean
-    private lateinit var userService: UserService
-
     @Test
     @WithMockUser
     fun `should return status 200 and expense list with expected content`() {

@@ -45,7 +45,7 @@ class ConfigureWebSecurity {
             }
             .oauth2Login {
                 it.loginPage(URL_PATH_SIGN_IN)
-                it.authorizationEndpoint().baseUri(appProps.authorizationEndpointBaseUri)
+                it.authorizationEndpoint().baseUri(appProps.authRequestBaseUri)
                 it.successHandler(CustomSuccessHandler(userService::createNewUserIfNecessary).also(::configure))
             }
         return http.build()

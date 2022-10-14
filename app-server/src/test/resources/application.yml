@@ -1,7 +1,3 @@
 spring:
   profiles:
     active: test
-
-application-props:
-  conversion-rates:
-    preload: 0

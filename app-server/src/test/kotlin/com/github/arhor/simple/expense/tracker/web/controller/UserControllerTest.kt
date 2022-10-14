@@ -1,17 +1,13 @@
 package com.github.arhor.simple.expense.tracker.web.controller
 
-import com.github.arhor.simple.expense.tracker.config.props.ApplicationProps
 import com.github.arhor.simple.expense.tracker.model.UserRequestDTO
 import com.github.arhor.simple.expense.tracker.model.UserResponseDTO
-import com.github.arhor.simple.expense.tracker.service.UserService
-import com.ninjasquad.springmockk.MockkBean
 import io.mockk.every
 import io.mockk.slot
 import io.mockk.verify
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.from
 import org.junit.jupiter.api.Test
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
 import org.springframework.http.MediaType
 import org.springframework.security.core.Authentication
@@ -21,9 +17,6 @@ import org.springframework.test.web.servlet.post
 
 @WebMvcTest(UserController::class)
 internal class UserControllerTest : BaseControllerTest() {
-
-    @MockkBean
-    private lateinit var userService: UserService
 
     private val auth = slot<Authentication>()
     private val user = slot<UserRequestDTO>()

@@ -12,7 +12,7 @@ data class ApplicationProps(
     val conversionRates: ConversionRates?
 ) {
 
-    val authorizationEndpointBaseUri: String
+    val authRequestBaseUri: String
         get() = apiUrlPath(OAuth2AuthorizationRequestRedirectFilter.DEFAULT_AUTHORIZATION_REQUEST_BASE_URI)
 
     fun apiUrlPath(url: String): String {
