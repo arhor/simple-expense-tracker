@@ -6,7 +6,7 @@ import javax.validation.ConstraintValidatorContext
 
 class DateRangeValidator : ConstraintValidator<ValidDateRange, DateRangeCriteria> {
 
-    override fun isValid(value: DateRangeCriteria?, context: ConstraintValidatorContext): Boolean {
+    override fun isValid(value: DateRangeCriteria?, context: ConstraintValidatorContext?): Boolean {
         value?.let { (startDate, endDate) ->
             if ((startDate != null) && (endDate != null)) {
                 return startDate.isBefore(endDate)
