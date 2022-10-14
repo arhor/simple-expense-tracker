@@ -1,5 +1,6 @@
 package com.github.arhor.simple.expense.tracker
 
+import com.github.arhor.simple.expense.tracker.util.zoneIdOrDefaultUTC
 import com.tngtech.archunit.core.domain.JavaCall.Predicates.target
 import com.tngtech.archunit.core.domain.JavaClass.Predicates.implement
 import com.tngtech.archunit.core.domain.JavaClasses
@@ -11,6 +12,7 @@ import com.tngtech.archunit.junit.ArchTag
 import com.tngtech.archunit.junit.ArchTest
 import com.tngtech.archunit.lang.syntax.ArchRuleDefinition.noClasses
 import com.tngtech.archunit.library.Architectures.layeredArchitecture
+import io.mockk.declaringKotlinFile
 import java.time.temporal.Temporal
 
 @ArchTag("architecture")
@@ -23,7 +25,7 @@ internal class ApplicationArchitectureTest {
         val applicationPackage = Application::class.java.getPackage().name
 
         // when
-        val architecture = layeredArchitecture()
+        val architecture = layeredArchitecture().consideringOnlyDependenciesInLayers()
             .layer("Web").definedBy("${applicationPackage}.web..")
             .layer("Service").definedBy("${applicationPackage}.service..")
             .layer("Persistence").definedBy("${applicationPackage}.data..")
@@ -41,7 +43,7 @@ internal class ApplicationArchitectureTest {
         // given
         val restrictions = noClasses()
             .that()
-            .doNotHaveFullyQualifiedName("com.github.arhor.simple.expense.tracker.util.TimeUtilsKt")
+            .doNotHaveFullyQualifiedName(::zoneIdOrDefaultUTC.declaringKotlinFile.qualifiedName)
             .should()
             .callMethodWhere(target(name("now")).and(target(owner(implement(Temporal::class.java)))))
 
