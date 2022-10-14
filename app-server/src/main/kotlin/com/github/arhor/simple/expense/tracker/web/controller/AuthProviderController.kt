@@ -12,16 +12,14 @@ import java.util.Collections
 @RequestMapping("/auth-providers")
 class AuthProviderController(appProps: ApplicationProps, clientRegistrations: Iterable<ClientRegistration>) {
 
-    private val availableProviders: List<AuthProviderDTO> = appProps.authorizationEndpointBaseUri.let { baseUri ->
-        Collections.unmodifiableList(
-            clientRegistrations.map {
-                AuthProviderDTO(
-                    /* name = */ it.registrationId,
-                    /* href = */ "${baseUri}/${it.registrationId}",
-                )
-            }
-        )
-    }
+    private val availableProviders: List<AuthProviderDTO> = Collections.unmodifiableList(
+        clientRegistrations.map {
+            AuthProviderDTO(
+                /* name = */ it.registrationId,
+                /* href = */ appProps.authorizationEndpointBaseUri + "/" + it.registrationId,
+            )
+        }
+    )
 
     @GetMapping
     fun getAuthProviders() = availableProviders
