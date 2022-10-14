@@ -54,7 +54,7 @@ internal class UserServiceImplTest {
     private val internalUserCapturingSlot = slot<InternalUser>()
 
     @Nested
-    inner class determineUserId {
+    inner class `UserService # determineUserId` {
         @Test
         fun `should return an expected internal user id for a recognized OAuth2 authentication token`() {
             // given
@@ -171,7 +171,7 @@ internal class UserServiceImplTest {
     }
 
     @Nested
-    inner class determineUser {
+    inner class `UserService # determineUser` {
         @Test
         fun `should return an expected internal user for a recognized OAuth2 authentication token`() {
             // given
@@ -290,7 +290,7 @@ internal class UserServiceImplTest {
     }
 
     @Nested
-    inner class createNewUser {
+    inner class `UserService # createNewUser` {
         @Test
         fun `should successfully a create new user`() {
             // given
@@ -376,7 +376,7 @@ internal class UserServiceImplTest {
     }
 
     @Nested
-    inner class createNewUserIfNecessary {
+    inner class `UserService # createNewUserIfNecessary` {
         @Test
         fun `should create internal user for an OAuth2 authentication which is not present in repository`() {
             // given

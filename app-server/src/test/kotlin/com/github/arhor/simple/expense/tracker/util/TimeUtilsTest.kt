@@ -16,7 +16,7 @@ import java.util.function.Consumer
 internal class TimeUtilsTest {
 
     @Nested
-    inner class zoneIdOrDefaultUTC {
+    inner class `TimeUtils # zoneIdOrDefaultUTC` {
         @Test
         fun `should return expected zone id for a non null input`() {
             // given
@@ -48,7 +48,7 @@ internal class TimeUtilsTest {
     }
 
     @Nested
-    inner class currentZonedDateTime {
+    inner class `TimeUtils # currentZonedDateTime` {
         @Test
         fun `should return current zoned date time with provided timezone accurate to milliseconds`() {
             // given
@@ -81,7 +81,7 @@ internal class TimeUtilsTest {
     }
 
     @Nested
-    inner class currentLocalDateTime {
+    inner class `TimeUtils # currentLocalDateTime` {
         @Test
         fun `should return current local date time with provided timezone accurate to milliseconds`() {
             // given
@@ -114,7 +114,7 @@ internal class TimeUtilsTest {
     }
 
     @Nested
-    inner class createDateRange {
+    inner class `TimeUtils # createDateRange` {
         @Test
         fun `should return current month date range with provided timezone and start date null end date null`() {
             // given

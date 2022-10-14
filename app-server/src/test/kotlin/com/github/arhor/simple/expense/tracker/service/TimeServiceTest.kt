@@ -19,7 +19,7 @@ internal class TimeServiceTest {
     private lateinit var timeService: TimeService
 
     @Nested
-    inner class now {
+    inner class `TimeService # now` {
         @Test
         fun `should return non null date time with default timezone`() {
             // when
@@ -58,7 +58,7 @@ internal class TimeServiceTest {
     }
 
     @Nested
-    inner class convertToDateRange {
+    inner class `TimeService # convertToDateRange` {
         @Test
         fun `should return non null date range for non null criteria and timezone`() {
             // given
