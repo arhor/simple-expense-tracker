@@ -128,7 +128,7 @@ internal class ExpenseServiceImplTest {
                 )
             )
         }
-        every { converter.convert(amount = any(), currency = any(), date = any()) } answers {
+        every { converter.convert(amount = any(), currency = any(), conversionDate = any()) } answers {
             firstArg()
         }
         every { expenseMapper.mapToDTO(entity = any(), total = any()) } answers {

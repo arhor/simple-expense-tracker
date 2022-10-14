@@ -1,18 +1,18 @@
 package com.github.arhor.simple.expense.tracker.service.money.impl
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties
+import com.github.arhor.simple.expense.tracker.service.money.ConversionRatesData
+import com.github.arhor.simple.expense.tracker.service.money.ConversionRatesDataHolder
 import com.github.arhor.simple.expense.tracker.service.money.ConversionRatesLocalDataLoader
 import org.javamoney.moneta.convert.ExchangeRateBuilder
 import org.javamoney.moneta.spi.AbstractRateProvider
 import org.javamoney.moneta.spi.DefaultNumberValue
 import org.slf4j.LoggerFactory
 import org.springframework.boot.web.client.RestTemplateBuilder
-import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
 import java.lang.invoke.MethodHandles
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
-import java.util.*
+import java.util.Collections
 import java.util.concurrent.ConcurrentHashMap
 import javax.annotation.PostConstruct
 import javax.money.CurrencyUnit
@@ -98,21 +98,16 @@ class ConversionRateProvider(
                     }
                 }
 
-                val response = http.getForEntity(
+                val data = http.getForObject(
                     "/{date}",
-                    ExchangeRateData::class.java,
+                    ConversionRatesData::class.java,
                     date.format(DateTimeFormatter.ISO_LOCAL_DATE)
                 )
 
-                if (response.statusCode == HttpStatus.OK) {
-                    val data = response.body
-                    if (data != null) {
-                        logger.info("Additionally loaded rates for the: {}", date)
-                        save(Monetary.getCurrency(data.base), mapOf(date to data.rates))
-                        return loadedRates[date] ?: emptyMap()
-                    }
-                } else {
-                    logger.warn("Failed to load conversion-rates from external API")
+                if (data != null) {
+                    logger.info("Additionally loaded rates for the: {}", date)
+                    save(Monetary.getCurrency(data.base), ConversionRatesDataHolder(date to data.rates))
+                    return loadedRates[date] ?: emptyMap()
                 }
             }
             val errorDates = dates.map { it.format(DateTimeFormatter.ISO_LOCAL_DATE) }
@@ -202,8 +197,8 @@ class ConversionRateProvider(
             .build()
     }
 
-    private fun save(baseCurrency: CurrencyUnit, input: Map<LocalDate, Map<String, Double>>) {
-        for ((date, rates) in input.entries) {
+    private fun save(baseCurrency: CurrencyUnit, input: ConversionRatesDataHolder) {
+        for ((date, rates) in input.data.entries) {
 
             val mappings = HashMap<String, ExchangeRate>(rates.size)
 
@@ -227,9 +222,6 @@ class ConversionRateProvider(
             loadedRates[date] = mappings
         }
     }
-
-    @JsonIgnoreProperties(ignoreUnknown = true)
-    private data class ExchangeRateData(val base: String, val date: LocalDate, val rates: Map<String, Double>)
 
     companion object {
         private val BASE_CURRENCY = Monetary.getCurrency("EUR")

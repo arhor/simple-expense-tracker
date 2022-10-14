@@ -1,7 +1,5 @@
 package com.github.arhor.simple.expense.tracker.service.money
 
-import java.time.LocalDate
-
 interface ConversionRatesLocalDataLoader {
 
     /**
@@ -11,7 +9,7 @@ interface ConversionRatesLocalDataLoader {
      * @param year     year for which data should be loaded
      * @param consumer input stream handler which will be used in case data-file found
      **/
-    fun loadConversionRatesDataByYear(year: Int, consumer: (Map<LocalDate, Map<String, Double>>) -> Unit)
+    fun loadConversionRatesDataByYear(year: Int, consumer: (ConversionRatesDataHolder) -> Unit)
 
-    fun loadInitialConversionRates(consumer: (Map<LocalDate, Map<String, Double>>) -> Unit)
+    fun loadInitialConversionRates(consumer: (ConversionRatesDataHolder) -> Unit)
 }

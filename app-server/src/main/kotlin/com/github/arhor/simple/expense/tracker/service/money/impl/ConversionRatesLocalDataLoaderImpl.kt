@@ -1,6 +1,7 @@
 package com.github.arhor.simple.expense.tracker.service.money.impl
 
 import com.github.arhor.simple.expense.tracker.config.props.ApplicationProps
+import com.github.arhor.simple.expense.tracker.service.money.ConversionRatesDataHolder
 import com.github.arhor.simple.expense.tracker.service.money.ConversionRatesLocalDataLoader
 import de.siegmar.fastcsv.reader.NamedCsvReader
 import de.siegmar.fastcsv.reader.NamedCsvRow
@@ -23,7 +24,7 @@ class ConversionRatesLocalDataLoaderImpl(
     private val resourcePatternResolver: ResourcePatternResolver,
 ) : ConversionRatesLocalDataLoader {
 
-    override fun loadConversionRatesDataByYear(year: Int, consumer: (Map<LocalDate, Map<String, Double>>) -> Unit) {
+    override fun loadConversionRatesDataByYear(year: Int, consumer: (ConversionRatesDataHolder) -> Unit) {
         withLocalData { resources ->
             for (resource in resources) {
                 val filename = resource.filename
@@ -37,7 +38,7 @@ class ConversionRatesLocalDataLoaderImpl(
         }
     }
 
-    override fun loadInitialConversionRates(consumer: (Map<LocalDate, Map<String, Double>>) -> Unit) {
+    override fun loadInitialConversionRates(consumer: (ConversionRatesDataHolder) -> Unit) {
         applicationProps.conversionRates?.let { (_, preload) ->
             withLocalData { resources ->
                 runBlocking(Dispatchers.IO) {
@@ -65,7 +66,7 @@ class ConversionRatesLocalDataLoaderImpl(
 
     private fun readDataFile(
         resource: Resource,
-        consumer: (Map<LocalDate, Map<String, Double>>) -> Unit
+        consumer: (ConversionRatesDataHolder) -> Unit
     ) {
         try {
             val year = resource.filename!!.replace(".csv", "").toLong()
@@ -78,7 +79,7 @@ class ConversionRatesLocalDataLoaderImpl(
                     for (row in csv) {
                         handleCsvRow(row, result::put)
                     }
-                    consumer(result)
+                    consumer(ConversionRatesDataHolder(data = result))
                     log.info("[SUCCESS]: {} year conversion rates loaded", year)
                 } catch (e: IOException) {
                     log.warn("Failed to load rates for the year: {}", year, e)
