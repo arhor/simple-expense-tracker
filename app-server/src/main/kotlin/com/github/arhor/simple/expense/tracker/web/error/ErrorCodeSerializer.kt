@@ -7,7 +7,7 @@ import com.fasterxml.jackson.databind.ser.std.StdSerializer
 class ErrorCodeSerializer : StdSerializer<ErrorCode>(ErrorCode::class.java) {
 
     override fun serialize(value: ErrorCode, generator: JsonGenerator, provider: SerializerProvider) {
-        val errorCodeHexString = Integer.toHexString(value.numericValue)
+        val errorCodeHexString = Integer.toHexString(value.value)
 
         val type = value.type
         val code = errorCodeHexString.padStart(CODE_MAX_LENGTH, CODE_PAD_SYMBOL)

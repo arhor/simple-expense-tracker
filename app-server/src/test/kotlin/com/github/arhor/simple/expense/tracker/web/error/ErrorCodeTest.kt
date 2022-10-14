@@ -32,9 +32,9 @@ internal class ErrorCodeTest {
 
     @ParameterizedTest
     @EnumSource(ErrorCode::class)
-    fun `each error code numeric value length should be less than or equal to maximum`(code: ErrorCode) {
+    fun `each error code value length should be less than or equal to allowed maximum`(code: ErrorCode) {
         // given
-        val value = code.numericValue
+        val value = code.value
         val limit = ErrorCodeSerializer.CODE_MAX_LENGTH
 
         // when
@@ -47,13 +47,16 @@ internal class ErrorCodeTest {
 
     @ParameterizedTest
     @EnumSource(ErrorCode.Type::class)
-    fun `each error code type should not have numeric value duplicates`(type: ErrorCode.Type) {
+    fun `each error code type should not have numeric value duplicates`(
+        // given
+        type: ErrorCode.Type
+    ) {
         // when
         val errorCodesByType = ErrorCode.values().filter { it.type == type }
 
         // then
         assertThat(errorCodesByType)
-            .extracting(ErrorCode::numericValue)
+            .extracting(ErrorCode::value)
             .doesNotHaveDuplicates()
     }
 }
