@@ -7,35 +7,29 @@ import com.ninjasquad.springmockk.MockkBean
 import org.assertj.core.api.SoftAssertions.assertSoftly
 import org.junit.jupiter.api.Tag
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.boot.autoconfigure.security.oauth2.client.servlet.OAuth2ClientAutoConfiguration
 import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Import
 import org.springframework.security.core.Authentication
-import org.springframework.security.core.userdetails.UserDetailsService
-import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository
-import org.springframework.security.web.authentication.AuthenticationSuccessHandler
 import org.springframework.test.web.servlet.MockMvc
 import java.util.function.Consumer
 
 @Tag("contract")
 @EnableConfigurationProperties(ApplicationProps::class)
-@Import(ConfigureWebSecurity::class, ConfigureLocalization::class)
+@Import(ConfigureWebSecurity::class, ConfigureLocalization::class, OAuth2ClientAutoConfiguration::class)
 internal abstract class BaseControllerTest {
 
     @Autowired
     protected lateinit var http: MockMvc
+        private set
+
+    @Autowired
+    protected lateinit var applicationProps: ApplicationProps
+        private set
 
     @MockkBean
-    protected lateinit var authenticationSuccessHandler: AuthenticationSuccessHandler
-
-    @MockkBean
-    protected lateinit var userDetailsService: UserDetailsService
-
-    @MockkBean
-    protected lateinit var passwordEncoder: PasswordEncoder
-
-    @MockkBean
-    protected lateinit var clientRegistrationRepository: ClientRegistrationRepository
+    private lateinit var clientRegistrationRepository: ClientRegistrationRepository
 
     protected val authenticatedUser = Consumer<Authentication> {
         assertSoftly { soft ->

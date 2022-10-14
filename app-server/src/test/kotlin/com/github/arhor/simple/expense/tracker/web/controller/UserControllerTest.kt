@@ -22,9 +22,6 @@ import org.springframework.test.web.servlet.post
 @WebMvcTest(UserController::class)
 internal class UserControllerTest : BaseControllerTest() {
 
-    @Autowired
-    private lateinit var applicationProps: ApplicationProps
-
     @MockkBean
     private lateinit var userService: UserService
 

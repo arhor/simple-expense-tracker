@@ -26,9 +26,6 @@ import java.util.TimeZone
 @WebMvcTest(ExpenseController::class)
 internal class ExpenseControllerTest : BaseControllerTest() {
 
-    @Autowired
-    private lateinit var applicationProps: ApplicationProps
-
     @MockkBean
     private lateinit var expenseService: ExpenseService
 
