@@ -9,7 +9,6 @@ import org.assertj.core.api.Assertions.from
 import org.javamoney.moneta.Money
 import org.junit.jupiter.api.Test
 import java.time.LocalDate
-import javax.money.CurrencyUnit
 import javax.money.Monetary
 import javax.money.convert.ConversionQuery
 import javax.money.convert.CurrencyConversion
@@ -43,11 +42,14 @@ internal class MoneyConverterImplTest {
         verify(exactly = 1) { conversionOperator.apply(amount) }
 
         assertThat(conversionQuery.captured)
-            .returns(currency, from { it["Query.baseCurrency", CurrencyUnit::class.java] })
-            .returns(currency, from { it["Query.termCurrency", CurrencyUnit::class.java] })
+            .returns(currency, from { it.baseCurrency })
+            .returns(currency, from { it.termCurrency })
             .returns(conversionDate, from { it[LocalDate::class.java] })
 
         assertThat(result)
             .isEqualTo(amount)
     }
+
+    private val ConversionQuery.termCurrency
+        get() = currency
 }
