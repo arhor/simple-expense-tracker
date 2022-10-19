@@ -13,7 +13,6 @@ spring:
   aop:
     proxy-target-class: false
   main:
-    lazy-initialization: true
     allow-bean-definition-overriding: true
   web:
     locale: en

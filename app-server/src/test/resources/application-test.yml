@@ -1,6 +1,7 @@
 spring:
   main:
     banner-mode: off
+    lazy-initialization: true
   security:
     oauth2:
       client:
