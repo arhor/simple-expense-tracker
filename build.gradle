@@ -1,0 +1,59 @@
+plugins {
+    id "base"
+    id "java-platform"
+}
+
+ext {
+    env = Dotenv.configure().location("$rootDir").filename(".env").allowMissingFile(true).load()
+}
+
+wrapper {
+    gradleVersion = project.property("versions.gradle")
+}
+
+dependencies {
+    constraints {
+        // @formatter:off
+        api group: "com.fasterxml.jackson.core", name: "jackson-databind"        , version: this["versions.jackson"]
+        api group: "com.google.code.findbugs"  , name: "jsr305"                  , version: this["versions.findbugsJsr305"]
+        api group: "com.ninja-squad"           , name: "springmockk"             , version: this["versions.springMockk"]
+        api group: "com.tngtech.archunit"      , name: "archunit-junit5"         , version: this["versions.archunit"]
+        api group: "de.siegmar"                , name: "fastcsv"                 , version: this["versions.fastcsv"]
+        api group: "javax.validation"          , name: "validation-api"          , version: this["versions.javaxValidation"]
+        api group: "org.codehaus.janino"       , name: "janino"                  , version: this["versions.janino"]
+        api group: "org.javamoney"             , name: "moneta"                  , version: this["versions.javamoneyMoneta"]
+        api group: "org.jetbrains.kotlinx"     , name: "kotlinx-coroutines-core" , version: this["versions.kotlinCoroutines"]
+        api group: "org.jetbrains.kotlinx"     , name: "kotlinx-coroutines-slf4j", version: this["versions.kotlinCoroutines"]
+        api group: "org.mapstruct"             , name: "mapstruct"               , version: this["versions.mapstruct"]
+        api group: "org.mapstruct"             , name: "mapstruct-processor"     , version: this["versions.mapstruct"]
+        // @formatter:on
+    }
+}
+
+task stage(type: Jar, dependsOn: [":app-client:build", ":app-server:build"]) {
+    group = "build"
+    description = "Creates composite Jar file including client and server part"
+
+    entryCompression = ZipEntryCompression.STORED
+
+    def serverBuild = zipTree("${project(":app-server").buildDir}/libs/app-server.jar")
+    def clientBuild = "${project(":app-client").projectDir}/dist"
+
+    from(serverBuild) { into "/" }
+    from(clientBuild) { into "/BOOT-INF/classes/static" }
+
+    manifest {
+        from {
+            serverBuild.find { it.name == "MANIFEST.MF" }
+        }
+    }
+}
+
+task runCompositeJar(type: JavaExec, dependsOn: stage) {
+    group = "application"
+    description = "Runs created composite Jar file with Spring Boot application"
+
+    mainClass.set("-jar")
+
+    args "${rootProject.buildDir}/libs/${rootProject.name}.jar"
+}

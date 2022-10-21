@@ -1,0 +1,42 @@
+plugins {
+    id "simple-expense-tracker.node-conventions"
+}
+
+description = "Client-side application based on React.js and Node.js %s".formatted(
+    property("versions.node")
+)
+
+def generatedSourcesDir = "src/generated"
+
+task clearGeneratedModel(type: Delete) {
+    delete generatedSourcesDir
+}
+
+task copyGeneratedModel(type: Copy, dependsOn: [clearGeneratedModel, ":app-model:build"]) {
+    from "${project(":app-model").buildDir}/generated/sources/js2ts"
+    into "${projectDir}/${generatedSourcesDir}"
+}
+
+task updateBrowserlist(type: com.github.gradle.node.npm.task.NpxTask, dependsOn: npmInstall) {
+    workingDir.fileValue(projectDir)
+    command.set("browserslist@latest")
+    args = ["--update-db"]
+}
+
+task test(type: com.github.gradle.node.npm.task.NpmTask, dependsOn: [updateBrowserlist, copyGeneratedModel]) {
+    group = "verification"
+    workingDir.fileValue(projectDir)
+    args = ["run", "test"]
+}
+
+task build(type: com.github.gradle.node.npm.task.NpmTask, dependsOn: test) {
+    group = "build"
+    workingDir.fileValue(projectDir)
+    args = ["run", "build"]
+}
+
+task serve(type: com.github.gradle.node.npm.task.NpmTask, dependsOn: npmInstall) {
+    group = "application"
+    workingDir.fileValue(projectDir)
+    args = ["run", "serve"]
+}

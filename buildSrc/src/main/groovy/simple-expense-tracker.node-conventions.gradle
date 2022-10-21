@@ -1,0 +1,20 @@
+plugins {
+    id "com.github.node-gradle.node"
+    id "idea"
+}
+
+node {
+    version = property("versions.node")
+    download = true
+}
+
+idea {
+    module {
+        excludeDirs += files(
+            "$projectDir/coverage",
+            "$projectDir/dist",
+            "$projectDir/node_modules",
+        )
+    }
+}
+

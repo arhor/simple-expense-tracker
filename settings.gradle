@@ -1,0 +1,40 @@
+pluginManagement {
+    plugins {
+        // @formatter:off
+        id "com.adarshr.test-logger"            version settings["versions.gradleTestLogger"]
+        id "com.avast.gradle.docker-compose"    version settings["versions.dockerComposeGradlePlugin"]
+        id "com.github.node-gradle.node"        version settings["versions.nodeGradlePlugin"]
+        id "io.spring.dependency-management"    version settings["versions.springDependencyManagement"]
+        id "org.flywaydb.flyway"                version settings["versions.flyway"]
+        id "org.jsonschema2dataclass"           version settings["versions.json2pojo"]
+        id "org.jetbrains.kotlin.kapt"          version settings["versions.kotlin"]
+        id "org.jetbrains.kotlin.jvm"           version settings["versions.kotlin"]
+        id "org.jetbrains.kotlin.plugin.spring" version settings["versions.kotlin"]
+        id "org.springframework.boot"           version settings["versions.springBoot"]
+        // @formatter:on
+    }
+    repositories {
+        gradlePluginPortal()
+        mavenCentral()
+        maven { url "https://repo.spring.io/release" }
+    }
+}
+
+rootProject.name = "simple-expense-tracker"
+
+include ":app-client"
+include ":app-model"
+include ":app-server"
+include ":app-test-e2e"
+
+dependencyResolutionManagement {
+    versionCatalogs {
+        libs {
+            this.properties.each { name, value ->
+                if (name.startsWith "versions.") {
+                    version(name - "versions.", value)
+                }
+            }
+        }
+    }
+}

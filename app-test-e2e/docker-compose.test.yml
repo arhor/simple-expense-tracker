@@ -1,0 +1,30 @@
+version: "3.8"
+
+services:
+  ############# Composite application #############
+  simple-expense-tracker-test-app:
+    container_name: simple-expense-tracker-test-app
+    build:
+      context: ..
+    networks:
+      - test-network
+    depends_on:
+      - simple-expense-tracker-test-db
+    ports:
+      - "5000:5000"
+    env_file:
+      - ".env"
+  ############# Test Postgres database #############
+  simple-expense-tracker-test-db:
+    container_name: simple-expense-tracker-test-db
+    image: postgres:12
+    networks:
+      - test-network
+    tmpfs:
+      - "/var/lib/postgresql/data"
+    env_file:
+      - ".env"
+
+networks:
+  test-network:
+    name: test-network

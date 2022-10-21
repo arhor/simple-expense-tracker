@@ -1,0 +1,31 @@
+plugins {
+    id "simple-expense-tracker.node-conventions"
+    id "com.avast.gradle.docker-compose"
+}
+
+description = "End-to-End application tests based on Node.js %s".formatted(
+    property("versions.node"),
+)
+
+task cypressOpen(type: com.github.gradle.node.npm.task.NpmTask, dependsOn: [npmInstall, ":stage"]) {
+    workingDir.fileValue(projectDir)
+    args = ["run", "cypress:open"]
+}
+
+task cypressTest(type: com.github.gradle.node.npm.task.NpmTask, dependsOn: [npmInstall, ":stage"]) {
+    workingDir.fileValue(projectDir)
+    args = ["run", "cypress:test"]
+}
+
+dockerCompose {
+    isRequiredBy cypressOpen
+    isRequiredBy cypressTest
+
+    forceRecreate = true
+    useComposeFiles = ["docker-compose.test.yml"]
+    removeImages = com.avast.gradle.dockercompose.RemoveImages.Local
+}
+
+composeBuild {
+    mustRunAfter ":stage"
+}

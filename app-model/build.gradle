@@ -1,0 +1,44 @@
+plugins {
+    id "java-library"
+    id "org.jsonschema2dataclass"
+    id "simple-expense-tracker.node-conventions"
+}
+
+description = "Shared model described via JSON Schema, used to generate sources for the Client/Server communication"
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation platform(rootProject)
+    implementation "com.fasterxml.jackson.core:jackson-databind"
+    implementation "com.google.code.findbugs:jsr305"
+    implementation "javax.validation:validation-api"
+}
+
+jsonSchema2Pojo {
+    source.from = files("${projectDir}/schema")
+    targetVersion = property("versions.java")
+    targetPackage = "com.github.arhor.simple.expense.tracker.model"
+    removeOldOutput = true
+    includeJsr303Annotations = true
+    includeJsr305Annotations = true
+    includeSetters = false
+    includeGetters = false
+    includeConstructors = true
+    useLongIntegers = true
+    dateTimeType = "java.time.LocalDateTime"
+    dateType = "java.time.LocalDate"
+}
+
+task generateJsonSchema2TypeScript(type: com.github.gradle.node.npm.task.NpmTask, dependsOn: npmInstall) {
+    group = "build"
+    description = "Builds d.ts files according to the provided schemas"
+    workingDir.fileValue(projectDir)
+    args = ["run", "build"]
+}
+
+build {
+    dependsOn generateJsonSchema2TypeScript
+}

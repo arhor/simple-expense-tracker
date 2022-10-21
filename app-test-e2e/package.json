@@ -1,0 +1,15 @@
+{
+  "name": "app-tests-e2e",
+  "private": true,
+  "author": {
+    "name": "Maksim Buryshynets",
+    "email": "arhor18@gmail.com"
+  },
+  "scripts": {
+    "cypress:open": "cypress open",
+    "cypress:test": "cypress run"
+  },
+  "devDependencies": {
+    "cypress": "^10.8.0"
+  }
+}

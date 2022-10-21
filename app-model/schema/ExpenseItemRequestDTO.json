@@ -1,0 +1,28 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "integer"
+    },
+    "date": {
+      "type": "string",
+      "format": "date"
+    },
+    "amount": {
+      "type": "number"
+    },
+    "currency": {
+      "$ref": "Currency.json"
+    },
+    "comment": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "date",
+    "amount",
+    "currency"
+  ],
+  "additionalProperties": false
+}
