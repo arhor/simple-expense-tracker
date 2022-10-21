@@ -5,7 +5,12 @@ plugins {
 
 node {
     version = property("versions.node")
+
     download = true
+
+    workDir = file("${rootDir}/.gradle/nodejs")
+    npmWorkDir = file("${rootDir}/.gradle/npm")
+    yarnWorkDir = file("${rootDir}/.gradle/yarn")
 }
 
 idea {
