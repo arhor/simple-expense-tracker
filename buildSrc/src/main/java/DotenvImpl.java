@@ -1,9 +1,9 @@
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
+import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Properties;
+import java.util.Set;
 
 final class DotenvImpl implements Dotenv {
 
@@ -18,7 +18,7 @@ final class DotenvImpl implements Dotenv {
     private final Properties fileContent;
 
     private final Map<String, String> resolvedRefs = new HashMap<>();
-    private final List<String> currentSearchHistory = new ArrayList<>();
+    private final Set<String> currentSearchHistory = new LinkedHashSet<>();
 
     DotenvImpl(
         final DotenvConfigurer config,
@@ -109,13 +109,9 @@ final class DotenvImpl implements Dotenv {
     }
 
     private String findRefValue(final String refName) {
-        if (currentSearchHistory.contains(refName)) {
-            currentSearchHistory.add(refName);
+        if (!currentSearchHistory.add(refName)) {
             throw new CyclicReferenceException("Cyclic references found, path: " + currentSearchPath());
-        } else {
-            currentSearchHistory.add(refName);
         }
-
         var result = resolvedRefs.get(refName);
 
         if (result == null) {
