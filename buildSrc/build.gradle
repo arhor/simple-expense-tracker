@@ -4,8 +4,10 @@ plugins {
 
 repositories {
     gradlePluginPortal()
+    maven { url "https://jitpack.io" }
 }
 
 dependencies {
     implementation "com.github.node-gradle:gradle-node-plugin:${property("versions.nodeGradlePlugin")}"
+    implementation "com.github.arhor:java-dotenv-revised:${property("versions.javaDotenvRevised")}"
 }

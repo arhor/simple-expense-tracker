@@ -4,7 +4,7 @@ plugins {
 }
 
 ext {
-    env = Dotenv.configure().location("$rootDir").filename(".env").allowMissingFile(true).load()
+    env = io.github.arhor.dotenv.Dotenv.configure().location("$rootDir").filename(".env").load()
 }
 
 wrapper {
