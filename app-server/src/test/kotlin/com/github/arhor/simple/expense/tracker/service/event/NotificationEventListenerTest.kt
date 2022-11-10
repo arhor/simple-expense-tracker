@@ -33,8 +33,8 @@ internal class NotificationEventListenerTest {
         // when
         notificationEventListener.handleNotificationEvent(
             event = NotificationEvent(
-                senderId = expectedSourceUserId,
-                userId = expectedTargetUserId,
+                sourceUserId = expectedSourceUserId,
+                targetUserId = expectedTargetUserId,
                 notification = expectedNotification,
             )
         )

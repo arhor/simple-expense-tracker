@@ -92,8 +92,8 @@ internal class NotificationServiceImplTest {
         verify(exactly = 1) { applicationEventPublisher.publishEvent(capture(notificationEvent)) }
 
         assertThat(notificationEvent.captured)
-            .returns(expectedSourceUserId, from { it.senderId })
-            .returns(expectedTargetUserId, from { it.userId })
+            .returns(expectedSourceUserId, from { it.sourceUserId })
+            .returns(expectedTargetUserId, from { it.targetUserId })
             .returns(expectedNotification, from { it.notification })
     }
 
