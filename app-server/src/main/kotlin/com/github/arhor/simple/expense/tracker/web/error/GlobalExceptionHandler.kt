@@ -38,7 +38,7 @@ class GlobalExceptionHandler(
         return handleErrorCode(exception, ErrorCode.UNCATEGORIZED, locale, timeZone)
     }
 
-    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(DataAccessException::class)
     fun handleDataAccessException(
         exception: DataAccessException,
