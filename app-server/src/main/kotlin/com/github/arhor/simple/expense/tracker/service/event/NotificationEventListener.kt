@@ -5,7 +5,6 @@ import org.slf4j.LoggerFactory
 import org.springframework.context.event.EventListener
 import org.springframework.scheduling.annotation.Async
 import org.springframework.stereotype.Service
-import java.lang.invoke.MethodHandles
 
 @Service
 class NotificationEventListener(private val service: NotificationService) {
@@ -13,9 +12,7 @@ class NotificationEventListener(private val service: NotificationService) {
     @Async
     @EventListener(NotificationEvent::class)
     fun handleNotificationEvent(event: NotificationEvent) {
-        val sourceUserId = event.sourceUserId
-        val targetUserId = event.targetUserId
-        val notification = event.notification
+        val (sourceUserId, targetUserId, notification) = event
 
         log.debug(
             "Handled notification event: {}, for the user: {}, from user: {}",
@@ -27,6 +24,6 @@ class NotificationEventListener(private val service: NotificationService) {
     }
 
     companion object {
-        private val log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass())
+        private val log = LoggerFactory.getLogger(NotificationEventListener::class.java)
     }
 }
