@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service
 class NotificationEventListener(private val service: NotificationService) {
 
     @Async
-    @EventListener(NotificationEvent::class)
+    @EventListener
     fun handleNotificationEvent(event: NotificationEvent) {
         val (sourceUserId, targetUserId, notification) = event
 
