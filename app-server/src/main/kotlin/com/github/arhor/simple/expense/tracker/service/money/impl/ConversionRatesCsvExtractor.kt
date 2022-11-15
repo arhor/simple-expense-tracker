@@ -15,30 +15,30 @@ import java.time.chrono.IsoChronology
 class ConversionRatesCsvExtractor : ConversionRatesExtractor {
 
     override fun extractConversionRates(resource: Resource): ConversionRatesDataHolder {
-        try {
-            log.debug("Start extracting conversion rates from '{}'", resource.filename)
+        log.debug("Start extracting conversion rates from '{}'", resource.filename)
 
-            val year = resource.filename!!.replace(FILE_EXT, EMPTY_STRING).toInt()
-
-            NamedCsvReader.builder().skipComments(true).build(resource.inputStream.reader()).use { csv ->
-                try {
-                    val conversionRates = ConversionRatesDataHolder(
-                        data = readConversionRatesFromCsv(
-                            year = year,
-                            file = csv,
-                            name = resource.filename,
-                        )
-                    )
-                    log.info("[SUCCESS]: {} year conversion rates loaded", year)
-                    return conversionRates
-                } catch (e: IOException) {
-                    log.error("[FAILURE]: {} year conversion rates cannot be loaded", year, e)
-                    throw e
-                }
-            }
+        val year = try {
+            resource.filename!!.replace(FILE_EXT, EMPTY_STRING).toInt()
         } catch (e: NumberFormatException) {
-            log.error("[FAILURE]: Conversion-rates filename must represent the year for which it contains data", e)
+            log.error("Conversion-rates filename must represent the year for which it contains data", e)
             throw e
+        }
+
+        NamedCsvReader.builder().skipComments(true).build(resource.inputStream.reader()).use { csv ->
+            try {
+                val conversionRates = ConversionRatesDataHolder(
+                    data = readConversionRatesFromCsv(
+                        year = year,
+                        file = csv,
+                        name = resource.filename,
+                    )
+                )
+                log.debug("{} year conversion rates loaded", year)
+                return conversionRates
+            } catch (e: IOException) {
+                log.error("{} year conversion rates cannot be loaded", year, e)
+                throw e
+            }
         }
     }
 
@@ -51,23 +51,24 @@ class ConversionRatesCsvExtractor : ConversionRatesExtractor {
         val result = HashMap<LocalDate, Map<String, Double>>(length)
 
         for (row in file) {
-            val (date, rates) = readCsvRow(row)
-
-            if (date.year != year) {
-                throw IllegalStateException(
-                    "Invalid date found parsing %s file, date: %s, row: %s".format(
-                        name,
-                        date,
-                        row.originalLineNumber,
+            extractRatesFromCsvRow(row) { date, rates ->
+                if (date.year != year) {
+                    throw IllegalStateException(
+                        ERROR_UNEXPECTED_DATE_TEMPLATE.format(
+                            name,
+                            date,
+                            row.originalLineNumber,
+                            year,
+                        )
                     )
-                )
+                }
+                result[date] = rates
             }
-            result[date] = rates
         }
         return result
     }
 
-    private fun readCsvRow(csvRow: NamedCsvRow): Pair<LocalDate, Map<String, Double>> {
+    private inline fun extractRatesFromCsvRow(csvRow: NamedCsvRow, action: (LocalDate, Map<String, Double>) -> Unit) {
         val currentRowFields = csvRow.fields
         val rates = HashMap<String, Double>(currentRowFields.size - 1)
 
@@ -80,14 +81,18 @@ class ConversionRatesCsvExtractor : ConversionRatesExtractor {
                 } else {
                     throwDateColumnException(csvRow)
                 }
-            } else if (isPresent(value)) {
-                rates[name] = value.toDouble()
+            } else {
+                if (!value.isNullOrBlank()) {
+                    rates[name] = value.toDouble()
+                } else {
+                    log.debug("Missing conversion rate: {} - {}", date, name)
+                }
             }
         }
         if (date == null) {
             throwDateColumnException(csvRow)
         }
-        return date to rates
+        action(date, rates)
     }
 
     private fun determineMapCapacity(year: Int): Int {
@@ -97,13 +102,12 @@ class ConversionRatesCsvExtractor : ConversionRatesExtractor {
         }
     }
 
-    private fun isPresent(value: String?): Boolean {
-        return !value.isNullOrBlank()
-    }
-
     private fun throwDateColumnException(csvRow: NamedCsvRow): Nothing {
         throw IllegalStateException(
-            "There must be exactly one column '${COL_DATE}' in the row: $csvRow"
+            ERROR_MULTIPLE_DATE_COLUMNS_TEMPLATE.format(
+                COL_DATE,
+                csvRow,
+            )
         )
     }
 
@@ -111,6 +115,12 @@ class ConversionRatesCsvExtractor : ConversionRatesExtractor {
         private const val FILE_EXT = ".csv"
         private const val COL_DATE = "date"
         private const val EMPTY_STRING = ""
+
+        private const val ERROR_MULTIPLE_DATE_COLUMNS_TEMPLATE =
+            "There must be exactly one column '%s' in the row: %s"
+        private const val ERROR_UNEXPECTED_DATE_TEMPLATE =
+            "Invalid date found in the file: %s, date: %s, line: %s - file should contain dates for the %s year only"
+
         private val log = LoggerFactory.getLogger(ConversionRatesCsvExtractor::class.java)
     }
 }

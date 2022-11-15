@@ -5,5 +5,5 @@ import java.time.LocalDate
 @JvmInline
 value class ConversionRatesDataHolder(val data: Map<LocalDate, Map<String, Double>>) {
 
-    constructor(data: Pair<LocalDate, Map<String, Double>>) : this(mapOf(data))
+    constructor(vararg data: Pair<LocalDate, Map<String, Double>>) : this(mapOf(*data))
 }
