@@ -3,6 +3,7 @@ package com.github.arhor.simple.expense.tracker.service.money.impl
 import com.github.arhor.simple.expense.tracker.service.money.ConversionRatesData
 import com.github.arhor.simple.expense.tracker.service.money.ConversionRatesDataHolder
 import com.github.arhor.simple.expense.tracker.service.money.ConversionRatesLocalDataLoader
+import com.github.arhor.simple.expense.tracker.service.money.termCurrency
 import org.javamoney.moneta.convert.ExchangeRateBuilder
 import org.javamoney.moneta.spi.AbstractRateProvider
 import org.javamoney.moneta.spi.DefaultNumberValue
@@ -18,6 +19,7 @@ import javax.annotation.PostConstruct
 import javax.money.CurrencyUnit
 import javax.money.Monetary
 import javax.money.MonetaryException
+import javax.money.NumberValue
 import javax.money.convert.ConversionQuery
 import javax.money.convert.CurrencyConversionException
 import javax.money.convert.ExchangeRate
@@ -168,14 +170,14 @@ class ConversionRateProvider(
 
     private fun areBothBaseCurrencies(query: ConversionQuery): Boolean {
         return BASE_CURRENCY == query.baseCurrency
-            && BASE_CURRENCY == query.currency
+            && BASE_CURRENCY == query.termCurrency
     }
 
     private fun getBuilder(query: ConversionQuery): ExchangeRateBuilder {
         val scale = getExchangeContext("exchangerate.digit.fraction")
 
         val baseCurrency = query.baseCurrency
-        val termCurrency = query.currency
+        val termCurrency = query.termCurrency
 
         return ExchangeRateBuilder(scale)
             .setBase(baseCurrency)
@@ -183,11 +185,11 @@ class ConversionRateProvider(
     }
 
     private fun reverse(rate: ExchangeRate): ExchangeRate {
-        val sourceBaseCurrency = rate.currency
-        val sourceTermCurrency = rate.baseCurrency
+        val sourceBaseCurrency = rate.baseCurrency
+        val sourceTermCurrency = rate.termCurrency
         val sourceFactor = rate.factor
 
-        val reversedFactor = divide(DefaultNumberValue.ONE, sourceFactor)
+        val reversedFactor = DefaultNumberValue.ONE / sourceFactor
 
         return ExchangeRateBuilder(rate)
             .setRate(rate)
@@ -231,5 +233,7 @@ class ConversionRateProvider(
         private const val PROVIDER_NAME = "EXCHANGERATE_HOST"
 
         private val logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass())
+
+        operator fun NumberValue.div(that: NumberValue): NumberValue = divide(this, that)
     }
 }

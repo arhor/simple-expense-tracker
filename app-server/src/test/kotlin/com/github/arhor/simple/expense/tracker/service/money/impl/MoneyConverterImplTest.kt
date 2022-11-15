@@ -1,5 +1,6 @@
 package com.github.arhor.simple.expense.tracker.service.money.impl
 
+import com.github.arhor.simple.expense.tracker.service.money.termCurrency
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.slot
@@ -49,7 +50,4 @@ internal class MoneyConverterImplTest {
         assertThat(result)
             .isEqualTo(amount)
     }
-
-    private val ConversionQuery.termCurrency
-        get() = currency
 }
