@@ -5,27 +5,32 @@ import org.aspectj.lang.ProceedingJoinPoint
 import org.aspectj.lang.annotation.Around
 import org.aspectj.lang.annotation.Aspect
 import org.aspectj.lang.annotation.Pointcut
+import org.aspectj.lang.reflect.MethodSignature
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
 import org.springframework.stereotype.Component
+import kotlin.time.ExperimentalTime
+import kotlin.time.measureTimedValue
 
 @Aspect
 @Component
 @ConditionalOnProperty(prefix = "application-props", name = ["log-method-execution"])
 class MethodExecutionLoggingAspect {
 
+    @OptIn(ExperimentalTime::class)
     @Around("webLayer() || serviceLayer() || persistenceLayer()")
     fun logMethodExecution(joinPoint: ProceedingJoinPoint): Any? {
         val log = joinPoint.componentLogger()
 
         if (log.isDebugEnabled) {
-            val signature = joinPoint.signature
-            val signatureName = "${signature.declaringType.simpleName}.${signature.name}()"
+            val methodSignature = joinPoint.signature as MethodSignature
+            val methodName = "${methodSignature.declaringType.simpleName}.${methodSignature.name}()"
+            val methodArgs = joinPoint.args.contentToString()
 
-            log.debug("Method: {}, args: {}", signatureName, joinPoint.args.joinToString(", "))
-            val result = joinPoint.proceed()
-            log.debug("Method: {}, exit: {}", signatureName, result)
+            log.debug("Method: {}, args: {}", methodName, methodArgs)
+            val (result, duration) = measureTimedValue { joinPoint.proceed() }
+            log.debug("Method: {}, exit: {}, time: {}", methodName, methodSignature.format(result), duration)
 
             return result
         }
@@ -52,6 +57,18 @@ class MethodExecutionLoggingAspect {
 
     private fun JoinPoint.componentLogger(): Logger {
         return LoggerFactory.getLogger(signature.declaringTypeName)
+    }
+
+    private fun MethodSignature.format(result: Any?): Any? {
+        return if (returnType.name == VOID) {
+            VOID
+        } else {
+            result
+        }
+    }
+
+    companion object {
+        private const val VOID = "void"
     }
 }
 

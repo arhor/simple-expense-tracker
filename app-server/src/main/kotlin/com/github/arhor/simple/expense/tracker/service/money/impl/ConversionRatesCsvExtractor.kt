@@ -85,7 +85,7 @@ class ConversionRatesCsvExtractor : ConversionRatesExtractor {
                 if (!value.isNullOrBlank()) {
                     rates[name] = value.toDouble()
                 } else {
-                    log.debug("Missing conversion rate: {} - {}", date, name)
+                    log.trace("Missing conversion rate: {} - {}", date, name)
                 }
             }
         }
