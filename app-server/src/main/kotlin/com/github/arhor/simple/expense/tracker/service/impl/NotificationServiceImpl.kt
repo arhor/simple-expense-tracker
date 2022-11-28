@@ -34,26 +34,31 @@ class NotificationServiceImpl(
         subscribers.clear()
     }
 
-    override fun handleNotification(senderId: Long, userId: Long, dto: NotificationDTO) {
+    override fun handleNotification(sourceUserId: Long, targetUserId: Long, notification: NotificationDTO) {
         applicationEventPublisher.publishEvent(
-            NotificationEvent(senderId, userId, dto)
+            NotificationEvent(
+                sourceUserId,
+                targetUserId,
+                notification,
+            )
         )
     }
 
     @Transactional
-    override fun sendNotification(senderId: Long, userId: Long, dto: NotificationDTO) {
+    override fun sendNotification(sourceUserId: Long, targetUserId: Long, notification: NotificationDTO) {
         var sent = false
         try {
-            sent = sendInternal(userId = userId, notification = dto)
+            sent = sendInternal(targetUserId = targetUserId, notification = notification)
         } finally {
             if (!sent) {
-                val notification = notificationMapper.mapDtoToEntity(
-                    dto = dto,
-                    targetUserId = userId,
-                    sourceUserId = senderId,
-                    timestamp = currentLocalDateTime(),
+                notificationRepository.save(
+                    notificationMapper.mapDtoToEntity(
+                        dto = notification,
+                        targetUserId = targetUserId,
+                        sourceUserId = sourceUserId,
+                        timestamp = currentLocalDateTime(),
+                    )
                 )
-                notificationRepository.save(notification)
             }
         }
     }
@@ -68,7 +73,7 @@ class NotificationServiceImpl(
                     var sent = false
                     try {
                         sent = sendInternal(
-                            userId = it.targetUserId,
+                            targetUserId = it.targetUserId,
                             notification = notificationMapper.mapProjectionToDto(it)
                         )
                     } finally {
@@ -81,8 +86,8 @@ class NotificationServiceImpl(
         }
     }
 
-    private fun sendInternal(userId: Long, notification: NotificationDTO): Boolean {
-        val emitter = subscribers[userId]
+    private fun sendInternal(targetUserId: Long, notification: NotificationDTO): Boolean {
+        val emitter = subscribers[targetUserId]
 
         if (emitter != null) {
             val eventId = UUID.randomUUID().toString()
@@ -99,6 +104,7 @@ class NotificationServiceImpl(
     }
 
     companion object {
+
         private const val NOTIFICATION_EVENT = "notification-event"
     }
 }

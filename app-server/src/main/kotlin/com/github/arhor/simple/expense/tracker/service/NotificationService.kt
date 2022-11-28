@@ -11,9 +11,9 @@ interface NotificationService {
 
     fun unsubscribeAll()
 
-    fun handleNotification(senderId: Long, userId: Long, dto: NotificationDTO)
+    fun handleNotification(sourceUserId: Long, targetUserId: Long, notification: NotificationDTO)
 
-    fun sendNotification(senderId: Long, userId: Long, dto: NotificationDTO)
+    fun sendNotification(sourceUserId: Long, targetUserId: Long, notification: NotificationDTO)
 
     fun sendNotifications()
 }

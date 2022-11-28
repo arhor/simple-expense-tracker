@@ -83,9 +83,9 @@ internal class NotificationServiceImplTest {
 
         // when
         notificationService.handleNotification(
-            senderId = expectedSourceUserId,
-            userId = expectedTargetUserId,
-            dto = expectedNotification,
+            sourceUserId = expectedSourceUserId,
+            targetUserId = expectedTargetUserId,
+            notification = expectedNotification,
         )
 
         // then
@@ -114,9 +114,9 @@ internal class NotificationServiceImplTest {
 
         // when
         notificationService.sendNotification(
-            senderId = expectedSourceUserId,
-            userId = expectedTargetUserId,
-            dto = expectedNotification,
+            sourceUserId = expectedSourceUserId,
+            targetUserId = expectedTargetUserId,
+            notification = expectedNotification,
         )
 
         // then
@@ -161,9 +161,9 @@ internal class NotificationServiceImplTest {
 
         // when
         notificationService.sendNotification(
-            senderId = expectedSourceUserId,
-            userId = expectedTargetUserId,
-            dto = expectedNotification,
+            sourceUserId = expectedSourceUserId,
+            targetUserId = expectedTargetUserId,
+            notification = expectedNotification,
         )
 
         // then

@@ -28,7 +28,7 @@ internal class NotificationEventListenerTest {
         val expectedTargetUserId = -2L
         val expectedNotification = NotificationDTO()
 
-        every { notificationService.sendNotification(senderId = any(), userId = any(), dto = any()) } just runs
+        every { notificationService.sendNotification(sourceUserId = any(), targetUserId = any(), notification = any()) } just runs
 
         // when
         notificationEventListener.handleNotificationEvent(
@@ -42,9 +42,9 @@ internal class NotificationEventListenerTest {
         // then
         verify(exactly = 1) {
             notificationService.sendNotification(
-                senderId = expectedSourceUserId,
-                userId = expectedTargetUserId,
-                dto = expectedNotification,
+                sourceUserId = expectedSourceUserId,
+                targetUserId = expectedTargetUserId,
+                notification = expectedNotification,
             )
         }
     }
