@@ -17,7 +17,7 @@ class NotificationEventListener(
         val (sourceUserId, targetUserId, notification) = event
 
         log.debug(
-            "Handled notification event: from user: {}, to user: {}",
+            "Handled notification event: source user: {}, target user: {}",
             sourceUserId,
             targetUserId,
         )
