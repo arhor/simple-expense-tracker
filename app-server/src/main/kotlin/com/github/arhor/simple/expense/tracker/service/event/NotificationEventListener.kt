@@ -7,7 +7,9 @@ import org.springframework.scheduling.annotation.Async
 import org.springframework.stereotype.Service
 
 @Service
-class NotificationEventListener(private val service: NotificationService) {
+class NotificationEventListener(
+    private val service: NotificationService,
+) {
 
     @Async
     @EventListener
@@ -23,6 +25,7 @@ class NotificationEventListener(private val service: NotificationService) {
     }
 
     companion object {
+
         private val log = LoggerFactory.getLogger(NotificationEventListener::class.java)
     }
 }
