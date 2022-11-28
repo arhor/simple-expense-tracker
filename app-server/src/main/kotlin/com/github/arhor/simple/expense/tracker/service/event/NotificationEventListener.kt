@@ -15,10 +15,9 @@ class NotificationEventListener(private val service: NotificationService) {
         val (sourceUserId, targetUserId, notification) = event
 
         log.debug(
-            "Handled notification event: {}, for the user: {}, from user: {}",
-            notification,
+            "Handled notification event: from user: {}, to user: {}",
+            sourceUserId,
             targetUserId,
-            sourceUserId
         )
         service.sendNotification(sourceUserId, targetUserId, notification)
     }
