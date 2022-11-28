@@ -55,20 +55,21 @@ class MethodExecutionLoggingAspect {
     )
     private fun persistenceLayer() { /* no-op */ }
 
-    private fun JoinPoint.componentLogger(): Logger {
-        return LoggerFactory.getLogger(signature.declaringTypeName)
-    }
-
-    private fun MethodSignature.format(result: Any?): Any? {
-        return if (returnType.name == VOID) {
-            VOID
-        } else {
-            result
-        }
-    }
-
     companion object {
+
         private const val VOID = "void"
+
+        private fun JoinPoint.componentLogger(): Logger {
+            return LoggerFactory.getLogger(signature.declaringTypeName)
+        }
+
+        private fun MethodSignature.format(result: Any?): Any? {
+            return if (returnType.name == VOID) {
+                VOID
+            } else {
+                result
+            }
+        }
     }
 }
 
