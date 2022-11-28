@@ -16,8 +16,12 @@ class CustomUserDetailsService(private val userRepository: InternalUserRepositor
             User.builder()
                 .username(it.username)
                 .password(it.password)
-                .roles("USER")
+                .roles(USER)
                 .build()
         } ?: throw UsernameNotFoundException("InternalUser with username '$username' is not found.")
+    }
+
+    companion object {
+        private const val USER = "USER"
     }
 }
