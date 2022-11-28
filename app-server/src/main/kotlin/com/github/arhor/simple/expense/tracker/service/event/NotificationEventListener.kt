@@ -14,14 +14,14 @@ class NotificationEventListener(
     @Async
     @EventListener
     fun handleNotificationEvent(event: NotificationEvent) {
-        val (sourceUserId, targetUserId, notification) = event
-
-        log.debug(
-            "Handled notification event: source user: {}, target user: {}",
-            sourceUserId,
-            targetUserId,
-        )
-        service.sendNotification(sourceUserId, targetUserId, notification)
+        event.let { (sourceUserId, targetUserId, notification) ->
+            log.debug(
+                "Handled notification event: source user: {}, target user: {}",
+                sourceUserId,
+                targetUserId,
+            )
+            service.sendNotification(sourceUserId, targetUserId, notification)
+        }
     }
 
     companion object {
