@@ -24,13 +24,13 @@ class MethodExecutionLoggingAspect {
         val log = joinPoint.componentLogger()
 
         if (log.isDebugEnabled) {
-            val methodSignature = joinPoint.signature as MethodSignature
-            val methodName = "${methodSignature.declaringType.simpleName}.${methodSignature.name}()"
+            val signature = joinPoint.signature as MethodSignature
+            val methodName = signature.name
             val methodArgs = joinPoint.args.contentToString()
 
-            log.debug("Method: {}, args: {}", methodName, methodArgs)
+            log.debug("Method: $methodName() >>> args: $methodArgs")
             val (result, duration) = measureTimedValue { joinPoint.proceed() }
-            log.debug("Method: {}, exit: {}, time: {}", methodName, methodSignature.format(result), duration)
+            log.debug("Method: $methodName() <<< exit: ${signature.format(result)}, time: $duration")
 
             return result
         }
@@ -56,7 +56,6 @@ class MethodExecutionLoggingAspect {
     private fun persistenceLayer() { /* no-op */ }
 
     companion object {
-
         private const val VOID = "void"
 
         private fun JoinPoint.componentLogger(): Logger {
