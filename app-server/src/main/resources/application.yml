@@ -56,11 +56,11 @@ spring:
       client:
         registration:
           github:
-            clientId: ${GITHUB_CLIENT_ID}
-            clientSecret: ${GITHUB_CLIENT_SECRET}
+            clientId: ${GITHUB_CLIENT_ID:null}
+            clientSecret: ${GITHUB_CLIENT_SECRET:null}
           google:
-            clientId: ${GOOGLE_CLIENT_ID}
-            clientSecret: ${GOOGLE_CLIENT_SECRET}
+            clientId: ${GOOGLE_CLIENT_ID:null}
+            clientSecret: ${GOOGLE_CLIENT_SECRET:null}
   session:
     store-type: jdbc
     jdbc:
