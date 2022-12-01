@@ -1,10 +1,12 @@
+import io.github.arhor.dotenv.Dotenv
+
 plugins {
     id "base"
     id "java-platform"
 }
 
 ext {
-    env = io.github.arhor.dotenv.Dotenv.configure().location("$rootDir").filename(".env").load()
+    env = Dotenv.configure().location("$rootDir").filename(".env").load()
 }
 
 wrapper {
@@ -30,7 +32,9 @@ dependencies {
     }
 }
 
-task stage(type: Jar, dependsOn: [":app-client:build", ":app-server:build"]) {
+def stage = tasks.register("stage", Jar) {
+    dependsOn(":app-client:build", ":app-server:build")
+
     group = "build"
     description = "Creates composite Jar file including client and server part"
 
@@ -49,7 +53,9 @@ task stage(type: Jar, dependsOn: [":app-client:build", ":app-server:build"]) {
     }
 }
 
-task runCompositeJar(type: JavaExec, dependsOn: stage) {
+tasks.register("runCompositeJar", JavaExec) {
+    dependsOn(stage)
+
     group = "application"
     description = "Runs created composite Jar file with Spring Boot application"
 

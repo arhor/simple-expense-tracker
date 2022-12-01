@@ -1,3 +1,5 @@
+import com.github.gradle.node.npm.task.NpmTask
+
 plugins {
     id "java-library"
     id "org.jsonschema2dataclass"
@@ -32,10 +34,13 @@ jsonSchema2Pojo {
     dateType = "java.time.LocalDate"
 }
 
-task generateJsonSchema2TypeScript(type: com.github.gradle.node.npm.task.NpmTask, dependsOn: npmInstall) {
+def generateJsonSchema2TypeScript = tasks.register("generateJsonSchema2TypeScript", NpmTask) {
+    dependsOn(npmInstall)
+
     group = "build"
     description = "Builds d.ts files according to the provided schemas"
     workingDir.fileValue(projectDir)
+
     args = ["run", "build"]
 }
 
