@@ -9,7 +9,8 @@ plugins {
     id "org.springframework.boot"
 }
 
-description = "Server-side application based on Spring Boot %s and Java %s".formatted(
+description = String.format(
+    "Server-side application based on Spring Boot %s and Java %s",
     property("versions.springBoot"),
     property("versions.java"),
 )
@@ -41,7 +42,6 @@ flyway {
 
 repositories {
     mavenCentral()
-    maven { url "https://repo.spring.io/release" }
 }
 
 configurations {
@@ -157,7 +157,7 @@ void applyJaCoCoExclusions(ConfigurableFileCollection classDirectories) {
     })
 }
 
-tasks.withType(JavaCompile) {
+tasks.withType(JavaCompile).configureEach {
     options.compilerArgs = [
         "-Xlint:deprecation",
         "-Xlint:fallthrough",
@@ -166,7 +166,7 @@ tasks.withType(JavaCompile) {
     ]
 }
 
-tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile) {
+tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).configureEach {
     kotlinOptions {
         freeCompilerArgs = [
             "-Xjsr305=strict",

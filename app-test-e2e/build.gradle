@@ -3,7 +3,8 @@ plugins {
     id "com.avast.gradle.docker-compose"
 }
 
-description = "End-to-End application tests based on Node.js %s".formatted(
+description = String.format(
+    "End-to-End application tests based on Node.js %s",
     property("versions.node"),
 )
 

@@ -2,7 +2,8 @@ plugins {
     id "simple-expense-tracker.node-conventions"
 }
 
-description = "Client-side application based on React.js and Node.js %s".formatted(
+description = String.format(
+    "Client-side application based on React.js and Node.js %s",
     property("versions.node")
 )
 
