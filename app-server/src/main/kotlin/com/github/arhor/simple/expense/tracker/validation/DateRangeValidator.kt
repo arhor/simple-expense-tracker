@@ -1,8 +1,8 @@
 package com.github.arhor.simple.expense.tracker.validation
 
 import com.github.arhor.simple.expense.tracker.DateRangeCriteria
-import javax.validation.ConstraintValidator
-import javax.validation.ConstraintValidatorContext
+import jakarta.validation.ConstraintValidator
+import jakarta.validation.ConstraintValidatorContext
 
 class DateRangeValidator : ConstraintValidator<ValidDateRange, DateRangeCriteria> {
 

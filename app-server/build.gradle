@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+
 plugins {
     id "com.adarshr.test-logger"
     id "io.spring.dependency-management"
@@ -166,7 +168,7 @@ tasks.withType(JavaCompile).configureEach {
     ]
 }
 
-tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).configureEach {
+tasks.withType(KotlinCompile).configureEach {
     kotlinOptions {
         freeCompilerArgs = [
             "-Xjsr305=strict",

@@ -11,12 +11,7 @@
         <withJansi>false</withJansi>
         <encoder>
             <pattern>
-                <springProfile name="heroku">
-                    %d{HH:mm:ss.SSS} [%thread] %-5level %-36logger{36} %msg %replace({%mdc}){'\{\}', ''}%n
-                </springProfile>
-                <springProfile name="!heroku">
-                    %cyan(%d{HH:mm:ss.SSS}) %gray([%thread]) %highlight(%-5level) %magenta(%-36logger{36}) %msg %replace(%green({%mdc})){'\{\}', ''}%n
-                </springProfile>
+                %cyan(%d{HH:mm:ss.SSS}) %gray([%thread]) %highlight(%-5level) %magenta(%-36logger{36}) %msg %replace(%green({%mdc})){'\{\}', ''}%n
             </pattern>
         </encoder>
     </appender>

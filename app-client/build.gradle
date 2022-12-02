@@ -1,3 +1,6 @@
+import com.github.gradle.node.npm.task.NpmTask
+import com.github.gradle.node.npm.task.NpxTask
+
 plugins {
     id "simple-expense-tracker.node-conventions"
 }
@@ -9,35 +12,49 @@ description = String.format(
 
 def generatedSourcesDir = "src/generated"
 
-task clearGeneratedModel(type: Delete) {
+def clearGeneratedModel = tasks.register("clearGeneratedModel", Delete) {
     delete generatedSourcesDir
 }
 
-task copyGeneratedModel(type: Copy, dependsOn: [clearGeneratedModel, ":app-model:build"]) {
+def copyGeneratedModel = tasks.register("copyGeneratedModel", Copy) {
+    dependsOn(clearGeneratedModel, ":app-model:build")
+
     from "${project(":app-model").buildDir}/generated/sources/js2ts"
     into "${projectDir}/${generatedSourcesDir}"
 }
 
-task updateBrowserlist(type: com.github.gradle.node.npm.task.NpxTask, dependsOn: npmInstall) {
+def updateBrowserList = tasks.register("updateBrowserList", NpxTask) {
+    dependsOn(npmInstall)
+
     workingDir.fileValue(projectDir)
     command.set("browserslist@latest")
+
     args = ["--update-db"]
 }
 
-task test(type: com.github.gradle.node.npm.task.NpmTask, dependsOn: [updateBrowserlist, copyGeneratedModel]) {
+def test = tasks.register("test", NpmTask) {
+    dependsOn(updateBrowserList, copyGeneratedModel)
+
     group = "verification"
     workingDir.fileValue(projectDir)
+
     args = ["run", "test"]
 }
 
-task build(type: com.github.gradle.node.npm.task.NpmTask, dependsOn: test) {
+tasks.register("build", NpmTask) {
+    dependsOn(test)
+
     group = "build"
     workingDir.fileValue(projectDir)
+
     args = ["run", "build"]
 }
 
-task serve(type: com.github.gradle.node.npm.task.NpmTask, dependsOn: npmInstall) {
+tasks.register("serve", NpmTask) {
+    dependsOn(npmInstall, copyGeneratedModel)
+
     group = "application"
     workingDir.fileValue(projectDir)
+
     args = ["run", "serve"]
 }

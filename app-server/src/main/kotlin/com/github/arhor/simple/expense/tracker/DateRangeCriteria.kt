@@ -1,8 +1,8 @@
 package com.github.arhor.simple.expense.tracker
 
+import jakarta.validation.constraints.PastOrPresent
 import org.springframework.format.annotation.DateTimeFormat
 import java.time.LocalDate
-import javax.validation.constraints.PastOrPresent
 
 /**
  * Represents date-range query-string parameters.

@@ -2,9 +2,11 @@ package com.github.arhor.simple.expense.tracker.config
 
 import com.github.arhor.simple.expense.tracker.config.props.ApplicationProps
 import com.github.arhor.simple.expense.tracker.service.UserService
+import jakarta.servlet.http.HttpServletRequest
+import jakarta.servlet.http.HttpServletResponse
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
-import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
 import org.springframework.security.core.Authentication
@@ -15,12 +17,10 @@ import org.springframework.security.web.authentication.AbstractAuthenticationTar
 import org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler
 import org.springframework.security.web.authentication.logout.SimpleUrlLogoutSuccessHandler
 import org.springframework.web.util.UriComponentsBuilder
-import javax.servlet.http.HttpServletRequest
-import javax.servlet.http.HttpServletResponse
 
 @Configuration(proxyBeanMethods = false)
 @EnableWebSecurity
-@EnableGlobalMethodSecurity(prePostEnabled = true)
+@EnableMethodSecurity(prePostEnabled = true)
 class ConfigureWebSecurity {
 
     @Bean
@@ -31,7 +31,7 @@ class ConfigureWebSecurity {
     ): SecurityFilterChain {
         http.cors { it.disable() }
             .csrf { it.disable() }
-            .authorizeRequests {
+            .authorizeHttpRequests {
                 it.anyRequest().permitAll()
             }
             .logout {

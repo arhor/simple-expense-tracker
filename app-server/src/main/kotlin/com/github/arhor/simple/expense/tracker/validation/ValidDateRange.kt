@@ -1,7 +1,7 @@
 package com.github.arhor.simple.expense.tracker.validation
 
-import javax.validation.Constraint
-import javax.validation.Payload
+import jakarta.validation.Constraint
+import jakarta.validation.Payload
 import kotlin.annotation.AnnotationRetention.RUNTIME
 import kotlin.annotation.AnnotationTarget.VALUE_PARAMETER
 import kotlin.reflect.KClass
@@ -11,7 +11,7 @@ import kotlin.reflect.KClass
 @MustBeDocumented
 @Constraint(
     validatedBy = [
-        /* @see resources/META-INF/services/javax.validation.ConstraintValidator */
+        /* @see resources/META-INF/services/jakarta.validation.ConstraintValidator */
     ]
 )
 annotation class ValidDateRange(

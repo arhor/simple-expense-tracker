@@ -1,12 +1,11 @@
 package com.github.arhor.simple.expense.tracker.config.props
 
 import org.springframework.boot.context.properties.ConfigurationProperties
-import org.springframework.boot.context.properties.ConstructorBinding
+import org.springframework.boot.context.properties.bind.ConstructorBinding
 import org.springframework.security.oauth2.client.web.OAuth2AuthorizationRequestRedirectFilter
 
-@ConstructorBinding
 @ConfigurationProperties("application-props")
-data class ApplicationProps(
+data class ApplicationProps @ConstructorBinding constructor(
     val apiPathPrefix: String?,
     val resources: Resources?,
     val conversionRates: ConversionRates?

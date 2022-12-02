@@ -2,8 +2,8 @@ package com.github.arhor.simple.expense.tracker.util
 
 import kotlinx.coroutines.flow.reduce
 import kotlinx.coroutines.runBlocking
+import net.bytebuddy.utility.RandomString
 import org.assertj.core.api.Assertions.assertThat
-import org.assertj.core.internal.bytebuddy.utility.RandomString
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.io.TempDir
 import java.nio.file.Path

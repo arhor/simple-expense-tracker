@@ -1,12 +1,12 @@
 package com.github.arhor.simple.expense.tracker.web
 
+import jakarta.servlet.FilterChain
+import jakarta.servlet.http.HttpServletRequest
+import jakarta.servlet.http.HttpServletResponse
 import org.slf4j.MDC
 import org.springframework.boot.web.servlet.filter.OrderedRequestContextFilter
 import org.springframework.stereotype.Component
 import java.util.*
-import javax.servlet.FilterChain
-import javax.servlet.http.HttpServletRequest
-import javax.servlet.http.HttpServletResponse
 
 @Component
 class ExtendedRequestContextFilter : OrderedRequestContextFilter() {

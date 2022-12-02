@@ -6,7 +6,7 @@ pluginManagement {
         id "com.github.node-gradle.node"        version settings["versions.nodeGradlePlugin"]
         id "io.spring.dependency-management"    version settings["versions.springDependencyManagement"]
         id "org.flywaydb.flyway"                version settings["versions.flyway"]
-        id "org.jsonschema2dataclass"           version settings["versions.json2pojo"]
+        id "org.jsonschema2dataclass"           version settings["versions.jsonschema2dataclass"]
         id "org.jetbrains.kotlin.jvm"           version settings["versions.kotlin"]
         id "org.jetbrains.kotlin.kapt"          version settings["versions.kotlin"]
         id "org.jetbrains.kotlin.plugin.spring" version settings["versions.kotlin"]
