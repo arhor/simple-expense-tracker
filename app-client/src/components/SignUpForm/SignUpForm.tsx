@@ -17,29 +17,29 @@ import { useStore } from '@/store';
 import { Optional } from '@/utils/core-utils';
 import { defineValidator, formIsValid } from '@/utils/validation-utils';
 
-const USERNAME_REG_EXP = /^.+$/;
-const PASSWORD_REG_EXP = /^.+$/;
+const USERNAME_REG_EXP = /^[a-zA-Z0-9]{6,20}$/;
+const PASSWORD_REG_EXP = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])[a-zA-Z0-9]{8,20}$/;
 
 const validator = defineValidator<UserRequestDTO>({
     username: [
         (v) => !!v
             || 'Username is required',
-        (v) => (v && v.length >= 4)
-            || 'Username must have more than 3 characters',
+        (v) => (v && v.length >= 6)
+            || 'Username must have more than 5 characters',
         (v) => (v && v.length <= 20)
             || 'Username must have less than 21 character',
         (v) => (v && USERNAME_REG_EXP.test(v))
-            || 'Username must be valid'
+            || 'Username must include only alphanumeric characters'
     ],
     password: [
         (v) => !!v
             || 'Password is required',
-        (v) => (v && v.length >= 6)
-            || 'Password must have more than 5 characters',
+        (v) => (v && v.length >= 8)
+            || 'Password must have more than 7 characters',
         (v) => (v && v.length <= 20)
             || 'Password must have less than 21 character',
         (v) => (v && PASSWORD_REG_EXP.test(v))
-            || 'Password must be valid'
+            || 'Password must be include at least one lowercase character, one uppercase character and one digit'
     ]
 });
 
