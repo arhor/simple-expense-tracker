@@ -42,6 +42,7 @@ class ConfigureWebSecurity {
             .formLogin {
                 it.loginPage(URL_PATH_SIGN_IN)
                 it.loginProcessingUrl(appProps.apiUrlPath(URL_PATH_SIGN_IN))
+                it.successHandler(SavedRequestAwareAuthenticationSuccessHandler().also(::configure))
             }
             .oauth2Login {
                 it.loginPage(URL_PATH_SIGN_IN)
