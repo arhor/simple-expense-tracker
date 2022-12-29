@@ -3,11 +3,11 @@ import { useState } from 'react';
 import { observer } from 'mobx-react-lite';
 
 import ExpenseCreateDialog from '@/components/ExpenseCreateDialog';
-import ExpenseItemList from '@/components/ExpenseItemList';
+import ExpenseList from '@/components/ExpenseList';
 import ExpenseUpdateDialog from '@/components/ExpenseUpdateDialog';
 import { useStore } from '@/store';
 
-const Home = () => {
+const Expenses = () => {
     const [ createDialogOpen, setCreateDialogOpen ] = useState(false);
     const [ updateDialogOpen, setUpdateDialogOpen ] = useState(false);
     const [ currentExpenseId, setCurrentExpenseId ] = useState<number | null>(null);
@@ -41,7 +41,7 @@ const Home = () => {
 
     return (
         <>
-            <ExpenseItemList
+            <ExpenseList
                 onCreate={handleCreate}
                 onUpdate={handleUpdate}
             />
@@ -60,4 +60,4 @@ const Home = () => {
     );
 };
 
-export default observer(Home);
+export default observer(Expenses);

@@ -5,7 +5,7 @@ import { observer } from 'mobx-react-lite';
 
 import Grid from '@mui/material/Grid';
 
-import ExpenseItem from '@/components/ExpenseItem';
+import Expense from '@/components/Expense';
 import { useStore } from '@/store';
 
 export type Props = {
@@ -13,7 +13,7 @@ export type Props = {
     onUpdate: (expenseId: number) => void;
 };
 
-const ExpenseItemList = ({ onCreate, onUpdate }: Props) => {
+const ExpenseList = ({ onCreate, onUpdate }: Props) => {
     const { expense } = useStore();
 
     useEffect(() => {
@@ -26,14 +26,14 @@ const ExpenseItemList = ({ onCreate, onUpdate }: Props) => {
         <Grid container spacing={{ xs: 3 }} columns={{ xs: 3, sm: 4 }}>
             {expense.expenses.map((expense) => (
                 <Grid item xs={1} key={expense.id}>
-                    <ExpenseItem {...expense} tooltip={'edit'} onClick={() => onUpdate(expense.id)} />
+                    <Expense {...expense} tooltip={'edit'} onClick={() => onUpdate(expense.id)} />
                 </Grid>
             ))}
             <Grid item xs={1}>
-                <ExpenseItem icon="add" name="new" onClick={onCreate} />
+                <Expense icon="add" name="new" onClick={onCreate} />
             </Grid>
         </Grid>
     );
 };
 
-export default observer(ExpenseItemList);
+export default observer(ExpenseList);

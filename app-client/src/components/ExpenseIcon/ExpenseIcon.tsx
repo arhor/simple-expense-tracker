@@ -6,9 +6,9 @@ export type Props = {
 };
 
 // TODO: candidate for removal
-const ExpenseItemIcon = (props: Props) => {
+const ExpenseIcon = (props: Props) => {
     const IconComponent = getIconByName(props.icon);
     return <IconComponent />;
 };
 
-export default ExpenseItemIcon;
+export default ExpenseIcon;
