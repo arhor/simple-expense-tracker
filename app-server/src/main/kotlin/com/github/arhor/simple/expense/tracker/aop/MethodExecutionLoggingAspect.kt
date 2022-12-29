@@ -19,7 +19,7 @@ import kotlin.time.measureTimedValue
 class MethodExecutionLoggingAspect {
 
     @OptIn(ExperimentalTime::class)
-    @Around("webLayer() || serviceLayer() || persistenceLayer()")
+    @Around("webLayer() || serviceLayer() || dataLayer()")
     fun logMethodExecution(joinPoint: ProceedingJoinPoint): Any? {
         val log = joinPoint.componentLogger()
 
@@ -41,19 +41,25 @@ class MethodExecutionLoggingAspect {
         value = "execution(* com.github.arhor.simple.expense.tracker.web..*(..))" +
             " && within(@org.springframework.web.bind.annotation.RestController *)"
     )
-    private fun webLayer() { /* no-op */ }
+    private fun webLayer() {
+        /* no-op */
+    }
 
     @Pointcut(
         value = "execution(* com.github.arhor.simple.expense.tracker.service..*(..))" +
             " && within(@org.springframework.stereotype.Service *)"
     )
-    private fun serviceLayer() { /* no-op */ }
+    private fun serviceLayer() {
+        /* no-op */
+    }
 
     @Pointcut(
         value = "execution(* com.github.arhor.simple.expense.tracker.data..*(..))" +
             " && within(@org.springframework.stereotype.Repository *)"
     )
-    private fun persistenceLayer() { /* no-op */ }
+    private fun dataLayer() {
+        /* no-op */
+    }
 
     companion object {
         private const val VOID = "void"
