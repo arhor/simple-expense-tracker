@@ -12,7 +12,7 @@ const SignIn = () => {
     const { state } = useLocation() as { state: { doNotCallAuth?: boolean } | null };
     const { user } = useStore();
 
-    if (searchParams.has('success')) {
+    if (searchParams.has('auth') && searchParams.get('auth') == 'success') {
         return (
             <Navigate to="/" />
         );

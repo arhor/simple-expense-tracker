@@ -13,7 +13,7 @@ import AuthProviderList from '@/components/AuthProviderList'
 
 const SignInForm = () => {
     const [ searchParams ] = useSearchParams();
-    const hasError = searchParams.has('error');
+    const hasError = searchParams.has('auth') && searchParams.get('auth') == 'failure';
 
     return (
         <Box

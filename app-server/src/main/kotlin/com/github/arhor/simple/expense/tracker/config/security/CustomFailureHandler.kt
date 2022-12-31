@@ -5,7 +5,6 @@ import jakarta.servlet.http.HttpServletResponse
 import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatus
 import org.springframework.security.core.AuthenticationException
-import org.springframework.security.web.DefaultRedirectStrategy
 import org.springframework.security.web.RedirectStrategy
 import org.springframework.security.web.WebAttributes
 import org.springframework.security.web.authentication.AuthenticationFailureHandler
@@ -16,7 +15,7 @@ class CustomFailureHandler(
     private val forwardToDestination: Boolean = false,
     private val allowSessionCreation: Boolean = true,
     private val useReferer: Boolean = true,
-    private val redirectStrategy: RedirectStrategy = DefaultRedirectStrategy(),
+    private val redirectStrategy: RedirectStrategy = QueryParamRedirectStrategy.AuthFailure,
 ) : AuthenticationFailureHandler {
 
     override fun onAuthenticationFailure(
@@ -26,11 +25,7 @@ class CustomFailureHandler(
     ) {
         val failureUrl = determineFailureUrl(req)
         if (failureUrl == null) {
-            if (logger.isTraceEnabled) {
-                logger.trace("Sending 401 Unauthorized error since no failure URL is set")
-            } else {
-                logger.debug("Sending 401 Unauthorized error")
-            }
+            logger.debug("Sending 401 Unauthorized error")
             res.sendError(HttpStatus.UNAUTHORIZED.value(), HttpStatus.UNAUTHORIZED.reasonPhrase)
             return
         }
@@ -76,7 +71,7 @@ class CustomFailureHandler(
             logger.trace("Using default url {}", failureUrl)
 
         }
-        return "$failureUrl?error"
+        return failureUrl
     }
 
     companion object {

@@ -11,7 +11,7 @@ class CustomSuccessHandler(
 
     init {
         setUseReferer(true)
-        redirectStrategy = SuccessSignInRedirectStrategy
+        redirectStrategy = QueryParamRedirectStrategy.AuthSuccess
     }
 
     override fun onAuthenticationSuccess(
