@@ -70,15 +70,8 @@ class ConversionRateProvider(
         val dates = getQueryDates(conversionQuery)
 
         if (dates == null) {
-            return loadedRates.keys
-                .stream()
-                .max(Comparator.naturalOrder())
-                .map(loadedRates::get)
-                .orElseThrow {
-                    MonetaryException(
-                        "There is no more recent exchange rate to rate on $PROVIDER_NAME provider."
-                    )
-                }!!
+            return loadedRates.keys.maxOrNull()?.let(loadedRates::get)
+                ?: throw MonetaryException("There is no more recent exchange rate to rate on $PROVIDER_NAME provider.")
         } else {
             for (date in dates) {
                 var targets = loadedRates[date]
@@ -114,9 +107,7 @@ class ConversionRateProvider(
             }
             val errorDates = dates.map { it.format(DateTimeFormatter.ISO_LOCAL_DATE) }
 
-            throw MonetaryException(
-                "There is not exchange on day $errorDates to rate to rate on $PROVIDER_NAME."
-            )
+            throw MonetaryException("There is not exchange on day $errorDates to rate to rate on $PROVIDER_NAME.")
         }
     }
 
@@ -131,7 +122,7 @@ class ConversionRateProvider(
         }
 
         val baseCurrency = query.baseCurrency
-        val termCurrency = query.currency
+        val termCurrency = query.termCurrency
 
         return if (termCurrency == BASE_CURRENCY) {
             sourceRate?.let { reverse(it) }
@@ -150,21 +141,14 @@ class ConversionRateProvider(
                     .build()
             )
             if ((rate1 != null) && (rate2 != null)) {
-                val factor1 = rate1.factor
-                val factor2 = rate2.factor
-
-                val resultFactor = multiply(factor1, factor2)
+                val resultFactor = rate1.factor * rate2.factor
 
                 builder
                     .setFactor(resultFactor)
                     .setRateChain(rate1, rate2)
                     .build()
             }
-            throw CurrencyConversionException(
-                baseCurrency,
-                termCurrency,
-                sourceRate?.context,
-            )
+            throw CurrencyConversionException(baseCurrency, termCurrency, sourceRate?.context)
         }
     }
 
@@ -184,20 +168,13 @@ class ConversionRateProvider(
             .setTerm(termCurrency)
     }
 
-    private fun reverse(rate: ExchangeRate): ExchangeRate {
-        val sourceBaseCurrency = rate.baseCurrency
-        val sourceTermCurrency = rate.termCurrency
-        val sourceFactor = rate.factor
-
-        val reversedFactor = DefaultNumberValue.ONE / sourceFactor
-
-        return ExchangeRateBuilder(rate)
+    private fun reverse(rate: ExchangeRate): ExchangeRate =
+        ExchangeRateBuilder(rate)
             .setRate(rate)
-            .setBase(sourceBaseCurrency)
-            .setTerm(sourceTermCurrency)
-            .setFactor(reversedFactor)
+            .setBase(rate.baseCurrency)
+            .setTerm(rate.termCurrency)
+            .setFactor(DefaultNumberValue.ONE / rate.factor)
             .build()
-    }
 
     private fun save(baseCurrency: CurrencyUnit, input: ConversionRatesDataHolder) {
         for ((date, rates) in input.data.entries) {
@@ -235,5 +212,6 @@ class ConversionRateProvider(
         private val logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass())
 
         operator fun NumberValue.div(that: NumberValue): NumberValue = divide(this, that)
+        operator fun NumberValue.times(that: NumberValue): NumberValue = multiply(this, that)
     }
 }

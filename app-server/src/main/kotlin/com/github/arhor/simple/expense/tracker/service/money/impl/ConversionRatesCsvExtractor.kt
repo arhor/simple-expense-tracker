@@ -19,7 +19,7 @@ class ConversionRatesCsvExtractor : ConversionRatesExtractor {
 
         val year = try {
             resource.filename!!.replace(FILE_EXT, EMPTY_STRING).toInt()
-        } catch (e: NumberFormatException) {
+        } catch (e: Exception) {
             log.error("Conversion-rates filename must represent the year for which it contains data", e)
             throw e
         }
@@ -51,7 +51,7 @@ class ConversionRatesCsvExtractor : ConversionRatesExtractor {
         val result = HashMap<LocalDate, Map<String, Double>>(length)
 
         for (row in file) {
-            extractRatesFromCsvRow(row) { date, rates ->
+            row.extractDateAndRates { date, rates ->
                 if (date.year != year) {
                     throw IllegalStateException(
                         ERROR_UNEXPECTED_DATE_TEMPLATE.format(
@@ -68,8 +68,8 @@ class ConversionRatesCsvExtractor : ConversionRatesExtractor {
         return result
     }
 
-    private inline fun extractRatesFromCsvRow(csvRow: NamedCsvRow, action: (LocalDate, Map<String, Double>) -> Unit) {
-        val currentRowFields = csvRow.fields
+    private inline fun NamedCsvRow.extractDateAndRates(action: (LocalDate, Map<String, Double>) -> Unit) {
+        val currentRowFields = fields
         val rates = HashMap<String, Double>(currentRowFields.size - 1)
 
         var date: LocalDate? = null
@@ -79,7 +79,7 @@ class ConversionRatesCsvExtractor : ConversionRatesExtractor {
                 if (date == null) {
                     date = LocalDate.parse(value)
                 } else {
-                    throwDateColumnException(csvRow)
+                    throwDateColumnException(this)
                 }
             } else {
                 if (!value.isNullOrBlank()) {
@@ -90,7 +90,7 @@ class ConversionRatesCsvExtractor : ConversionRatesExtractor {
             }
         }
         if (date == null) {
-            throwDateColumnException(csvRow)
+            throwDateColumnException(this)
         }
         action(date, rates)
     }
