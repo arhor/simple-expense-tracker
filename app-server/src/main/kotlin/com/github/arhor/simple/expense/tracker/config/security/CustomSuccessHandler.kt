@@ -3,23 +3,25 @@ package com.github.arhor.simple.expense.tracker.config.security
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
 import org.springframework.security.core.Authentication
+import org.springframework.security.web.RedirectStrategy
 import org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler
 
 class CustomSuccessHandler(
-    private val doBeforeRedirect: (Authentication) -> Unit = {}
+    private val doBeforeRedirect: (Authentication) -> Unit = {},
+    private val redirectStrategy: RedirectStrategy = QueryParamRedirectStrategy.AuthSuccess,
 ) : SavedRequestAwareAuthenticationSuccessHandler() {
 
     init {
         setUseReferer(true)
-        redirectStrategy = QueryParamRedirectStrategy.AuthSuccess
+        setRedirectStrategy(redirectStrategy)
     }
 
     override fun onAuthenticationSuccess(
-        request: HttpServletRequest,
-        response: HttpServletResponse,
-        authentication: Authentication
+        req: HttpServletRequest,
+        res: HttpServletResponse,
+        auth: Authentication
     ) {
-        doBeforeRedirect(authentication)
-        super.onAuthenticationSuccess(request, response, authentication)
+        doBeforeRedirect(auth)
+        super.onAuthenticationSuccess(req, res, auth)
     }
 }

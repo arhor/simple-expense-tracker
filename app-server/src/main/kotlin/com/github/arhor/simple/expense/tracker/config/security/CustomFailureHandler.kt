@@ -9,6 +9,10 @@ import org.springframework.security.web.RedirectStrategy
 import org.springframework.security.web.WebAttributes
 import org.springframework.security.web.authentication.AuthenticationFailureHandler
 
+/**
+ * @see [org.springframework.security.web.authentication.AbstractAuthenticationTargetUrlRequestHandler]
+ * @see [org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler]
+ */
 class CustomFailureHandler(
     private val defaultFailureUrl: String? = null,
     private val alwaysUseDefaultFailureUrl: Boolean = false,

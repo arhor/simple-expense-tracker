@@ -25,14 +25,16 @@ internal class ApplicationArchitectureTest {
         val applicationPackage = Application::class.java.getPackage().name
 
         // when
-        val architecture = layeredArchitecture().consideringOnlyDependenciesInLayers()
-            .layer("Web").definedBy("${applicationPackage}.web..")
-            .layer("Service").definedBy("${applicationPackage}.service..")
-            .layer("Persistence").definedBy("${applicationPackage}.data..")
-            .layer("Configuration").definedBy("${applicationPackage}.config..")
-            .whereLayer("Web").mayNotBeAccessedByAnyLayer()
-            .whereLayer("Service").mayOnlyBeAccessedByLayers("Web", "Configuration")
-            .whereLayer("Persistence").mayOnlyBeAccessedByLayers("Service")
+        val architecture =
+            layeredArchitecture()
+                .consideringOnlyDependenciesInLayers()
+                .layer("Web").definedBy("${applicationPackage}.web..")
+                .layer("Service").definedBy("${applicationPackage}.service..")
+                .layer("Persistence").definedBy("${applicationPackage}.data..")
+                .layer("Configuration").definedBy("${applicationPackage}.config..")
+                .whereLayer("Web").mayNotBeAccessedByAnyLayer()
+                .whereLayer("Service").mayOnlyBeAccessedByLayers("Web", "Configuration")
+                .whereLayer("Persistence").mayOnlyBeAccessedByLayers("Service")
 
         // then
         architecture.check(appClasses)
