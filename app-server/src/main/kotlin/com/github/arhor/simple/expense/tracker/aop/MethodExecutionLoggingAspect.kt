@@ -21,47 +21,41 @@ class MethodExecutionLoggingAspect {
     @OptIn(ExperimentalTime::class)
     @Around("webLayer() || serviceLayer() || dataLayer()")
     fun logMethodExecution(joinPoint: ProceedingJoinPoint): Any? {
-        val log = joinPoint.componentLogger()
+        val logger = joinPoint.componentLogger()
+        val signature = joinPoint.signature as MethodSignature
+        val methodName = signature.name
+        val methodArgs = joinPoint.args.contentToString()
 
-        if (log.isDebugEnabled) {
-            val signature = joinPoint.signature as MethodSignature
-            val methodName = signature.name
-            val methodArgs = joinPoint.args.contentToString()
+        logger.info("Method: $methodName() >>> args: $methodArgs")
+        val (result, duration) = measureTimedValue { joinPoint.proceed() }
+        logger.info("Method: $methodName() <<< exit: ${signature.format(result)}, time: $duration")
 
-            log.debug("Method: $methodName() >>> args: $methodArgs")
-            val (result, duration) = measureTimedValue { joinPoint.proceed() }
-            log.debug("Method: $methodName() <<< exit: ${signature.format(result)}, time: $duration")
-
-            return result
-        }
-        return joinPoint.proceed()
+        return result
     }
 
     @Pointcut(
-        value = "execution(* com.github.arhor.simple.expense.tracker.web..*(..))" +
-            " && within(@org.springframework.web.bind.annotation.RestController *)"
+        value = "execution(* $ROOT.web..*(..)) && within(@org.springframework.web.bind.annotation.RestController *)"
     )
     private fun webLayer() {
         /* no-op */
     }
 
     @Pointcut(
-        value = "execution(* com.github.arhor.simple.expense.tracker.service..*(..))" +
-            " && within(@org.springframework.stereotype.Service *)"
+        value = "execution(* $ROOT.service..*(..)) && within(@org.springframework.stereotype.Service *)"
     )
     private fun serviceLayer() {
         /* no-op */
     }
 
     @Pointcut(
-        value = "execution(* com.github.arhor.simple.expense.tracker.data..*(..))" +
-            " && within(@org.springframework.stereotype.Repository *)"
+        value = "execution(* $ROOT.data..*(..)) && within(@org.springframework.stereotype.Repository *)"
     )
     private fun dataLayer() {
         /* no-op */
     }
 
     companion object {
+        private const val ROOT = "com.github.arhor.simple.expense.tracker"
         private const val VOID = "void"
 
         private fun JoinPoint.componentLogger(): Logger {

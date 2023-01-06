@@ -4,7 +4,7 @@ import javax.money.CurrencyUnit
 import javax.money.convert.ConversionQuery
 import javax.money.convert.ExchangeRate
 
-val ConversionQuery.termCurrency: CurrencyUnit?
+val ConversionQuery.termCurrency: CurrencyUnit
     get() = currency
 
 val ExchangeRate.termCurrency: CurrencyUnit?

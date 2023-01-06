@@ -53,20 +53,18 @@ class ConversionRateProvider(
         if (loadedRates.isEmpty()) {
             return null
         }
-        val result = findExchangeRate(conversionQuery)
+        val rates = findExchangeRates(conversionQuery)
 
         val baseCurrencyCode = conversionQuery.baseCurrency.currencyCode
-        val termCurrencyCode = conversionQuery.currency.currencyCode
+        val termCurrencyCode = conversionQuery.termCurrency.currencyCode
 
-        val sourceRate = result[baseCurrencyCode]
-        val targetRate = result[termCurrencyCode]
+        val sourceRate = rates[baseCurrencyCode]
+        val targetRate = rates[termCurrencyCode]
 
-        val builder = getBuilder(conversionQuery)
-
-        return createExchangeRate(conversionQuery, builder, sourceRate, targetRate)
+        return createExchangeRate(conversionQuery, sourceRate, targetRate)
     }
 
-    private fun findExchangeRate(conversionQuery: ConversionQuery): Map<String, ExchangeRate> {
+    private fun findExchangeRates(conversionQuery: ConversionQuery): Map<String, ExchangeRate> {
         val dates = getQueryDates(conversionQuery)
 
         if (dates == null) {
@@ -105,67 +103,52 @@ class ConversionRateProvider(
                     return loadedRates[date] ?: emptyMap()
                 }
             }
-            val errorDates = dates.map { it.format(DateTimeFormatter.ISO_LOCAL_DATE) }
-
-            throw MonetaryException("There is not exchange on day $errorDates to rate to rate on $PROVIDER_NAME.")
+            throw MonetaryException(
+                "There is not exchange on day %s to rate to rate on %s.".format(
+                    dates.map { it.format(DateTimeFormatter.ISO_LOCAL_DATE) },
+                    PROVIDER_NAME,
+                )
+            )
         }
+    }
+
+    private fun ConversionQuery.exchangeRateBuilder(): ExchangeRateBuilder {
+        val scale = getExchangeContext("exchangerate.digit.fraction")
+        return ExchangeRateBuilder(scale).setBase(baseCurrency).setTerm(termCurrency)
     }
 
     private fun createExchangeRate(
         query: ConversionQuery,
-        builder: ExchangeRateBuilder,
         sourceRate: ExchangeRate?,
         targetRate: ExchangeRate?,
     ): ExchangeRate? {
-        if (areBothBaseCurrencies(query)) {
-            return builder.setFactor(DefaultNumberValue.ONE).build()
-        }
-
-        val baseCurrency = query.baseCurrency
-        val termCurrency = query.termCurrency
-
-        return if (termCurrency == BASE_CURRENCY) {
-            sourceRate?.let { reverse(it) }
-        } else if (baseCurrency == BASE_CURRENCY) {
-            targetRate
-        } else {
-            val rate1 = getExchangeRate(
-                query.toBuilder()
-                    .setTermCurrency(BASE_CURRENCY)
-                    .build()
-            )
-            val rate2 = getExchangeRate(
-                query.toBuilder()
-                    .setBaseCurrency(BASE_CURRENCY)
-                    .setTermCurrency(termCurrency)
-                    .build()
-            )
-            if ((rate1 != null) && (rate2 != null)) {
-                val resultFactor = rate1.factor * rate2.factor
-
-                builder
-                    .setFactor(resultFactor)
-                    .setRateChain(rate1, rate2)
-                    .build()
+        return when {
+            BASE_CURRENCY.let { query.baseCurrency == it && query.termCurrency == it } -> {
+                query.exchangeRateBuilder().setFactor(DefaultNumberValue.ONE).build()
             }
-            throw CurrencyConversionException(baseCurrency, termCurrency, sourceRate?.context)
+
+            BASE_CURRENCY == query.baseCurrency -> {
+                targetRate
+            }
+
+            BASE_CURRENCY == query.termCurrency -> {
+                sourceRate?.let { reverse(it) }
+            }
+
+            else -> {
+                val baseRate = getExchangeRate(
+                    query.toBuilder().setTermCurrency(BASE_CURRENCY).build()
+                )
+                val termRate = getExchangeRate(
+                    query.toBuilder().setBaseCurrency(BASE_CURRENCY).setTermCurrency(query.termCurrency).build()
+                )
+                if ((baseRate != null) && (termRate != null)) {
+                    val factor = baseRate.factor * termRate.factor
+                    query.exchangeRateBuilder().setFactor(factor).setRateChain(baseRate, termRate).build()
+                }
+                throw CurrencyConversionException(query.baseCurrency, query.termCurrency, sourceRate?.context)
+            }
         }
-    }
-
-    private fun areBothBaseCurrencies(query: ConversionQuery): Boolean {
-        return BASE_CURRENCY == query.baseCurrency
-            && BASE_CURRENCY == query.termCurrency
-    }
-
-    private fun getBuilder(query: ConversionQuery): ExchangeRateBuilder {
-        val scale = getExchangeContext("exchangerate.digit.fraction")
-
-        val baseCurrency = query.baseCurrency
-        val termCurrency = query.termCurrency
-
-        return ExchangeRateBuilder(scale)
-            .setBase(baseCurrency)
-            .setTerm(termCurrency)
     }
 
     private fun reverse(rate: ExchangeRate): ExchangeRate =
