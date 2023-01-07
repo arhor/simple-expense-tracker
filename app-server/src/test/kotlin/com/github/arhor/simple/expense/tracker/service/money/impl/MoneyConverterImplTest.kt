@@ -8,19 +8,19 @@ import io.mockk.verify
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.from
 import org.javamoney.moneta.Money
+import org.javamoney.moneta.spi.CompoundRateProvider
 import org.junit.jupiter.api.Test
 import java.time.LocalDate
 import javax.money.Monetary
 import javax.money.convert.ConversionQuery
 import javax.money.convert.CurrencyConversion
-import javax.money.convert.ExchangeRateProvider
 
 internal class MoneyConverterImplTest {
 
-    private val exchangeRateProvider = mockk<ExchangeRateProvider>()
-
+    private val exchangeRateProvider = mockk<CompoundRateProvider>()
     private val moneyConverter = MoneyConverterImpl(
-        exchangeRateProvider,
+        exchangeRateProviders = emptyList(),
+        compoundProviderFactory = { exchangeRateProvider }
     )
 
     @Test

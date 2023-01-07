@@ -16,5 +16,6 @@ interface MoneyConverter {
      *
      * @return converted monetary amount
      */
-    fun <T : MonetaryAmount> convert(amount: T, currency: CurrencyUnit, conversionDate: LocalDate): T
+    fun <T> convert(amount: T, currency: CurrencyUnit, conversionDate: LocalDate): MonetaryAmount
+        where T : MonetaryAmount
 }
