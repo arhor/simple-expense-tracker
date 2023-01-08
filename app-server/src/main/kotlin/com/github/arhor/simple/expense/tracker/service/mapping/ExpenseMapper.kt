@@ -5,9 +5,8 @@ import com.github.arhor.simple.expense.tracker.model.ExpenseRequestDTO
 import com.github.arhor.simple.expense.tracker.model.ExpenseResponseDTO
 import org.mapstruct.Mapper
 import org.mapstruct.Mapping
-import java.math.BigDecimal
 
-@Mapper(config = SharedMappingConfig::class)
+@Mapper(config = MapstructCommonConfig::class)
 interface ExpenseMapper {
 
     @IgnoreAuditProps

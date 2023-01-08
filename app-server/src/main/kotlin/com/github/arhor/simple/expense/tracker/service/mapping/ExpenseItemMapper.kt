@@ -7,7 +7,7 @@ import org.mapstruct.InheritInverseConfiguration
 import org.mapstruct.Mapper
 import org.mapstruct.Mapping
 
-@Mapper(config = SharedMappingConfig::class)
+@Mapper(config = MapstructCommonConfig::class)
 interface ExpenseItemMapper {
 
     @Mapping(target = "id", ignore = true)

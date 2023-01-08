@@ -8,4 +8,4 @@ import org.mapstruct.NullValueMappingStrategy;
     nullValueMappingStrategy = NullValueMappingStrategy.RETURN_DEFAULT,
     uses = [OptionalMapper::class],
 )
-class SharedMappingConfig
+class MapstructCommonConfig

@@ -7,7 +7,7 @@ import org.mapstruct.Mapper
 import org.mapstruct.Mapping
 import java.time.LocalDateTime
 
-@Mapper(config = SharedMappingConfig::class)
+@Mapper(config = MapstructCommonConfig::class)
 interface NotificationMapper {
 
     @Mapping(target = "id", ignore = true)

@@ -9,7 +9,7 @@ import org.mapstruct.Mapping
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.crypto.password.PasswordEncoder
 
-@Mapper(config = SharedMappingConfig::class)
+@Mapper(config = MapstructCommonConfig::class)
 abstract class InternalUserMapper {
 
     @Autowired
