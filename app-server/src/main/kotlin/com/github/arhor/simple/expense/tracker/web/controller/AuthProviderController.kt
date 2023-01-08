@@ -8,39 +8,38 @@ import org.springframework.security.oauth2.client.registration.ClientRegistratio
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
-import java.util.*
 
 @RestController
 @RequestMapping("/auth-providers")
 class AuthProviderController(appProps: ApplicationProps, clientRegistrations: Iterable<ClientRegistration>) {
 
-    private val availableProviders: List<AuthProviderDTO> =
-        clientRegistrations.asSequence()
+    private val availableProviders = collectProviders(appProps.authRequestBaseUri, clientRegistrations)
+
+    @GetMapping
+    fun getAuthProviders() = availableProviders
+
+    private fun collectProviders(baseUri: String, registrations: Iterable<ClientRegistration>): List<AuthProviderDTO> =
+        registrations
+            .asSequence()
             .filter {
                 (it.clientId != NULL_STRING && it.clientSecret != NULL_STRING).also { available ->
                     if (!available) {
                         logger.warn(
-                            "OAuth2 provider '{}' is unavailable: missing client credentials",
+                            "Auth provider '{}' is unavailable: missing client credentials",
                             it.registrationId
                         )
                     }
                 }
             }
             .map {
-                authProvider(
-                    name = it.registrationId,
-                    href = appProps.authRequestBaseUri + "/" + it.registrationId,
+                AuthProviderDTO(
+                    /* name = */ it.registrationId,
+                    /* href = */ baseUri + "/" + it.registrationId,
                 )
             }
             .toList()
 
-    @GetMapping
-    fun getAuthProviders() = availableProviders
-
     companion object {
         private val logger = LoggerFactory.getLogger(AuthProviderController::class.java)
-
-        @Suppress("NOTHING_TO_INLINE")
-        private inline fun authProvider(name: String, href: String) = AuthProviderDTO(name, href)
     }
 }

@@ -1,6 +1,6 @@
 package com.github.arhor.simple.expense.tracker.service.mapping;
 
-import java.util.*
+import java.util.Optional
 
 object OptionalMapper {
 

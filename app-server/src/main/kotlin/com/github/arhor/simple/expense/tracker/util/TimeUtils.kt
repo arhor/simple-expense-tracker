@@ -8,7 +8,7 @@ import java.time.ZonedDateTime
 import java.time.temporal.ChronoUnit
 import java.time.temporal.TemporalAdjusters.firstDayOfMonth
 import java.time.temporal.TemporalAdjusters.lastDayOfMonth
-import java.util.*
+import java.util.TimeZone
 
 fun zoneIdOrDefaultUTC(timezone: TimeZone?): ZoneId {
     return if (timezone != null) timezone.toZoneId() else ZoneOffset.UTC

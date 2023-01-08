@@ -5,15 +5,17 @@ import org.javamoney.moneta.convert.ExchangeRateBuilder
 import org.javamoney.moneta.spi.AbstractRateProvider
 import org.javamoney.moneta.spi.DefaultNumberValue
 import java.time.LocalDate
-import java.util.*
 import java.util.concurrent.ConcurrentHashMap
 import javax.money.CurrencyUnit
 import javax.money.Monetary
 import javax.money.NumberValue
-import javax.money.convert.*
+import javax.money.convert.ConversionQuery
+import javax.money.convert.CurrencyConversionException
+import javax.money.convert.ExchangeRate
+import javax.money.convert.ProviderContextBuilder
+import javax.money.convert.RateType
 
-@Suppress("ClassName")
-abstract class ExchangeRateProvider_Base(provider: String, rateType: RateType) : AbstractRateProvider(
+abstract class ExchangeRateProviderBase(provider: String, rateType: RateType) : AbstractRateProvider(
     ProviderContextBuilder.of(
         provider,
         rateType,

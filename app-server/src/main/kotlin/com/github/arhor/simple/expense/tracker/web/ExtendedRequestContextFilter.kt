@@ -6,7 +6,8 @@ import jakarta.servlet.http.HttpServletResponse
 import org.slf4j.MDC
 import org.springframework.boot.web.servlet.filter.OrderedRequestContextFilter
 import org.springframework.stereotype.Component
-import java.util.*
+import java.util.Optional
+import java.util.UUID
 
 @Component
 class ExtendedRequestContextFilter : OrderedRequestContextFilter() {

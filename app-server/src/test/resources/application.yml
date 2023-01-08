@@ -15,4 +15,5 @@ spring:
 
 application-props:
   conversion-rates:
-    preload: 0
+    pattern: classpath*:conversion-rates/*.csv
+    apiPath: REPLACE_WITH_WIREMOCK_URL

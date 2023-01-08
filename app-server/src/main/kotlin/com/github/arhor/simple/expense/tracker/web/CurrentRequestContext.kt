@@ -4,7 +4,7 @@ import org.slf4j.LoggerFactory
 import org.springframework.web.context.request.RequestAttributes.SCOPE_REQUEST
 import org.springframework.web.context.request.RequestContextHolder
 import java.lang.invoke.MethodHandles
-import java.util.*
+import java.util.UUID
 
 data class CurrentRequestContext(
     val requestId: UUID,

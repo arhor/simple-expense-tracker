@@ -1,6 +1,5 @@
 package com.github.arhor.simple.expense.tracker.service.money.impl
 
-import com.github.arhor.simple.expense.tracker.service.money.ConversionRatesDataHolder
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.catchThrowable
 import org.junit.jupiter.api.Test
@@ -15,7 +14,7 @@ internal class ConversionRatesCsvExtractorTest {
     fun `should extract expected conversion rates from the correct CSV file`() {
         // given
         val resource = ClassPathResource("conversion-rates/2020.csv")
-        val expected = ConversionRatesDataHolder(
+        val expected = mapOf(
             LocalDate.of(2020, 1, 1) to mapOf(
                 "JPY" to 106.92,
                 "USD" to 0.9305,

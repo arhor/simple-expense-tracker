@@ -4,7 +4,7 @@ import org.springframework.data.annotation.Id
 import org.springframework.data.annotation.Immutable
 import org.springframework.data.relational.core.mapping.Table
 import java.time.LocalDateTime
-import java.util.*
+import java.util.UUID
 
 @Table("notifications")
 @Immutable

@@ -80,5 +80,5 @@ application-props:
       - classpath:/static/assets/
       - classpath:/static/locales/
   conversion-rates:
-    pattern: classpath*:conversion-rates/defaults/exchange.host/*.csv
-    preload: 5
+    pattern: classpath*:conversion-rates/*.csv
+    apiPath: https://api.exchangerate.host

@@ -8,7 +8,7 @@ import org.springframework.security.oauth2.client.web.OAuth2AuthorizationRequest
 data class ApplicationProps @ConstructorBinding constructor(
     val apiPathPrefix: String?,
     val resources: Resources?,
-    val conversionRates: ConversionRates?
+    val conversionRates: ConversionRates,
 ) {
 
     val authRequestBaseUri: String
@@ -29,10 +29,10 @@ data class ApplicationProps @ConstructorBinding constructor(
 
     /**
      * @param pattern path-pattern for the data-files containing historical conversion-rates
-     * @param preload number of previous years to preload starting from the last year
+     * @param apiPath URL path to the external API providing conversion rates
      */
     data class ConversionRates(
-        val pattern: String?,
-        val preload: Int?,
+        val pattern: String,
+        val apiPath: String,
     )
 }

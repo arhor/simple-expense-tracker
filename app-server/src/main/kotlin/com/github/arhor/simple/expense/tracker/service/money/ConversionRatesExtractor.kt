@@ -1,6 +1,7 @@
 package com.github.arhor.simple.expense.tracker.service.money
 
 import org.springframework.core.io.Resource
+import java.time.LocalDate
 
 interface ConversionRatesExtractor {
 
@@ -10,5 +11,5 @@ interface ConversionRatesExtractor {
      * @param  resource resource containing conversion rates
      * @return conversion rates grouped by date
      */
-    fun extractConversionRates(resource: Resource): ConversionRatesDataHolder
+    fun extractConversionRates(resource: Resource): Map<LocalDate, Map<String, Double>>
 }

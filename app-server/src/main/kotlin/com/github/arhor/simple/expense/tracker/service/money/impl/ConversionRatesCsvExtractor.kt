@@ -1,6 +1,5 @@
 package com.github.arhor.simple.expense.tracker.service.money.impl
 
-import com.github.arhor.simple.expense.tracker.service.money.ConversionRatesDataHolder
 import com.github.arhor.simple.expense.tracker.service.money.ConversionRatesExtractor
 import de.siegmar.fastcsv.reader.NamedCsvReader
 import de.siegmar.fastcsv.reader.NamedCsvRow
@@ -14,7 +13,7 @@ import java.time.chrono.IsoChronology
 @Component
 class ConversionRatesCsvExtractor : ConversionRatesExtractor {
 
-    override fun extractConversionRates(resource: Resource): ConversionRatesDataHolder {
+    override fun extractConversionRates(resource: Resource): Map<LocalDate, Map<String, Double>> {
         log.debug("Start extracting conversion rates from '{}'", resource.filename)
 
         val year = try {
@@ -26,12 +25,10 @@ class ConversionRatesCsvExtractor : ConversionRatesExtractor {
 
         NamedCsvReader.builder().skipComments(true).build(resource.inputStream.reader()).use { csv ->
             try {
-                val conversionRates = ConversionRatesDataHolder(
-                    data = readConversionRatesFromCsv(
-                        year = year,
-                        file = csv,
-                        name = resource.filename,
-                    )
+                val conversionRates = readConversionRatesFromCsv(
+                    year = year,
+                    file = csv,
+                    name = resource.filename,
                 )
                 log.debug("{} year conversion rates loaded", year)
                 return conversionRates
@@ -46,7 +43,7 @@ class ConversionRatesCsvExtractor : ConversionRatesExtractor {
         year: Int,
         file: NamedCsvReader,
         name: String?
-    ): HashMap<LocalDate, Map<String, Double>> {
+    ): Map<LocalDate, Map<String, Double>> {
         val length = determineMapCapacity(year)
         val result = HashMap<LocalDate, Map<String, Double>>(length)
 
