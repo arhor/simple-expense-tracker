@@ -1,6 +1,7 @@
 import { useState } from 'react';
 
 import { observer } from 'mobx-react-lite';
+import { useNavigate } from 'react-router';
 
 import ExpenseCreateDialog from '@/components/ExpenseCreateDialog';
 import ExpenseList from '@/components/ExpenseList';
@@ -14,6 +15,8 @@ const Expenses = () => {
     
     const { expense } = useStore();
 
+    const navigate = useNavigate();
+
     const handleCreate = () => {
         setCreateDialogOpen(true);
     };
@@ -26,8 +29,10 @@ const Expenses = () => {
     };
 
     const handleUpdate = (expenseId: number) => {
-        setCurrentExpenseId(expenseId);
-        setUpdateDialogOpen(true);
+        // setCurrentExpenseId(expenseId);
+        // setUpdateDialogOpen(true);
+
+        navigate(`/expenses/${expenseId}`);
     };
     const handleUpdateDialogSubmit = () => {
         setCurrentExpenseId(null);

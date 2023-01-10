@@ -10,6 +10,7 @@ import Container from '@mui/material/Container';
 import AppBar from '@/components/AppBar';
 import AppNav from '@/components/AppNav';
 import { useStore } from '@/store';
+import ExpenseItems from '@/views/ExpenseItems';
 import Expenses from '@/views/Expenses';
 import Reports from  '@/views/Reports';
 import Settings from  '@/views/Settings';
@@ -35,6 +36,7 @@ const AppLayout = () => {
             <Container component="main" maxWidth="sm" sx={{ p: 5 }}>
                 <Routes>
                     <Route index element={<Expenses />} />
+                    <Route path="/expenses/:expenseId" element={<ExpenseItems />} />
                     <Route path="/reports" element={<Reports />} />
                     <Route path="/settings" element={<Settings />} />
                 </Routes>

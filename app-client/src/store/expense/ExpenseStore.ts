@@ -11,8 +11,8 @@ import { Store } from '@/store/Store';
 export default class ExpenseStore {
     root?: Store;
 
-    expenses: ExpenseResponseDTO[] = [];
-    expenseItems: Map<number, ExpenseItemResponseDTO[]> = new Map();
+    expenses = [] as ExpenseResponseDTO[];
+    expenseItems = new Map<number, ExpenseItemResponseDTO[]>();
     loading = false;
 
     constructor() {
@@ -59,14 +59,12 @@ export default class ExpenseStore {
     }
 
     async fetchExpenseItems(expenseId: number): Promise<void> {
-        if (!this.expenseItems.has(expenseId)) {
-            try {
-                const { data } = await client.get(`/expenses/${expenseId}/items`);
-                log.debug(`Successfully fetched expense items by expense id: ${expenseId}`);
-                this.expenseItems.set(expenseId, data);
-            } catch (e) {
-                log.error('Unable to fetch current user expenses', e);
-            }
+        try {
+            const { data } = await client.get(`/expenses/${expenseId}/items`);
+            log.debug(`Successfully fetched expense items by expense id: ${expenseId}`);
+            this.expenseItems.set(expenseId, data);
+        } catch (e) {
+            log.error('Unable to fetch current user expenses', e);
         }
     }
 

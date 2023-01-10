@@ -22,12 +22,10 @@ class TimeServiceImpl : TimeService {
     }
 
     override fun convertToDateRange(criteria: DateRangeCriteria?, timezone: TimeZone?): TemporalRange<LocalDate> {
-        return criteria?.let {
-            createDateRange(
-                it.startDate,
-                it.endDate,
-                timezone
-            )
-        } ?: createDateRange(null, null, timezone)
+        return createDateRange(
+            criteria?.startDate,
+            criteria?.endDate,
+            timezone
+        )
     }
 }

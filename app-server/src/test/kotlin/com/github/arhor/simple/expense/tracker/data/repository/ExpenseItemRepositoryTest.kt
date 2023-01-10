@@ -12,6 +12,31 @@ import java.util.function.Consumer
 internal class ExpenseItemRepositoryTest : RepositoryTestBase() {
 
     @Test
+    fun `should return expense items by expense id and date range`() {
+        // given
+        val userId = createPersistedTestUser().id
+        val expense = createPersistedTestExpense(userId)
+        val expenseDate = LocalDate.of(2022, 7, 1)
+        val usdCurrency = "USD"
+        val jpyCurrency = "JPY"
+
+        val usdExpenseItems =
+            createPersistedTestExpenseItems(3, expense.id, usdCurrency, BigDecimal("10.00"), expenseDate)
+        val jpyExpenseItems =
+            createPersistedTestExpenseItems(2, expense.id, jpyCurrency, BigDecimal("10.00"), expenseDate)
+
+        // when
+        val result =
+            expenseItemRepository.findAllByExpenseIdAndDateRange(expense.id!!, expenseDate, expenseDate)
+                .toList()
+
+        // then
+        assertThat(result)
+            .isNotEmpty
+            .containsExactlyInAnyOrderElementsOf(usdExpenseItems + jpyExpenseItems)
+    }
+
+    @Test
     fun `should return aggregated expense items grouped by date and currency`() {
         // given
         val userId = createPersistedTestUser().id
@@ -21,9 +46,9 @@ internal class ExpenseItemRepositoryTest : RepositoryTestBase() {
         val jpyCurrency = "JPY"
 
         val usdExpenseItems =
-            createPersistedTestExpenseItems(3, expense.id, usdCurrency, BigDecimal.TEN, expenseDate)
+            createPersistedTestExpenseItems(3, expense.id, usdCurrency, BigDecimal("10.00"), expenseDate)
         val jpyExpenseItems =
-            createPersistedTestExpenseItems(2, expense.id, jpyCurrency, BigDecimal.TEN, expenseDate)
+            createPersistedTestExpenseItems(2, expense.id, jpyCurrency, BigDecimal("10.00"), expenseDate)
 
         val expectedUsdAggregatedExpenseItem = AggregatedExpenseItemProjection(
             expense.id!!,
@@ -105,14 +130,11 @@ internal class ExpenseItemRepositoryTest : RepositoryTestBase() {
             )
     }
 
-    private fun totalFrom(expenseItems: List<ExpenseItem>): BigDecimal {
-        return expenseItems.map(ExpenseItem::amount).fold(BigDecimal.ZERO, BigDecimal::add)
-    }
+    private fun totalFrom(expenseItems: List<ExpenseItem>) =
+        expenseItems.map(ExpenseItem::amount).fold(BigDecimal.ZERO, BigDecimal::add)
 
-    private fun assertThatAggregatedExpenseItemByCurrency(
-        data: Collection<AggregatedExpenseItemProjection>,
-        currency: String,
-    ) = data.find { currency == it.currency }.let {
-        assertThat(it).describedAs("aggregated expense item for the %s currency", currency)
-    }
+    private fun assertThatAggregatedExpenseItemByCurrency(data: List<AggregatedExpenseItemProjection>, curr: String) =
+        data.find { curr == it.currency }.let {
+            assertThat(it).describedAs("aggregated expense item for the %s currency", curr)
+        }
 }
