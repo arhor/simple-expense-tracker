@@ -17,21 +17,19 @@ class ConversionRatesLocalDataLoaderImpl(
     private val conversionRatesExtractor: ConversionRatesExtractor,
 ) : ConversionRatesLocalDataLoader {
 
-    override fun loadConversionRatesDataByYear(year: Int, consumer: (Map<LocalDate, Map<String, Double>>) -> Unit) {
+    override fun loadConversionRatesDataByYear(year: Int): Map<LocalDate, Map<String, Double>> {
         withLocalData { resources ->
             for (resource in resources) {
-                val filename = resource.filename
-
-                if ((filename != null) && filename.contains(year.toString())) {
-                    consumer(conversionRatesExtractor.extractConversionRates(resource))
-                    break
+                if (resource.filename?.contains(year.toString()) == true) {
+                    return@withLocalData conversionRatesExtractor.extractConversionRates(resource)
                 }
             }
             logger.warn("Local data-files does not contain data for the year: {}", year)
         }
+        return emptyMap()
     }
 
-    private fun withLocalData(consumer: (Array<Resource>) -> Unit) {
+    private inline fun <T> withLocalData(consumer: (Array<Resource>) -> T) {
         applicationProps.conversionRates.pattern.let {
             try {
                 consumer(

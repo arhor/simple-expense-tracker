@@ -6,6 +6,7 @@ import jakarta.annotation.Priority
 import org.slf4j.LoggerFactory
 import org.springframework.boot.web.client.RestTemplateBuilder
 import org.springframework.stereotype.Service
+import org.springframework.web.client.getForObject
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import javax.money.Monetary
@@ -24,12 +25,16 @@ class ExchangeRateProviderExternalApi(
 ) {
     private val http = restTemplateBuilder.rootUri(applicationProps.conversionRates.apiPath).build()
 
-    override fun findExchangeRates(conversionQuery: ConversionQuery): Map<String, ExchangeRate>? =
-        http.getForObject(DATE, responseType, conversionQuery.dateUrlParam())?.let {
-            logger.debug("Loaded rates for the: {}", it.date)
-            save(Monetary.getCurrency(it.base), mapOf(it.date to it.rates))
-            loadedRates[it.date]
-        }
+    override fun findExchangeRates(conversionQuery: ConversionQuery): Map<String, ExchangeRate>? {
+        val dateUrlParam = conversionQuery.dateUrlParam()
+        val responseData = http.getForObject<ConversionRatesData>(DATE, dateUrlParam)
+
+        logger.debug("Loaded rates for the: {}", responseData.date)
+
+        save(Monetary.getCurrency(responseData.base), mapOf(responseData.date to responseData.rates))
+
+        return loadedRates[responseData.date]
+    }
 
     private fun ConversionQuery.dateUrlParam(): String {
         return getQueryDates(this).singleOrNull()?.format(DateTimeFormatter.ISO_LOCAL_DATE)
@@ -41,10 +46,9 @@ class ExchangeRateProviderExternalApi(
         private const val LATEST_DATE = "latest"
         private const val DATE = "/{date}"
         private val logger = LoggerFactory.getLogger(ExchangeRateProviderExternalApi::class.java)
-        private val responseType = ConversionRatesData::class.java
 
         @JsonIgnoreProperties(ignoreUnknown = true)
-        private data class ConversionRatesData(
+        internal data class ConversionRatesData(
             val base: String,
             val date: LocalDate,
             val rates: Map<String, Double>,

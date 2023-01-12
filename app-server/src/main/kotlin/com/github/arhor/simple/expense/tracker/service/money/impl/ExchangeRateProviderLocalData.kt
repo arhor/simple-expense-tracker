@@ -20,9 +20,8 @@ class ExchangeRateProviderLocalData(
             var result = loadedRates[date]
 
             if (result == null) {
-                conversionRatesLocalDataLoader.loadConversionRatesDataByYear(date.year) {
-                    save(BASE_CURRENCY, it)
-                }
+                val conversionRates = conversionRatesLocalDataLoader.loadConversionRatesDataByYear(date.year)
+                save(BASE_CURRENCY, conversionRates)
                 result = loadedRates[date]
             }
             return result
