@@ -119,12 +119,12 @@ test {
 
 jacocoTestReport {
     shouldRunAfter test
-    applyJaCoCoExclusions(classDirectories)
+    applyJaCoCoExclusions classDirectories
 }
 
 jacocoTestCoverageVerification {
     shouldRunAfter jacocoTestReport
-    applyJaCoCoExclusions(classDirectories)
+    applyJaCoCoExclusions classDirectories
 
     violationRules {
         rule {
@@ -143,7 +143,7 @@ check {
     )
 }
 
-void applyJaCoCoExclusions(ConfigurableFileCollection classDirectories) {
+def applyJaCoCoExclusions(ConfigurableFileCollection classDirectories) {
     classDirectories.from = files(classDirectories.files.collect {
         fileTree(
             dir: it,
