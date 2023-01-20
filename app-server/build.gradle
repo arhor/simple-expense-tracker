@@ -89,6 +89,7 @@ dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core"
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-slf4j"
+    implementation "org.springdoc:springdoc-openapi-starter-webmvc-ui"
     implementation "org.springframework.boot:spring-boot-starter-aop"
     implementation "org.springframework.boot:spring-boot-starter-cache"
     implementation "org.springframework.boot:spring-boot-starter-data-jdbc"
@@ -143,22 +144,6 @@ check {
     )
 }
 
-def applyJaCoCoExclusions(ConfigurableFileCollection classDirectories) {
-    classDirectories.from = files(classDirectories.files.collect {
-        fileTree(
-            dir: it,
-            exclude: [
-                "com/github/arhor/simple/expense/tracker/Application.class",
-                "com/github/arhor/simple/expense/tracker/**/aop/*",
-                "com/github/arhor/simple/expense/tracker/**/config/*",
-                "com/github/arhor/simple/expense/tracker/**/error/*",
-                "com/github/arhor/simple/expense/tracker/**/exception/*",
-                "com/github/arhor/simple/expense/tracker/**/model/*",
-            ]
-        )
-    })
-}
-
 tasks.withType(JavaCompile).configureEach {
     options.compilerArgs = [
         "-Xlint:deprecation",
@@ -177,4 +162,20 @@ tasks.withType(KotlinCompile).configureEach {
         jvmTarget = project.property("versions.java")
         javaParameters = true
     }
+}
+
+def applyJaCoCoExclusions(ConfigurableFileCollection classDirectories) {
+    classDirectories.from = files(classDirectories.files.collect {
+        fileTree(
+            dir: it,
+            exclude: [
+                "com/github/arhor/simple/expense/tracker/Application.class",
+                "com/github/arhor/simple/expense/tracker/**/aop/*",
+                "com/github/arhor/simple/expense/tracker/**/config/*",
+                "com/github/arhor/simple/expense/tracker/**/error/*",
+                "com/github/arhor/simple/expense/tracker/**/exception/*",
+                "com/github/arhor/simple/expense/tracker/**/model/*",
+            ]
+        )
+    })
 }

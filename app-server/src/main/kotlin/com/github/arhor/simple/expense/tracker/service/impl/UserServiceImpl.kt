@@ -10,6 +10,7 @@ import com.github.arhor.simple.expense.tracker.model.UserRequestDTO
 import com.github.arhor.simple.expense.tracker.model.UserResponseDTO
 import com.github.arhor.simple.expense.tracker.service.UserService
 import com.github.arhor.simple.expense.tracker.service.mapping.InternalUserMapper
+import org.springframework.data.repository.findByIdOrNull
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.Authentication
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken
@@ -27,6 +28,11 @@ class UserServiceImpl(
         return user.id
     }
 
+    override fun getUserById(userId: Long): UserResponseDTO {
+        return userRepository.findByIdOrNull(userId)?.let(userMapper::mapToResponse)
+            ?: throw EntityNotFoundException(InternalUser.ENTITY_NAME, "id=${userId}")
+    }
+
     override fun determineUser(auth: Authentication): UserResponseDTO {
         val user = determineInternalUser(auth)
         return userMapper.mapToResponse(user)
@@ -37,7 +43,7 @@ class UserServiceImpl(
         val username = request.username
 
         if (userRepository.existsByUsername(username)) {
-            throw EntityDuplicateException("InternalUser", "username=$username")
+            throw EntityDuplicateException(InternalUser.ENTITY_NAME, "username=$username")
         }
         val user = userMapper.mapToUser(request)
         val createdUser = userRepository.save(user)

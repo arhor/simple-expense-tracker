@@ -3,6 +3,7 @@ package com.github.arhor.simple.expense.tracker.web.controller
 import com.github.arhor.simple.expense.tracker.config.ConfigureLocalization
 import com.github.arhor.simple.expense.tracker.config.ConfigureWebSecurity
 import com.github.arhor.simple.expense.tracker.config.props.ApplicationProps
+import com.github.arhor.simple.expense.tracker.service.AuthProviderService
 import com.github.arhor.simple.expense.tracker.service.UserService
 import com.ninjasquad.springmockk.MockkBean
 import org.assertj.core.api.SoftAssertions.assertSoftly
@@ -36,6 +37,10 @@ internal abstract class BaseControllerTest {
 
     @MockkBean
     protected lateinit var userService: UserService
+        private set
+
+    @MockkBean
+    protected lateinit var authService: AuthProviderService
         private set
 
     @Autowired

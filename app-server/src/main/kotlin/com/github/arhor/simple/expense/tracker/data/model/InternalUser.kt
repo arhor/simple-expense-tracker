@@ -21,4 +21,8 @@ data class InternalUser(
     val created: LocalDateTime? = null,
     @LastModifiedDate
     val updated: LocalDateTime? = null,
-)
+) {
+    companion object {
+        const val ENTITY_NAME = "InternalUser"
+    }
+}
