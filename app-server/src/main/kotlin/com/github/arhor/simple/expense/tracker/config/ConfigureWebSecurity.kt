@@ -43,7 +43,7 @@ class ConfigureWebSecurity {
             .oauth2Login {
                 it.loginPage(URL_PATH_SIGN_IN)
                 it.authorizationEndpoint().baseUri(appProps.authRequestBaseUri)
-                it.successHandler(CustomSuccessHandler(doBeforeRedirect = userService::createNewUserIfNecessary))
+                it.successHandler(CustomSuccessHandler(doBeforeRedirect = userService::createInternalUserIfNecessary))
             }
         return http.build()
     }

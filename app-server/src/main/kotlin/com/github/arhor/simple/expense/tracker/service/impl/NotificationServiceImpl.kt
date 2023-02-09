@@ -23,11 +23,13 @@ class NotificationServiceImpl(
     private val subscribers = ConcurrentHashMap<Long, SseEmitter>()
 
     override fun subscribe(subscriberId: Long): SseEmitter {
-        return subscribers.computeIfAbsent(subscriberId) { SseEmitter() }
-    }
-
-    override fun unsubscribe(subscriberId: Long) {
-        subscribers.remove(subscriberId)
+        return subscribers.computeIfAbsent(subscriberId) {
+            SseEmitter().apply {
+                onCompletion {
+                    subscribers.remove(subscriberId)
+                }
+            }
+        }
     }
 
     override fun unsubscribeAll() {
@@ -104,7 +106,6 @@ class NotificationServiceImpl(
     }
 
     companion object {
-
         private const val NOTIFICATION_EVENT = "notification-event"
     }
 }

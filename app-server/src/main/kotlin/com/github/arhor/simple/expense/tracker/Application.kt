@@ -1,6 +1,8 @@
 package com.github.arhor.simple.expense.tracker
 
 import com.github.arhor.simple.expense.tracker.config.props.ApplicationProps
+import io.swagger.v3.oas.annotations.OpenAPIDefinition
+import io.swagger.v3.oas.annotations.info.Info
 import org.slf4j.LoggerFactory
 import org.springframework.boot.ApplicationRunner
 import org.springframework.boot.autoconfigure.SpringBootApplication
@@ -14,6 +16,12 @@ import java.lang.invoke.MethodHandles
 
 private val log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass())
 
+@OpenAPIDefinition(
+    info = Info(
+        title = "Simple Expense Tracker API",
+        description = "Provides API to persist and access user expenses information",
+    )
+)
 @SpringBootApplication(proxyBeanMethods = false)
 @ConfigurationPropertiesScan(basePackageClasses = [ApplicationProps::class])
 class Application {

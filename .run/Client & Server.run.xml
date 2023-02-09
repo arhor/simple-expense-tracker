@@ -1,7 +1,7 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="Client &amp; Server" type="CompoundRunConfigurationType">
-    <toRun name="Client" type="GradleRunConfiguration" />
     <toRun name="Server" type="GradleRunConfiguration" />
+    <toRun name="Client" type="ShConfigurationType" />
     <method v="2" />
   </configuration>
 </component>

@@ -7,8 +7,6 @@ interface NotificationService {
 
     fun subscribe(subscriberId: Long): SseEmitter
 
-    fun unsubscribe(subscriberId: Long)
-
     fun unsubscribeAll()
 
     fun handleNotification(sourceUserId: Long, targetUserId: Long, notification: NotificationDTO)

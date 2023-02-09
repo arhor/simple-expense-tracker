@@ -1,6 +1,5 @@
 package com.github.arhor.simple.expense.tracker.service
 
-import com.github.arhor.simple.expense.tracker.DateRangeCriteria
 import com.github.arhor.simple.expense.tracker.service.impl.TimeServiceImpl
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Nested
@@ -64,11 +63,10 @@ internal class TimeServiceTest {
             // given
             val today = LocalDate.now()
             val start = today.minusWeeks(1)
-            val criteria = DateRangeCriteria(start, today)
             val timezone = TimeZone.getTimeZone("PST")
 
             // when
-            val result = timeService.convertToDateRange(criteria, timezone)
+            val result = timeService.convertToDateRange(start, today, timezone)
 
             // then
             assertThat(result)
@@ -90,11 +88,10 @@ internal class TimeServiceTest {
         @Test
         fun `should return non null date range for null criteria and timezone`() {
             // given
-            val criteria: DateRangeCriteria? = null
             val timezone: TimeZone? = null
 
             // when
-            val result = timeService.convertToDateRange(criteria, timezone)
+            val result = timeService.convertToDateRange(null, null, timezone)
 
             // then
             assertThat(result)

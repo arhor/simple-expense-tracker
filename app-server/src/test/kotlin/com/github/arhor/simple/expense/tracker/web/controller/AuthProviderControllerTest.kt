@@ -1,6 +1,8 @@
 package com.github.arhor.simple.expense.tracker.web.controller
 
 import com.github.arhor.simple.expense.tracker.model.AuthProviderDTO
+import com.github.arhor.simple.expense.tracker.service.AuthProviderService
+import com.ninjasquad.springmockk.MockkBean
 import io.mockk.every
 import org.junit.jupiter.api.Test
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
@@ -8,16 +10,19 @@ import org.springframework.http.MediaType
 import org.springframework.test.web.servlet.get
 
 @WebMvcTest(AuthProviderController::class)
-internal class AuthProviderControllerTest : BaseControllerTest() {
+internal class AuthProviderControllerTest : ControllerTestSupport() {
+
+    @MockkBean
+    private lateinit var authService: AuthProviderService
 
     @Test
     fun `should return an expected list of authentication providers`() {
         // given
-        val authProvidersEndPoint = applicationProps.apiUrlPath("/auth-providers")
-        val authRequestBaseUri = applicationProps.authRequestBaseUri
+        val authProvidersEndPoint = appProps.apiUrlPath("/auth-providers")
+        val authRequestBaseUri = appProps.authRequestBaseUri
 
         every { authService.getAvailableProviders() } answers {
-            listOf("github", "google").map {
+            listOf(GITHUB, GOOGLE).map {
                 AuthProviderDTO(
                     it,
                     "$authRequestBaseUri/$it"
@@ -34,15 +39,19 @@ internal class AuthProviderControllerTest : BaseControllerTest() {
             content {
                 contentTypeCompatibleWith(MediaType.APPLICATION_JSON)
                 json(
-                    /* language=JSON */
                     """
                         [
-                          { "name": "github", "href": "$authRequestBaseUri/github" },
-                          { "name": "google", "href": "$authRequestBaseUri/google" }
+                          { "name": "$GITHUB", "href": "$authRequestBaseUri/$GITHUB" },
+                          { "name": "$GOOGLE", "href": "$authRequestBaseUri/$GOOGLE" }
                         ]
                     """.trimIndent()
                 )
             }
         }
+    }
+
+    companion object {
+        private const val GITHUB = "github"
+        private const val GOOGLE = "google"
     }
 }

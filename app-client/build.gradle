@@ -49,12 +49,3 @@ tasks.register("build", NpmTask) {
 
     args = ["run", "build"]
 }
-
-tasks.register("serve", NpmTask) {
-    dependsOn(npmInstall, copyGeneratedModel)
-
-    group = "application"
-    workingDir.fileValue(projectDir)
-
-    args = ["run", "serve"]
-}

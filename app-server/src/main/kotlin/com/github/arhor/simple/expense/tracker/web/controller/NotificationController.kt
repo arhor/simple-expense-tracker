@@ -2,11 +2,14 @@ package com.github.arhor.simple.expense.tracker.web.controller
 
 
 import com.github.arhor.simple.expense.tracker.model.NotificationDTO
+import com.github.arhor.simple.expense.tracker.service.CustomUserDetails
 import com.github.arhor.simple.expense.tracker.service.NotificationService
-import com.github.arhor.simple.expense.tracker.service.UserService
+import io.swagger.v3.oas.annotations.Operation
+import io.swagger.v3.oas.annotations.security.SecurityRequirement
+import io.swagger.v3.oas.annotations.security.SecurityRequirements
 import org.springframework.http.MediaType.TEXT_EVENT_STREAM_VALUE
 import org.springframework.security.access.prepost.PreAuthorize
-import org.springframework.security.core.Authentication
+import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
@@ -17,30 +20,34 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter
 @RestController
 @RequestMapping("/notifications")
 @PreAuthorize("isAuthenticated()")
+@SecurityRequirements(
+    value = [
+        SecurityRequirement(name = "authenticated", scopes = ["USER"])
+    ]
+)
 class NotificationController(
     private val notificationService: NotificationService,
-    private val userService: UserService,
 ) {
 
+    @Operation(
+        summary = "",
+        description = "",
+    )
     @PostMapping(path = ["/subscribe"], produces = [TEXT_EVENT_STREAM_VALUE])
-    fun subscribe(auth: Authentication): SseEmitter {
-        val currentUserId = userService.determineUserId(auth)
-        return notificationService.subscribe(currentUserId)
+    fun subscribe(@AuthenticationPrincipal currentUser: CustomUserDetails): SseEmitter {
+        return notificationService.subscribe(currentUser.id)
     }
 
-    @PostMapping(path = ["/unsubscribe"])
-    fun unsubscribe(auth: Authentication) {
-        val currentUserId = userService.determineUserId(auth)
-        notificationService.unsubscribe(currentUserId)
-    }
-
+    @Operation(
+        summary = "",
+        description = "",
+    )
     @PostMapping
     fun postNotification(
         @RequestParam userId: Long,
-        @RequestBody dto: NotificationDTO,
-        auth: Authentication,
+        @RequestBody requestBody: NotificationDTO,
+        @AuthenticationPrincipal currentUser: CustomUserDetails,
     ) {
-        val currentUserId = userService.determineUserId(auth)
-        notificationService.handleNotification(currentUserId, userId, dto)
+        notificationService.handleNotification(currentUser.id, userId, requestBody)
     }
 }

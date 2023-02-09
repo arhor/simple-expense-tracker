@@ -1,5 +1,5 @@
 import log from 'loglevel';
-import { action, computed, makeObservable, observable } from 'mobx';
+import { action, computed, makeObservable, observable, runInAction } from 'mobx';
 
 import client from '@/api/client.js';
 import { ExpenseItemRequestDTO } from '@/generated/ExpenseItemRequestDTO';
@@ -71,8 +71,15 @@ export default class ExpenseStore {
     async createExpenseItem(expenseId: number, expenseItem: ExpenseItemRequestDTO): Promise<void> {
         try {
             const { data } = await client.post(`/expenses/${expenseId}/items`, expenseItem);
+            runInAction(() => {
+                this.expenseItems.set(expenseId, [...(this.expenseItems.get(expenseId) ?? []), data]);
+                this.expenses = this.expenses.map((expense) =>
+                    (expense.id === expenseId)
+                        ? { ...expense, total: expense.total + data.amount }
+                        : expense
+                );
+            });
             log.debug('Successfully created expense item');
-            this.expenseItems.set(expenseId, [...(this.expenseItems.get(expenseId) ?? []), data]);
         } catch (e) {
             log.error('Unable to create expense item', e);
         }

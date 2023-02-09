@@ -30,7 +30,7 @@ class ExpenseServiceImpl(
 
     override fun getUserExpenses(userId: Long, dateRange: TemporalRange<LocalDate>): List<ExpenseResponseDTO> {
         val expenses = expenseRepository.findAllByUserId(userId)
-        val expenseTotalsById = getExpenseItemsTotal(userId, expenses.mapNotNull { it.id }, dateRange)
+        val expenseTotalsById = getExpenseItemsTotal(userId, dateRange, *expenses.map { it.id }.toTypedArray())
 
         return expenses.map {
             expenseMapper.mapToDTO(
@@ -41,15 +41,16 @@ class ExpenseServiceImpl(
     }
 
     override fun getExpenseById(expenseId: Long, dateRange: TemporalRange<LocalDate>): ExpenseResponseDTO {
-        return expenseRepository.findByIdOrNull(expenseId)?.let {
+        val expense = expenseRepository.findByIdOrNull(expenseId)
+            ?: throw EntityNotFoundException("Expense", "id=$expenseId")
+        val expenseTotalsById = getExpenseItemsTotal(expense.userId, dateRange, expense.id)
+
+        return expense.let {
             expenseMapper.mapToDTO(
                 it,
-                getExpenseItemsTotal(it.userId, listOf(it.id!!), dateRange).getOrDefault(
-                    it.id,
-                    0.0
-                )
+                expenseTotalsById.getOrDefault(it.id, 0.0)
             )
-        } ?: throw EntityNotFoundException("Expense", "id=$expenseId")
+        }
     }
 
     override fun createUserExpense(userId: Long, requestDTO: ExpenseRequestDTO): ExpenseResponseDTO {
@@ -72,8 +73,8 @@ class ExpenseServiceImpl(
 
     private fun getExpenseItemsTotal(
         userId: Long,
-        expenseIds: Collection<Long>,
-        dateRange: TemporalRange<LocalDate>
+        dateRange: TemporalRange<LocalDate>,
+        vararg expenseIds: Long?,
     ): Map<Long, Double> {
         if (expenseIds.isEmpty()) {
             return emptyMap()
@@ -82,7 +83,7 @@ class ExpenseServiceImpl(
         val totalByExpense = HashMap<Long, TotalCalculationContext>()
 
         val aggregatedExpenseItems = expenseItemRepository.findAllAggregatedByExpenseIdsAndDateRange(
-            expenseIds,
+            expenseIds.filterNotNull(),
             dateRange.start,
             dateRange.end,
         )

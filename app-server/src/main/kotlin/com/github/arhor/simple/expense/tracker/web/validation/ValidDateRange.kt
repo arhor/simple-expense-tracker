@@ -1,4 +1,4 @@
-package com.github.arhor.simple.expense.tracker.validation
+package com.github.arhor.simple.expense.tracker.web.validation
 
 import jakarta.validation.Constraint
 import jakarta.validation.Payload

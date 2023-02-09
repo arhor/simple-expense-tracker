@@ -1,6 +1,5 @@
 package com.github.arhor.simple.expense.tracker.service.impl
 
-import com.github.arhor.simple.expense.tracker.DateRangeCriteria
 import com.github.arhor.simple.expense.tracker.service.TimeService
 import com.github.arhor.simple.expense.tracker.util.TemporalRange
 import com.github.arhor.simple.expense.tracker.util.createDateRange
@@ -21,11 +20,11 @@ class TimeServiceImpl : TimeService {
         return currentZonedDateTime(timezone)
     }
 
-    override fun convertToDateRange(criteria: DateRangeCriteria?, timezone: TimeZone?): TemporalRange<LocalDate> {
-        return createDateRange(
-            criteria?.startDate,
-            criteria?.endDate,
-            timezone
-        )
+    override fun convertToDateRange(
+        startDate: LocalDate?,
+        endDate: LocalDate?,
+        timezone: TimeZone?
+    ): TemporalRange<LocalDate> {
+        return createDateRange(startDate, endDate, timezone)
     }
 }

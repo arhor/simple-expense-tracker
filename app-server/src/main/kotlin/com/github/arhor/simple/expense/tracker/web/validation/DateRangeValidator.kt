@@ -1,6 +1,6 @@
-package com.github.arhor.simple.expense.tracker.validation
+package com.github.arhor.simple.expense.tracker.web.validation
 
-import com.github.arhor.simple.expense.tracker.DateRangeCriteria
+import com.github.arhor.simple.expense.tracker.web.DateRangeCriteria
 import jakarta.validation.ConstraintValidator
 import jakarta.validation.ConstraintValidatorContext
 
