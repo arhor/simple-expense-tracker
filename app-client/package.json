@@ -45,7 +45,7 @@
     "@typescript-eslint/eslint-plugin": "^5.22.0",
     "@typescript-eslint/parser": "^5.22.0",
     "@vitejs/plugin-react": "^2.1.0",
-    "eslint": "^8.14.0",
+    "eslint": "^8.34.0",
     "eslint-import-resolver-typescript": "^2.7.1",
     "eslint-plugin-import": "^2.26.0",
     "eslint-plugin-mobx": "^0.0.8",

@@ -8,6 +8,6 @@ repositories {
 }
 
 dependencies {
-    implementation "com.github.node-gradle:gradle-node-plugin:${property("versions.nodeGradlePlugin")}"
-    implementation "com.github.arhor:java-dotenv-revised:${property("versions.javaDotenvRevised")}"
+    implementation "com.github.node-gradle:gradle-node-plugin:${project.property("versions.nodeGradlePlugin")}"
+    implementation "com.github.arhor:java-dotenv-revised:${project.property("versions.javaDotenvRevised")}"
 }

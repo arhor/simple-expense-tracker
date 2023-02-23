@@ -4,26 +4,26 @@ import com.github.arhor.simple.expense.tracker.data.model.InternalUser
 import com.github.arhor.simple.expense.tracker.data.model.projection.CompactInternalUserProjection
 import com.github.arhor.simple.expense.tracker.model.UserRequestDTO
 import com.github.arhor.simple.expense.tracker.model.UserResponseDTO
+import com.github.arhor.simple.expense.tracker.service.CustomUserDetails
 import org.mapstruct.Mapper
 import org.mapstruct.Mapping
-import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.security.crypto.password.PasswordEncoder
+import org.springframework.security.core.authority.SimpleGrantedAuthority
+import java.util.Arrays
 
-@Mapper(config = MapstructCommonConfig::class)
-abstract class InternalUserMapper {
-
-    @Autowired
-    protected lateinit var encoder: PasswordEncoder
+@Mapper(config = MapstructCommonConfig::class, imports = [Arrays::class, SimpleGrantedAuthority::class])
+interface InternalUserMapper {
 
     @IgnoreAuditProps
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "externalId", ignore = true)
     @Mapping(target = "externalProvider", ignore = true)
-    @Mapping(target = "password", expression = "java(encoder.encode(request.password))")
     @Mapping(target = "currency", defaultValue = "USD")
-    abstract fun mapToUser(request: UserRequestDTO): InternalUser
+    fun mapToInternalUser(request: UserRequestDTO): InternalUser
 
-    abstract fun mapToResponse(entity: InternalUser): UserResponseDTO
+    fun mapToUserResponse(entity: InternalUser): UserResponseDTO
 
-    abstract fun mapToResponse(projection: CompactInternalUserProjection): UserResponseDTO
+    fun mapToUserResponse(projection: CompactInternalUserProjection): UserResponseDTO
+
+    @Mapping(target = "authorities", expression = "java(Arrays.asList(new SimpleGrantedAuthority(\"ROLE_USER\")))")
+    fun mapToUserDetails(user: InternalUser): CustomUserDetails
 }

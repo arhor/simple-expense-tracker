@@ -35,7 +35,7 @@ class NotificationController(
     )
     @PostMapping(path = ["/subscribe"], produces = [TEXT_EVENT_STREAM_VALUE])
     fun subscribe(@AuthenticationPrincipal currentUser: CustomUserDetails): SseEmitter {
-        return notificationService.subscribe(currentUser.id)
+        return notificationService.subscribe(currentUser.id!!)
     }
 
     @Operation(
@@ -48,6 +48,6 @@ class NotificationController(
         @RequestBody requestBody: NotificationDTO,
         @AuthenticationPrincipal currentUser: CustomUserDetails,
     ) {
-        notificationService.handleNotification(currentUser.id, userId, requestBody)
+        notificationService.handleNotification(currentUser.id!!, userId, requestBody)
     }
 }

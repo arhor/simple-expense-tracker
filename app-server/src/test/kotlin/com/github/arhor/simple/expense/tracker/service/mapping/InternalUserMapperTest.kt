@@ -3,8 +3,6 @@ package com.github.arhor.simple.expense.tracker.service.mapping
 import com.github.arhor.simple.expense.tracker.data.model.InternalUser
 import com.github.arhor.simple.expense.tracker.data.model.projection.CompactInternalUserProjection
 import com.github.arhor.simple.expense.tracker.model.UserRequestDTO
-import io.mockk.every
-import io.mockk.verify
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -26,7 +24,7 @@ internal class InternalUserMapperTest : MapperTestBase() {
         )
 
         // when
-        val result = userMapper.mapToResponse(user)
+        val result = userMapper.mapToUserResponse(user)
 
         // then
         assertThat(result)
@@ -59,7 +57,7 @@ internal class InternalUserMapperTest : MapperTestBase() {
         val user = CompactInternalUserProjection(id, username, currency)
 
         // when
-        val result = userMapper.mapToResponse(user)
+        val result = userMapper.mapToUserResponse(user)
 
         // then
         assertThat(result)
@@ -89,18 +87,13 @@ internal class InternalUserMapperTest : MapperTestBase() {
         val username = "test-username"
         val password = "test-password"
         val currency = "test-currency"
-
         val request = UserRequestDTO(username, password, currency)
-
         val encodedPassword = "encoded-test-password"
 
-        every { passwordEncoder.encode(any()) } returns encodedPassword
-
         // when
-        val result = userMapper.mapToUser(request)
+        val result = userMapper.mapToInternalUser(request)
 
         // then
-        verify(exactly = 1) { passwordEncoder.encode(request.password) }
 
         assertThat(result)
             .isNotNull

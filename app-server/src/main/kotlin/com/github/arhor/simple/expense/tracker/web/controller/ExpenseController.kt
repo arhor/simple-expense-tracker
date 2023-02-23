@@ -56,7 +56,7 @@ class ExpenseController(
     ): List<ExpenseResponseDTO> {
         val dateRange = timeService.convertToDateRange(criteria.startDate, criteria.endDate, timezone)
 
-        return expenseService.getUserExpenses(currentUser.id, dateRange)
+        return expenseService.getUserExpenses(currentUser.id!!, dateRange)
     }
 
     @Operation(
@@ -83,7 +83,7 @@ class ExpenseController(
         @RequestBody requestBody: ExpenseRequestDTO,
         @AuthenticationPrincipal currentUser: CustomUserDetails,
     ): ResponseEntity<ExpenseResponseDTO> {
-        val createdExpense = expenseService.createUserExpense(currentUser.id, requestBody)
+        val createdExpense = expenseService.createUserExpense(currentUser.id!!, requestBody)
 
         val location =
             ServletUriComponentsBuilder.fromCurrentRequestUri()
@@ -103,7 +103,7 @@ class ExpenseController(
         @RequestBody requestBody: ExpenseItemRequestDTO,
         @AuthenticationPrincipal currentUser: CustomUserDetails,
     ): ResponseEntity<ExpenseItemResponseDTO> {
-        val createdExpenseItem = expenseItemService.createExpenseItem(currentUser.id, expenseId, requestBody)
+        val createdExpenseItem = expenseItemService.createExpenseItem(currentUser.id!!, expenseId, requestBody)
 
         val location =
             ServletUriComponentsBuilder.fromCurrentRequestUri()

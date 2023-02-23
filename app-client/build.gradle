@@ -7,7 +7,7 @@ plugins {
 
 description = String.format(
     "Client-side application based on React.js and Node.js %s",
-    property("versions.node")
+    project.property("versions.node")
 )
 
 def generatedSourcesDir = "src/generated"

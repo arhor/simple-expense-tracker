@@ -1,7 +1,6 @@
 package com.github.arhor.simple.expense.tracker.service.impl
 
 import com.github.arhor.simple.expense.tracker.data.model.InternalUser
-import com.github.arhor.simple.expense.tracker.data.model.projection.CompactInternalUserProjection
 import com.github.arhor.simple.expense.tracker.data.repository.InternalUserRepository
 import com.github.arhor.simple.expense.tracker.exception.EntityDuplicateException
 import com.github.arhor.simple.expense.tracker.model.UserRequestDTO
@@ -22,10 +21,10 @@ import org.assertj.core.api.Assertions.from
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.Authentication
 import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.core.userdetails.UsernameNotFoundException
+import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken
 
 @Suppress("ClassName")
@@ -33,22 +32,20 @@ import org.springframework.security.oauth2.client.authentication.OAuth2Authentic
 internal class UserServiceImplTest {
 
     @MockK
+    private lateinit var passwordEncoder: PasswordEncoder
+
+    @MockK
     private lateinit var userRepository: InternalUserRepository
 
     @MockK
     private lateinit var userMapper: InternalUserMapper
 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     @MockK
     private lateinit var oAuth2Authentication: OAuth2AuthenticationToken
 
-    @MockK
-    private lateinit var usernamePasswordAuthentication: UsernamePasswordAuthenticationToken
-
-    @MockK
-    private lateinit var internalUserProjection: CompactInternalUserProjection
-
-    @MockK
-    private lateinit var userResponseDTO: UserResponseDTO
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     @InjectMockKs
     private lateinit var userService: UserServiceImpl
@@ -110,9 +107,11 @@ internal class UserServiceImplTest {
             val expectedUsername = "username"
             val expectedPassword = "password"
             val expectedCurrency = "USD"
+            val userRequestDTO = UserRequestDTO(expectedUsername, expectedPassword, expectedCurrency)
 
             every { userRepository.existsByUsername(any()) } returns false
-            every { userMapper.mapToUser(any()) } answers {
+            every { passwordEncoder.encode(any()) } returns expectedPassword
+            every { userMapper.mapToInternalUser(any()) } answers {
                 arg<UserRequestDTO>(0).let {
                     InternalUser(
                         username = it.username,
@@ -126,7 +125,7 @@ internal class UserServiceImplTest {
                     id = expectedId
                 )
             }
-            every { userMapper.mapToResponse(any<InternalUser>()) } answers {
+            every { userMapper.mapToUserResponse(any<InternalUser>()) } answers {
                 arg<InternalUser>(0).let {
                     UserResponseDTO(
                         it.id,
@@ -137,21 +136,16 @@ internal class UserServiceImplTest {
             }
 
             // when
-            val result = userService.createNewUser(
-                UserRequestDTO(
-                    expectedUsername,
-                    expectedPassword,
-                    expectedCurrency
-                )
-            )
+            val result = userService.createNewUser(userRequestDTO)
 
             // then
-            verify(exactly = 1) { userRepository.existsByUsername(username = expectedUsername) }
-            verify(exactly = 1) { userMapper.mapToUser(request = any()) }
+            verify(exactly = 1) { userRepository.existsByUsername(expectedUsername) }
+            verify(exactly = 1) { passwordEncoder.encode(expectedPassword) }
+            verify(exactly = 1) { userMapper.mapToInternalUser(userRequestDTO) }
             verify(exactly = 1) { userRepository.save(any()) }
-            verify(exactly = 1) { userMapper.mapToResponse(entity = any()) }
+            verify(exactly = 1) { userMapper.mapToUserResponse(any<InternalUser>()) }
 
-            confirmVerified(userRepository, userMapper)
+            confirmVerified(userRepository, userMapper, passwordEncoder)
 
             assertThat(result)
                 .returns(expectedId, from { it.id })

@@ -13,13 +13,13 @@ plugins {
 
 description = String.format(
     "Server-side application based on Spring Boot %s and Java %s",
-    property("versions.springBoot"),
-    property("versions.java"),
+    project.property("versions.springBoot"),
+    project.property("versions.java"),
 )
 
 java {
-    sourceCompatibility = property("versions.java")
-    targetCompatibility = property("versions.java")
+    sourceCompatibility = project.property("versions.java")
+    targetCompatibility = project.property("versions.java")
 }
 
 kapt {
@@ -27,7 +27,7 @@ kapt {
 }
 
 jacoco {
-    toolVersion = property("versions.jacoco")
+    toolVersion = project.property("versions.jacoco")
 }
 
 flyway {
@@ -110,7 +110,7 @@ dependencies {
 
 dependencyManagement {
     imports {
-        mavenBom "org.testcontainers:testcontainers-bom:${property("versions.testcontainers")}"
+        mavenBom "org.testcontainers:testcontainers-bom:${project.property("versions.testcontainers")}"
     }
 }
 

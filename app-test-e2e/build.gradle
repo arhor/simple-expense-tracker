@@ -5,7 +5,7 @@ plugins {
 
 description = String.format(
     "End-to-End application tests based on Node.js %s",
-    property("versions.node"),
+    project.property("versions.node"),
 )
 
 task cypressOpen(type: com.github.gradle.node.npm.task.NpmTask, dependsOn: [npmInstall, ":stage"]) {
