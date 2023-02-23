@@ -20,3 +20,14 @@ export function withObjectURL(data: BufferSource, urlConsumer: (arg: string) => 
 export function delay(ms: number) {
     return new Promise((resolve) => setTimeout(resolve, ms));
 }
+
+export function createLazy<T>(factory: () => T): { value: T } {
+    return {
+        get value() {
+            Object.defineProperty(this, 'value', {
+                value: factory(),
+            });
+            return this.value;
+        },
+    };
+}

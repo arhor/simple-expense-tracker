@@ -4,6 +4,7 @@ import dns from 'dns';
 import react from '@vitejs/plugin-react';
 import { defineConfig, loadEnv } from 'vite';
 import eslint from 'vite-plugin-eslint';
+import { VitePWA } from 'vite-plugin-pwa';
 
 dns.setDefaultResultOrder('verbatim');
 
@@ -14,7 +15,49 @@ export default defineConfig(({ mode }) => {
     process.env = { ...loadEnv(mode, rootProjectDir, variablePrefixes) };
 
     return {
-        plugins: [react(), eslint()],
+        plugins: [
+            react(),
+            eslint(),
+            VitePWA({
+                registerType: 'autoUpdate',
+                workbox: {
+                    globPatterns: [
+                        '**/*',
+                    ],
+                },
+                includeAssets: [
+                    '**/*',
+                ],
+                manifest: {
+                    theme_color: '#ffffff',
+                    orientation: 'any',
+                    icons: [
+                        {
+                            src: 'android-chrome-192x192.png',
+                            type: 'image/png',
+                            sizes: '192x192',
+                        },
+                        {
+                            src: 'android-chrome-512x512.png',
+                            type: 'image/png',
+                            sizes: '512x512',
+                        },
+                        {
+                            src: 'android-chrome-512x512.png',
+                            type: 'image/png',
+                            sizes: '512x512',
+                            purpose: 'any',
+                        },
+                        {
+                            src: 'android-chrome-512x512.png',
+                            type: 'image/png',
+                            sizes: '512x512',
+                            purpose: 'maskable',
+                        },
+                    ],
+                },
+            }),
+        ],
         resolve: {
             alias: {
                 '@': fileURLToPath(new URL('src', import.meta.url)),
