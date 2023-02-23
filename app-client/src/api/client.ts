@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-import { requestInterceptor } from '@/api/interceptors';
+import { requestInterceptor } from '~/api/interceptors';
 
 const client = axios.create({
     baseURL: '/api',

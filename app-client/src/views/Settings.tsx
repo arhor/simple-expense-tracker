@@ -1,4 +1,4 @@
-import AppSettings from '@/components/AppSettings';
+import AppSettings from '~/components/AppSettings';
 
 const Settings = () => (
     <AppSettings />

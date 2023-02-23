@@ -1,4 +1,4 @@
-import * as arrayUtils from '@/utils/array-utils';
+import * as arrayUtils from '~/utils/array-utils';
 
 describe('isEmptyArray', () => {
     test.each([

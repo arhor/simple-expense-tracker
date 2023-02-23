@@ -1,4 +1,4 @@
-import StatelessWidget from '@/components/StatelessWidget';
+import StatelessWidget from '~/components/StatelessWidget';
 
 const Reports = () => {
     return (

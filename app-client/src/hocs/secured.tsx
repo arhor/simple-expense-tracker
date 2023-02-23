@@ -4,9 +4,9 @@ import { autorun } from 'mobx';
 import { observer } from 'mobx-react-lite';
 import { Navigate } from 'react-router';
 
-import Loading from '@/components/Loading';
-import { useStore } from '@/store';
-import { Optional } from '@/utils/core-utils';
+import Loading from '~/components/Loading';
+import { useStore } from '~/store';
+import { Optional } from '~/utils/core-utils';
 
 const REACT_LAZY_TYPE = Symbol.for('react.lazy');
 

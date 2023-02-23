@@ -1,8 +1,8 @@
 import { action, makeObservable, observable } from 'mobx';
 import * as uuid from 'uuid';
 
-import { Store } from '@/store/Store';
-import { Optional } from '@/utils/core-utils';
+import { Store } from '~/store/Store';
+import { Optional } from '~/utils/core-utils';
 
 type Notification = {
     message: string;

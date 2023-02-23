@@ -9,7 +9,7 @@ import Link from '@mui/material/Link';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 
-import AuthProviderList from '@/components/AuthProviderList'
+import AuthProviderList from '~/components/AuthProviderList'
 
 const SignInForm = () => {
     const [ searchParams ] = useSearchParams();

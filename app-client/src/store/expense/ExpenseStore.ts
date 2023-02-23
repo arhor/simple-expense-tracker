@@ -1,12 +1,12 @@
 import log from 'loglevel';
 import { action, computed, makeObservable, observable, runInAction } from 'mobx';
 
-import client from '@/api/client.js';
-import { ExpenseItemRequestDTO } from '@/generated/ExpenseItemRequestDTO';
-import { ExpenseItemResponseDTO } from '@/generated/ExpenseItemResponseDTO';
-import { ExpenseRequestDTO } from '@/generated/ExpenseRequestDTO';
-import { ExpenseResponseDTO } from '@/generated/ExpenseResponseDTO';
-import { Store } from '@/store/Store';
+import client from '~/api/client.js';
+import { ExpenseItemRequestDTO } from '~/generated/ExpenseItemRequestDTO';
+import { ExpenseItemResponseDTO } from '~/generated/ExpenseItemResponseDTO';
+import { ExpenseRequestDTO } from '~/generated/ExpenseRequestDTO';
+import { ExpenseResponseDTO } from '~/generated/ExpenseResponseDTO';
+import { Store } from '~/store/Store';
 
 export default class ExpenseStore {
     root?: Store;

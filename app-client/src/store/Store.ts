@@ -1,7 +1,7 @@
-import AppStore from '@/store/app';
-import ExpenseStore from '@/store/expense';
-import NotificationStore from '@/store/notification';
-import UserStore from '@/store/user';
+import AppStore from '~/store/app';
+import ExpenseStore from '~/store/expense';
+import NotificationStore from '~/store/notification';
+import UserStore from '~/store/user';
 
 export type Store = {
     app: AppStore;

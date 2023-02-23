@@ -1,2 +1,2 @@
-export { default } from '@/components/ExpenseList/ExpenseList';
-export * from '@/components/ExpenseList/ExpenseList';
+export { default } from '~/components/ExpenseList/ExpenseList';
+export * from '~/components/ExpenseList/ExpenseList';

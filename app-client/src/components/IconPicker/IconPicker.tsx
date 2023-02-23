@@ -2,7 +2,7 @@ import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 import IconButton from '@mui/material/IconButton';
 
-import { availableIcons } from '@/services/icon-component-service';
+import { availableIcons } from '~/services/icon-component-service';
 
 export type Props = {
     onClick: (icon: string) => void;

@@ -4,7 +4,7 @@ import { autorun } from 'mobx';
 import { observer } from 'mobx-react-lite';
 import { useParams } from 'react-router-dom';
 
-import { useStore } from '@/store';
+import { useStore } from '~/store';
 
 const ExpenseItems = () => {
     const { expenseId } = useParams();

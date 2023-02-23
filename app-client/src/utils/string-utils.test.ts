@@ -1,4 +1,4 @@
-import * as stringUtils from '@/utils/string-utils';
+import * as stringUtils from '~/utils/string-utils';
 
 describe('renderLinebreaksHTML', () => {
     test.each([

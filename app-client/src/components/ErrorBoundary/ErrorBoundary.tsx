@@ -1,6 +1,6 @@
 import { Component, ErrorInfo, ReactNode } from 'react';
 
-import StatelessWidget from '@/components/StatelessWidget';
+import StatelessWidget from '~/components/StatelessWidget';
 
 const DEFAULT_TITLE = 'Ups, something went wrong...';
 const DEFAULT_DESCRIPTION = 'Please, contact system administrator if you have nothing else to do';

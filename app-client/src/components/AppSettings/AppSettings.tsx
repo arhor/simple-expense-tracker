@@ -10,7 +10,7 @@ import { useTheme } from '@mui/material/styles';
 import Switch from '@mui/material/Switch';
 import Typography from '@mui/material/Typography';
 
-import { useAppThemeControl } from '@/AppThemeProvider';
+import { useAppThemeControl } from '~/AppThemeProvider';
 
 const AppSettings = () => {
     const theme = useTheme();

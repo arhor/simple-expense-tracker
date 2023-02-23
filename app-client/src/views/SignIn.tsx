@@ -4,8 +4,8 @@ import { autorun } from 'mobx';
 import { observer } from 'mobx-react-lite';
 import { Navigate, useLocation, useSearchParams } from 'react-router-dom';
 
-import SignInForm from '@/components/SignInForm';
-import { useStore } from '@/store';
+import SignInForm from '~/components/SignInForm';
+import { useStore } from '~/store';
 
 const SignIn = () => {
     const [ searchParams ] = useSearchParams();

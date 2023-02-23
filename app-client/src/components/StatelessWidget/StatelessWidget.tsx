@@ -3,7 +3,7 @@ import { ReactElement } from 'react';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 
-import { Size, Type, determineBoxStyle, determineWidgetParams } from '@/components/StatelessWidget/support';
+import { Size, Type, determineBoxStyle, determineWidgetParams } from '~/components/StatelessWidget/support';
 
 export type Props = {
     type?: Type;

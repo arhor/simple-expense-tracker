@@ -1,10 +1,10 @@
 import log from 'loglevel';
 import { action, makeObservable, observable } from 'mobx';
 
-import client from '@/api/client.js';
-import { UserResponseDTO } from '@/generated/UserResponseDTO';
-import { Store } from '@/store/Store';
-import { Optional } from '@/utils/core-utils';
+import client from '~/api/client.js';
+import { UserResponseDTO } from '~/generated/UserResponseDTO';
+import { Store } from '~/store/Store';
+import { Optional } from '~/utils/core-utils';
 
 export default class UserStore {
 

@@ -9,7 +9,7 @@ import GoogleIcon from '@mui/icons-material/Google';
 import HomeIcon from '@mui/icons-material/Home';
 import QuestionMarkIcon from '@mui/icons-material/QuestionMark';
 
-import { Optional } from '@/utils/core-utils';
+import { Optional } from '~/utils/core-utils';
 
 export const availableIcons = Object.freeze<{ [name: string]: ComponentType }>({
     add: AddIcon, // TODO: 'add' icon should not be available to select as expense icon

@@ -6,7 +6,7 @@ import { styled } from '@mui/material/styles';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography'
 
-import { useStore } from '@/store';
+import { useStore } from '~/store';
 
 const Offset = styled('div')(({ theme }) => theme.mixins.toolbar);
 

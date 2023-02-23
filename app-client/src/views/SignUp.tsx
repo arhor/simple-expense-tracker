@@ -4,8 +4,8 @@ import { autorun } from 'mobx';
 import { observer } from 'mobx-react-lite';
 import { Navigate, useLocation } from 'react-router-dom';
 
-import SignUpForm from '@/components/SignUpForm';
-import { useStore } from '@/store';
+import SignUpForm from '~/components/SignUpForm';
+import { useStore } from '~/store';
 
 const SignUp = () => {
     const { state } = useLocation() as { state: { doNotCallAuth?: boolean } | null };

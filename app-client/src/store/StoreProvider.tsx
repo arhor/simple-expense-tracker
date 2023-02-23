@@ -1,6 +1,6 @@
 import { createContext, ReactNode, useContext } from 'react';
 
-import { RootStore, Store } from '@/store/Store';
+import { RootStore, Store } from '~/store/Store';
 
 export const store = new RootStore();
 

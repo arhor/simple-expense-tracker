@@ -7,13 +7,13 @@ import { Route, Routes } from 'react-router-dom';
 
 import Container from '@mui/material/Container';
 
-import AppBar from '@/components/AppBar';
-import AppNav from '@/components/AppNav';
-import { useStore } from '@/store';
-import ExpenseItems from '@/views/ExpenseItems';
-import Expenses from '@/views/Expenses';
-import Reports from  '@/views/Reports';
-import Settings from  '@/views/Settings';
+import AppBar from '~/components/AppBar';
+import AppNav from '~/components/AppNav';
+import { useStore } from '~/store';
+import ExpenseItems from '~/views/ExpenseItems';
+import Expenses from '~/views/Expenses';
+import Reports from  '~/views/Reports';
+import Settings from  '~/views/Settings';
 
 const AppLayout = () => {
     const { notification } = useStore();
