@@ -5,6 +5,7 @@ import com.github.arhor.simple.expense.tracker.data.repository.InternalUserRepos
 import com.github.arhor.simple.expense.tracker.exception.EntityDuplicateException
 import com.github.arhor.simple.expense.tracker.model.UserRequestDTO
 import com.github.arhor.simple.expense.tracker.model.UserResponseDTO
+import com.github.arhor.simple.expense.tracker.service.CustomUserDetails
 import com.github.arhor.simple.expense.tracker.service.mapping.InternalUserMapper
 import io.mockk.called
 import io.mockk.confirmVerified
@@ -57,14 +58,26 @@ internal class UserServiceImplTest {
             // given
             val expectedUsername = "test-username"
             val expectedPassword = "test-password"
+            val expectedCurrency = "USD"
             val expectedAuthorities = setOf(SimpleGrantedAuthority("ROLE_USER"))
 
             every { userRepository.findInternalUserByUsername(username = any()) } returns InternalUser(
                 id = 1L,
                 username = expectedUsername,
                 password = expectedPassword,
-                currency = "USD"
+                currency = expectedCurrency,
             )
+            every { userMapper.mapToUserDetails(user = any()) } answers {
+                arg<InternalUser>(0).let {
+                    CustomUserDetails(
+                        id = it.id,
+                        username = it.username!!,
+                        password = it.password!!,
+                        currency = it.currency,
+                        authorities = expectedAuthorities,
+                    )
+                }
+            }
 
             // when
             val actualUser = userService.loadUserByUsername(expectedUsername)
@@ -75,6 +88,7 @@ internal class UserServiceImplTest {
             assertThat(actualUser)
                 .returns(expectedUsername, from { it.username })
                 .returns(expectedPassword, from { it.password })
+                .returns(expectedCurrency, from { it.currency })
                 .returns(expectedAuthorities, from { it.authorities })
         }
 

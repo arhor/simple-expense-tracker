@@ -88,7 +88,6 @@ internal class InternalUserMapperTest : MapperTestBase() {
         val password = "test-password"
         val currency = "test-currency"
         val request = UserRequestDTO(username, password, currency)
-        val encodedPassword = "encoded-test-password"
 
         // when
         val result = userMapper.mapToInternalUser(request)
@@ -106,7 +105,7 @@ internal class InternalUserMapperTest : MapperTestBase() {
                 {
                     assertThat(it.password)
                         .describedAs("password")
-                        .isEqualTo(encodedPassword)
+                        .isEqualTo(password)
                 },
                 {
                     assertThat(it.currency)
