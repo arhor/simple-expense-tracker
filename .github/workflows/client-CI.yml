@@ -1,10 +1,18 @@
-name: CI
+name: Client CI
 
 on:
   push:
-    branches: [ master ]
+    branches:
+      - 'master'
+    paths:
+      - 'app-model/**'
+      - 'app-client/**'
   pull_request:
-    branches: [ master ]
+    branches:
+      - 'master'
+    paths:
+      - 'app-model/**'
+      - 'app-client/**'
 
 jobs:
   build:
@@ -24,4 +32,4 @@ jobs:
         uses: gradle/gradle-build-action@v2
 
       - name: Build composite application
-        run: './gradlew :stage'
+        run: './gradlew :app-client:build'
