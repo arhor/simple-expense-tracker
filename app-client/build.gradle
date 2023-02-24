@@ -47,5 +47,20 @@ tasks.register("build", NpmTask) {
     group = "build"
     workingDir.fileValue(projectDir)
 
+    inputs.dir("src")
+    inputs.dir("public")
+    inputs.dir("node_modules")
+    inputs.files(
+        "index.html",
+        "package.json",
+        "package-lock.json",
+        "tsconfig.json",
+        "tsconfig.node.json",
+        "vite.config.json",
+    )
+
+    outputs.dir("dist")
+    outputs.cacheIf { true }
+
     args = ["run", "build"]
 }
