@@ -14,7 +14,7 @@ A more detailed description of each of the modules can be found in the directory
 ## Technologies required for the build and development
 
 - Java 17
-- Node.js 16.17.0
+- Node.js 18.14.2
   > **_NOTE:_** Node.js of the required version is specified in the gradle.properties file and does not require manually
   installation - during the project build through gradle, all the necessary dependencies (including Node.js itself) will
   be pulled automatically. For the convenience of local client-side development, it is recommended to install Node.js of
@@ -30,4 +30,3 @@ A more detailed description of each of the modules can be found in the directory
 - `./gradlew :app-client:build` - builds client-side application
 - `./gradlew :app-server:build` - builds server-side application
 - `./gradlew :stage`            - assembles an executable JAR with client/server parts, includes the above tasks
-- `./gradlew :runCompositeJar`  - runs completely built and assembled application, includes 'stage' task
