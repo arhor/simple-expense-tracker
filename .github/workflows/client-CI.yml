@@ -7,16 +7,14 @@ on:
     paths:
       - 'app-model/**'
       - 'app-client/**'
-    paths-ignore:
-      - '*.md'
+      - '!app-client/*.md'
   pull_request:
     branches:
       - 'master'
     paths:
       - 'app-model/**'
       - 'app-client/**'
-    paths-ignore:
-      - '*.md'
+      - '!app-client/*.md'
 
 jobs:
   build:
