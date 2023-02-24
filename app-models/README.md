@@ -1,4 +1,4 @@
-# 'app-model' module description
+# 'app-models' module description
 
 This module defines the model used for the communication process between client and server. The main idea is to create a
 single source of truth describing the data structures, also making it possible to track any issues caused by the data
