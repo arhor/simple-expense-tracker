@@ -43,8 +43,8 @@ jobs:
 
       - name: Setup Gradle
         uses: gradle/gradle-build-action@v2
-        env:
-          DOWNLOAD_NODE: false
 
       - name: Build client-side app
         run: './gradlew :app-client:build'
+        env:
+          DOWNLOAD_NODE: false
