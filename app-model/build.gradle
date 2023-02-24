@@ -42,6 +42,13 @@ def generateJsonSchema2TypeScript = tasks.register("generateJsonSchema2TypeScrip
     description = "Builds d.ts files according to the provided schemas"
     workingDir.fileValue(projectDir)
 
+    inputs.dir("schema")
+    inputs.dir("node_modules")
+    inputs.files("index.js", "package.json", "package-lock.json")
+
+    outputs.dir("build/generated/sources/js2ts")
+    outputs.cacheIf { true }
+
     args = ["run", "build"]
 }
 
