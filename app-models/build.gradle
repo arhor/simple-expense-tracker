@@ -6,7 +6,7 @@ plugins {
     id "simple-expense-tracker.node-conventions"
 }
 
-description = "Shared model described via JSON Schema, used to generate sources for the Client/Server communication"
+description = "Shared models described via JSON Schema, used to generate sources for the Client/Server communication"
 
 repositories {
     mavenCentral()
