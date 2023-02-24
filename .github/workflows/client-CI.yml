@@ -5,17 +5,17 @@ on:
     branches:
       - 'master'
     paths:
-      - 'app-model/**'
+      - 'app-models/**'
       - 'app-client/**'
-      - '!app-model/*.md'
+      - '!app-models/*.md'
       - '!app-client/*.md'
   pull_request:
     branches:
       - 'master'
     paths:
-      - 'app-model/**'
+      - 'app-models/**'
       - 'app-client/**'
-      - '!app-model/*.md'
+      - '!app-models/*.md'
       - '!app-client/*.md'
 
 jobs:
@@ -32,8 +32,19 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
 
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18.14.2'
+          cache: 'npm'
+          cache-dependency-path: |
+            app-models/package-lock.json
+            app-client/package-lock.json
+
       - name: Setup Gradle
         uses: gradle/gradle-build-action@v2
+        env:
+          DOWNLOAD_NODE: false
 
       - name: Build client-side app
         run: './gradlew :app-client:build'

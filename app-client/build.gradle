@@ -17,9 +17,9 @@ def clearGeneratedModel = tasks.register("clearGeneratedModel", Delete) {
 }
 
 def copyGeneratedModel = tasks.register("copyGeneratedModel", Copy) {
-    dependsOn(clearGeneratedModel, ":app-model:build")
+    dependsOn(clearGeneratedModel, ":app-models:build")
 
-    from "${project(":app-model").buildDir}/generated/sources/js2ts"
+    from "${project(":app-models").buildDir}/generated/sources/js2ts"
     into "${projectDir}/${generatedSourcesDir}"
 }
 

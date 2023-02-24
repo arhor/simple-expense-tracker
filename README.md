@@ -5,7 +5,7 @@
 The **_simple-expense-tracker_** application consists of the three main modules, represented by directories of the same
 name in the root directory of the project:
 
-- **app-model**  - describes the data model used in communication between client and server.
+- **app-models**  - describes the data models used in communication between client and server.
 - **app-client** - a simple client-side SPA (Single Page Application) using React.js and Typescript.
 - **app-server** - server-side application providing authentication, REST-API and data-persistence capabilities.
 
@@ -26,7 +26,7 @@ A more detailed description of each of the modules can be found in the directory
 
 ## Useful Gradle tasks with definitions
 
-- `./gradlew :app-model:build`  - generates application model - Java for the server and Typescript for the client
+- `./gradlew :app-models:build` - generates application model - Java for the server and Typescript for the client
 - `./gradlew :app-client:build` - builds client-side application
 - `./gradlew :app-server:build` - builds server-side application
 - `./gradlew :stage`            - assembles an executable JAR with client/server parts, includes the above tasks

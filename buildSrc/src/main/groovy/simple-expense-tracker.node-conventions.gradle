@@ -6,7 +6,7 @@ plugins {
 node {
     version = project.property("versions.node")
 
-    download = true
+    download = System.getenv('DOWNLOAD_NODE') != "false"
 
     workDir = file("${rootDir}/.gradle/nodejs")
     npmWorkDir = file("${rootDir}/.gradle/npm")
