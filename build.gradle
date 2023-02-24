@@ -1,3 +1,4 @@
+//file:noinspection ForeignDelegate
 import io.github.arhor.dotenv.Dotenv
 
 plugins {
@@ -52,15 +53,4 @@ def stage = tasks.register("stage", Jar) {
             serverBuild.find { it.name == "MANIFEST.MF" }
         }
     }
-}
-
-tasks.register("runCompositeJar", JavaExec) {
-    dependsOn(stage)
-
-    group = "application"
-    description = "Runs created composite Jar file with Spring Boot application"
-
-    mainClass.set("-jar")
-
-    args "${rootProject.buildDir}/libs/${rootProject.name}.jar"
 }
