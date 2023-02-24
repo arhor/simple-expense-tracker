@@ -15,17 +15,20 @@ out/
 .vscode/
 
 ### Custom section ###
-dist/
+**/dist/
 
 # Logs
 logs/
 *.log
 
 # Dependency directories
-node_modules/
+**/node_modules/
 
 # local env files
 .env.local
 .env.*.local
 
 .resourceCache/
+
+**/src/generated/
+**/coverage/
