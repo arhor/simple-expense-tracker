@@ -46,5 +46,5 @@ def generateJsonSchema2TypeScript = tasks.register("generateJsonSchema2TypeScrip
 }
 
 build {
-    dependsOn generateJsonSchema2TypeScript
+    dependsOn(generateJsonSchema2TypeScript)
 }
