@@ -5,7 +5,7 @@
 The **_simple-expense-tracker_** application consists of the three main modules, represented by directories of the same
 name in the root directory of the project:
 
-- **app-models**  - describes the data models used in communication between client and server.
+- **app-models** - describes the data models used in communication between client and server.
 - **app-client** - a simple client-side SPA (Single Page Application) using React.js and Typescript.
 - **app-server** - server-side application providing authentication, REST-API and data-persistence capabilities.
 
