@@ -1,4 +1,5 @@
 //file:noinspection ForeignDelegate
+//file:noinspection GroovyUnusedAssignment
 import io.github.arhor.dotenv.Dotenv
 
 plugins {
@@ -17,19 +18,21 @@ wrapper {
 dependencies {
     constraints {
         // @formatter:off
-        api group: "com.fasterxml.jackson.core", name: "jackson-databind"                   , version: this["versions.jackson"]
-        api group: "com.google.code.findbugs"  , name: "jsr305"                             , version: this["versions.findbugsJsr305"]
-        api group: "com.ninja-squad"           , name: "springmockk"                        , version: this["versions.springMockk"]
-        api group: "com.tngtech.archunit"      , name: "archunit-junit5"                    , version: this["versions.archunit"]
-        api group: "de.siegmar"                , name: "fastcsv"                            , version: this["versions.fastcsv"]
-        api group: "jakarta.validation"        , name: "jakarta.validation-api"             , version: this["versions.jakartaValidation"]
-        api group: "org.codehaus.janino"       , name: "janino"                             , version: this["versions.janino"]
-        api group: "org.javamoney"             , name: "moneta"                             , version: this["versions.javamoneyMoneta"]
-        api group: "org.jetbrains.kotlinx"     , name: "kotlinx-coroutines-core"            , version: this["versions.kotlinCoroutines"]
-        api group: "org.jetbrains.kotlinx"     , name: "kotlinx-coroutines-slf4j"           , version: this["versions.kotlinCoroutines"]
-        api group: "org.mapstruct"             , name: "mapstruct"                          , version: this["versions.mapstruct"]
-        api group: "org.mapstruct"             , name: "mapstruct-processor"                , version: this["versions.mapstruct"]
-        api group: "org.springdoc"             , name: "springdoc-openapi-starter-webmvc-ui", version: this["versions.springDocOpenapi"]
+        [
+            ["com.fasterxml.jackson.core", "jackson-databind"                   , "versions.jackson"],
+            ["com.google.code.findbugs"  , "jsr305"                             , "versions.findbugsJsr305"],
+            ["com.ninja-squad"           , "springmockk"                        , "versions.springMockk"],
+            ["com.tngtech.archunit"      , "archunit-junit5"                    , "versions.archunit"],
+            ["de.siegmar"                , "fastcsv"                            , "versions.fastcsv"],
+            ["jakarta.validation"        , "jakarta.validation-api"             , "versions.jakartaValidation"],
+            ["org.codehaus.janino"       , "janino"                             , "versions.janino"],
+            ["org.javamoney"             , "moneta"                             , "versions.javamoneyMoneta"],
+            ["org.jetbrains.kotlinx"     , "kotlinx-coroutines-core"            , "versions.kotlinCoroutines"],
+            ["org.jetbrains.kotlinx"     , "kotlinx-coroutines-slf4j"           , "versions.kotlinCoroutines"],
+            ["org.mapstruct"             , "mapstruct"                          , "versions.mapstruct"],
+            ["org.mapstruct"             , "mapstruct-processor"                , "versions.mapstruct"],
+            ["org.springdoc"             , "springdoc-openapi-starter-webmvc-ui", "versions.springDocOpenapi"],
+        ].each { group, name, version -> api("$group:$name:${project.property(version)}") }
         // @formatter:on
     }
 }
