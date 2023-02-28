@@ -74,6 +74,7 @@ dependencies {
 
     compileOnly "org.mapstruct:mapstruct"
 
+    runtimeOnly "com.github.ben-manes.caffeine:caffeine"
     runtimeOnly "org.codehaus.janino:janino"
     runtimeOnly "org.postgresql:postgresql"
 
@@ -81,7 +82,6 @@ dependencies {
 
     implementation platform(rootProject)
     implementation project(":app-models")
-    implementation "com.github.ben-manes.caffeine:caffeine"
     implementation "de.siegmar:fastcsv"
     implementation "org.flywaydb:flyway-core"
     implementation "org.javamoney:moneta"

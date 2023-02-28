@@ -5,6 +5,9 @@ spring:
       - optional:file:.env.local[.properties]
       - optional:file:../.env[.properties]
       - optional:file:../.env.local[.properties]
+  cache:
+    caffeine:
+      spec: 'initialCapacity=100,maximumSize=500,expireAfterAccess=300s,recordStats=true'
 
 application-props:
   log-method-execution: true
