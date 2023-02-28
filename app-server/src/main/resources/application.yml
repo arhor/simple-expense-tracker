@@ -65,6 +65,9 @@ spring:
     store-type: jdbc
     jdbc:
       initialize-schema: always
+  cache:
+    caffeine:
+      spec: 'initialCapacity=100,maximumSize=500,expireAfterAccess=300s'
 
 application-props:
   api-path-prefix: /api
