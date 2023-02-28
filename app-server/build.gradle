@@ -114,10 +114,6 @@ dependencyManagement {
     }
 }
 
-test {
-    useJUnitPlatform()
-}
-
 jacocoTestReport {
     shouldRunAfter test
     applyJaCoCoExclusions classDirectories
@@ -142,6 +138,10 @@ check {
         jacocoTestReport,
         jacocoTestCoverageVerification,
     )
+}
+
+tasks.withType(Test).configureEach {
+    useJUnitPlatform()
 }
 
 tasks.withType(JavaCompile).configureEach {
