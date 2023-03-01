@@ -15,8 +15,8 @@ A more detailed description of each of the modules can be found in the directory
 
 - Java 17
 - Node.js 18.14.2
-  > **_NOTE:_** Node.js of the required version is specified in the gradle.properties file and does not require manually
-  installation - during the project build through gradle, all the necessary dependencies (including Node.js itself) will
+  > **_NOTE:_** Node.js of the required version is specified in the gradle.properties file and does not require manual
+  installation - during the project build using gradle, all the necessary dependencies (including Node.js itself) will
   be pulled automatically. For the convenience of local client-side development, it is recommended to install Node.js of
   the required version yourself. It is also recommended to use NVM, which allows you to have many versions of Node.js on
   one machine and easily switch between them at any time.
