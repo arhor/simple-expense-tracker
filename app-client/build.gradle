@@ -10,17 +10,11 @@ description = String.format(
     project.property("versions.node")
 )
 
-def generatedSourcesDir = "src/generated"
-
-def clearGeneratedModel = tasks.register("clearGeneratedModel", Delete) {
-    delete generatedSourcesDir
-}
-
-def copyGeneratedModel = tasks.register("copyGeneratedModel", Copy) {
-    dependsOn(clearGeneratedModel, ":app-models:build")
+def synchronizeModel = tasks.register("synchronizeModel", Sync) {
+    dependsOn(":app-models:build")
 
     from "${project(":app-models").buildDir}/generated/sources/js2ts"
-    into "${projectDir}/${generatedSourcesDir}"
+    into "${projectDir}/src/generated"
 }
 
 def updateBrowserList = tasks.register("updateBrowserList", NpxTask) {
@@ -33,7 +27,7 @@ def updateBrowserList = tasks.register("updateBrowserList", NpxTask) {
 }
 
 def test = tasks.register("test", NpmTask) {
-    dependsOn(updateBrowserList, copyGeneratedModel)
+    dependsOn(npmInstall, updateBrowserList, synchronizeModel)
 
     group = "verification"
     workingDir.fileValue(projectDir)
@@ -42,7 +36,7 @@ def test = tasks.register("test", NpmTask) {
 }
 
 tasks.register("build", NpmTask) {
-    dependsOn(test)
+    dependsOn(npmInstall, updateBrowserList, synchronizeModel, test)
 
     group = "build"
     workingDir.fileValue(projectDir)
