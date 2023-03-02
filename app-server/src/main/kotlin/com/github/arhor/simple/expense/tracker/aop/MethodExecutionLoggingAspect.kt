@@ -6,7 +6,6 @@ import org.aspectj.lang.annotation.Around
 import org.aspectj.lang.annotation.Aspect
 import org.aspectj.lang.annotation.Pointcut
 import org.aspectj.lang.reflect.MethodSignature
-import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
 import org.springframework.stereotype.Component
@@ -33,42 +32,22 @@ class MethodExecutionLoggingAspect {
         return result
     }
 
-    @Pointcut(
-        value = "execution(* $ROOT.web..*(..)) && within(@org.springframework.web.bind.annotation.RestController *)"
-    )
-    private fun webLayer() {
-        /* no-op */
-    }
+    @Pointcut("execution(* $ROOT.web..*(..)) && within(@org.springframework.web.bind.annotation.RestController *)")
+    private fun webLayer() { /* no-op */ }
 
-    @Pointcut(
-        value = "execution(* $ROOT.service..*(..)) && within(@org.springframework.stereotype.Service *)"
-    )
-    private fun serviceLayer() {
-        /* no-op */
-    }
+    @Pointcut("execution(* $ROOT.service..*(..)) && within(@org.springframework.stereotype.Service *)")
+    private fun serviceLayer() { /* no-op */ }
 
-    @Pointcut(
-        value = "execution(* $ROOT.data..*(..)) && within(@org.springframework.stereotype.Repository *)"
-    )
-    private fun dataLayer() {
-        /* no-op */
-    }
+    @Pointcut("execution(* $ROOT.data..*(..)) && within(@org.springframework.stereotype.Repository *)")
+    private fun dataLayer() { /* no-op */ }
 
     companion object {
         private const val ROOT = "com.github.arhor.simple.expense.tracker"
         private const val VOID = "void"
 
-        private fun JoinPoint.componentLogger(): Logger {
-            return LoggerFactory.getLogger(signature.declaringTypeName)
-        }
+        private fun JoinPoint.componentLogger() = LoggerFactory.getLogger(signature.declaringTypeName)
 
-        private fun MethodSignature.format(result: Any?): Any? {
-            return if (returnType.name == VOID) {
-                VOID
-            } else {
-                result
-            }
-        }
+        private fun MethodSignature.format(result: Any?) = if (returnType.name == VOID) VOID else result
     }
 }
 

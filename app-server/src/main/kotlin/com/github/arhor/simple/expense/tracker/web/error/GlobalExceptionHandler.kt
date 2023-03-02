@@ -55,7 +55,7 @@ class GlobalExceptionHandler(
         locale: Locale,
         timeZone: TimeZone,
     ): ErrorResponse {
-        return handleErrorCode(exception, ErrorCode.NOT_FOUND, locale, timeZone, *exception.params)
+        return handleErrorCode(exception, ErrorCode.NOT_FOUND, locale, timeZone, *exception.components)
     }
 
     @ResponseStatus(HttpStatus.NOT_FOUND)
@@ -75,7 +75,7 @@ class GlobalExceptionHandler(
         locale: Locale,
         timeZone: TimeZone
     ): ErrorResponse {
-        return handleErrorCode(exception, ErrorCode.DUPLICATE, locale, timeZone, *exception.params)
+        return handleErrorCode(exception, ErrorCode.DUPLICATE, locale, timeZone, *exception.components)
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)

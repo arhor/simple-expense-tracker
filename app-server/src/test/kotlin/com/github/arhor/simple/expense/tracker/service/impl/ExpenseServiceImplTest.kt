@@ -206,7 +206,7 @@ internal class ExpenseServiceImplTest {
         assertThat(result)
             .isInstanceOf(EntityNotFoundException::class.java)
             .extracting { it as EntityNotFoundException }
-            .returns(expectedExceptionParams, from { it.params })
+            .returns(expectedExceptionParams, from { it.components })
     }
 
     @Test
@@ -231,7 +231,7 @@ internal class ExpenseServiceImplTest {
         assertThat(result)
             .isInstanceOf(EntityNotFoundException::class.java)
             .extracting { it as EntityNotFoundException }
-            .returns(expectedExceptionParams, from { it.params })
+            .returns(expectedExceptionParams, from { it.components })
     }
 
     companion object {
