@@ -2,7 +2,7 @@ import com.github.gradle.node.npm.task.NpmTask
 
 plugins {
     id "java-library"
-    id "org.jsonschema2dataclass"
+    id "org.jsonschema2pojo"
     id "simple-expense-tracker.node-conventions"
 }
 
@@ -20,7 +20,7 @@ dependencies {
 }
 
 jsonSchema2Pojo {
-    source.from = files("${projectDir}/schema")
+    source = files("${projectDir}/schema")
     targetVersion = project.property("versions.java")
     targetPackage = "com.github.arhor.simple.expense.tracker.model"
     removeOldOutput = true
