@@ -85,3 +85,21 @@ application-props:
   conversion-rates:
     pattern: classpath*:conversion-rates/*.csv
     apiPath: https://api.exchangerate.host
+
+---
+
+spring:
+  config:
+    activate:
+      on-profile: dev
+    import:
+      - optional:file:.env[.properties]
+      - optional:file:.env.local[.properties]
+      - optional:file:../.env[.properties]
+      - optional:file:../.env.local[.properties]
+  cache:
+    caffeine:
+      spec: 'initialCapacity=100,maximumSize=500,expireAfterAccess=300s,recordStats'
+
+application-props:
+  log-method-execution: true
