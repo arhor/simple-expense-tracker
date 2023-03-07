@@ -1,3 +1,4 @@
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
@@ -154,12 +155,12 @@ tasks.withType(JavaCompile).configureEach {
 }
 
 tasks.withType(KotlinCompile).configureEach {
-    kotlinOptions {
+    compilerOptions {
         freeCompilerArgs = [
             "-Xjsr305=strict",
             "-Xjvm-default=all",
         ]
-        jvmTarget = project.property("versions.java")
+        jvmTarget = JvmTarget.valueOf("JVM_${project.property("versions.java")}")
         javaParameters = true
     }
 }

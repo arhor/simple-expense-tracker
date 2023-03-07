@@ -23,7 +23,7 @@ class ConfigureWebServer(private val applicationProps: ApplicationProps) : WebMv
 
     override fun configurePathMatch(configurer: PathMatchConfigurer) {
         applicationProps.apiPathPrefix?.let {
-            configurer.addPathPrefix(it, forAnnotation(RestController::class.java))
+            configurer.addPathPrefix(it, annotatedWith<RestController>())
         }
     }
 
@@ -40,5 +40,9 @@ class ConfigureWebServer(private val applicationProps: ApplicationProps) : WebMv
     @ConditionalOnMissingBean
     fun resourcePatternResolver(resourceLoader: ResourceLoader): ResourcePatternResolver {
         return ResourcePatternUtils.getResourcePatternResolver(resourceLoader)
+    }
+
+    companion object {
+        inline fun <reified T : Annotation> annotatedWith() = forAnnotation(T::class.java)
     }
 }
