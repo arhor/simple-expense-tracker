@@ -5,18 +5,18 @@ on:
     branches:
       - 'master'
     paths:
-      - 'app-schema/**'
-      - 'app-server/**'
-      - '!app-schema/*.md'
-      - '!app-server/*.md'
+      - 'apps/schema/**'
+      - 'apps/server/**'
+      - '!apps/schema/*.md'
+      - '!apps/server/*.md'
   pull_request:
     branches:
       - 'master'
     paths:
-      - 'app-schema/**'
-      - 'app-server/**'
-      - '!app-schema/*.md'
-      - '!app-server/*.md'
+      - 'apps/schema/**'
+      - 'apps/server/**'
+      - '!apps/schema/*.md'
+      - '!apps/server/*.md'
 
 jobs:
   build:
@@ -38,7 +38,7 @@ jobs:
           node-version: '18.14.2'
           cache: 'npm'
           cache-dependency-path: |
-            app-schema/package-lock.json
+            apps/schema/package-lock.json
 
       - name: Setup Gradle
         uses: gradle/gradle-build-action@v2
