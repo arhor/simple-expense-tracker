@@ -58,6 +58,7 @@ spring:
           github:
             clientId: ${GITHUB_CLIENT_ID:null}
             clientSecret: ${GITHUB_CLIENT_SECRET:null}
+
           google:
             clientId: ${GOOGLE_CLIENT_ID:null}
             clientSecret: ${GOOGLE_CLIENT_SECRET:null}

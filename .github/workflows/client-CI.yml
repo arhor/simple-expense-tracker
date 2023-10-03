@@ -5,17 +5,17 @@ on:
     branches:
       - 'master'
     paths:
-      - 'app-models/**'
+      - 'app-schema/**'
       - 'app-client/**'
-      - '!app-models/*.md'
+      - '!app-schema/*.md'
       - '!app-client/*.md'
   pull_request:
     branches:
       - 'master'
     paths:
-      - 'app-models/**'
+      - 'app-schema/**'
       - 'app-client/**'
-      - '!app-models/*.md'
+      - '!app-schema/*.md'
       - '!app-client/*.md'
 
 jobs:
@@ -38,13 +38,13 @@ jobs:
           node-version: '18.14.2'
           cache: 'npm'
           cache-dependency-path: |
-            app-models/package-lock.json
+            app-schema/package-lock.json
             app-client/package-lock.json
 
       - name: Setup Gradle
         uses: gradle/gradle-build-action@v2
 
       - name: Build client-side app
-        run: './gradlew :app-client:build'
+        run: './gradlew :apps:client:build'
         env:
           DOWNLOAD_NODE: false

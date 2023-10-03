@@ -82,7 +82,7 @@ dependencies {
     developmentOnly "org.springframework.boot:spring-boot-devtools"
 
     implementation platform(rootProject)
-    implementation project(":app-models")
+    implementation project(":apps:schema")
     implementation "de.siegmar:fastcsv"
     implementation "org.flywaydb:flyway-core"
     implementation "org.javamoney:moneta"

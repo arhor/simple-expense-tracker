@@ -38,15 +38,15 @@ dependencies {
 }
 
 def stage = tasks.register("stage", Jar) {
-    dependsOn(":app-client:build", ":app-server:build")
+    dependsOn(":apps:client:build", ":apps:server:build")
 
     group = "build"
     description = "Creates composite Jar file including client and server part"
 
     entryCompression = ZipEntryCompression.STORED
 
-    def serverBuild = zipTree("${project(":app-server").buildDir}/libs/app-server.jar")
-    def clientBuild = "${project(":app-client").projectDir}/dist"
+    def serverBuild = zipTree("${project(":apps:server").buildDir}/libs/server.jar")
+    def clientBuild = "${project(":apps:client").projectDir}/dist"
 
     from(serverBuild) { into "/" }
     from(clientBuild) { into "/BOOT-INF/classes/static" }

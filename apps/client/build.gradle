@@ -11,9 +11,9 @@ description = String.format(
 )
 
 def synchronizeModel = tasks.register("synchronizeModel", Sync) {
-    dependsOn(":app-models:build")
+    dependsOn(":apps:schema:build")
 
-    from "${project(":app-models").buildDir}/generated/sources/js2ts"
+    from "${project(":apps:schema").buildDir}/generated/sources/js2ts"
     into "${projectDir}/src/generated"
 }
 
