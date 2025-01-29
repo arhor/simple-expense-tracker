@@ -1,6 +1,6 @@
 package com.github.arhor.simple.expense.tracker.service
 
-import com.github.arhor.simple.expense.tracker.util.TemporalRange
+import com.github.arhor.simple.expense.tracker.service.util.TemporalRange
 import java.time.LocalDate
 import java.time.ZonedDateTime
 import java.util.TimeZone

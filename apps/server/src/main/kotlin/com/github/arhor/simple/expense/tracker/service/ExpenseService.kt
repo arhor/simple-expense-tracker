@@ -2,7 +2,7 @@ package com.github.arhor.simple.expense.tracker.service
 
 import com.github.arhor.simple.expense.tracker.model.ExpenseRequestDTO
 import com.github.arhor.simple.expense.tracker.model.ExpenseResponseDTO
-import com.github.arhor.simple.expense.tracker.util.TemporalRange
+import com.github.arhor.simple.expense.tracker.service.util.TemporalRange
 import java.time.LocalDate
 
 interface ExpenseService {

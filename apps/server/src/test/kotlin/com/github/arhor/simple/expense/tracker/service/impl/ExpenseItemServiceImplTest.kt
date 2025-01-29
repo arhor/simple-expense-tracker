@@ -6,7 +6,7 @@ import com.github.arhor.simple.expense.tracker.model.Currency
 import com.github.arhor.simple.expense.tracker.model.ExpenseItemRequestDTO
 import com.github.arhor.simple.expense.tracker.model.ExpenseItemResponseDTO
 import com.github.arhor.simple.expense.tracker.service.mapping.ExpenseItemMapper
-import com.github.arhor.simple.expense.tracker.util.TemporalRange
+import com.github.arhor.simple.expense.tracker.service.util.TemporalRange
 import io.mockk.called
 import io.mockk.every
 import io.mockk.impl.annotations.InjectMockKs

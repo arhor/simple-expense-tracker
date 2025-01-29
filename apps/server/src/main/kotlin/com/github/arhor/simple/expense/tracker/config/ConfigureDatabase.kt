@@ -1,6 +1,6 @@
 package com.github.arhor.simple.expense.tracker.config
 
-import com.github.arhor.simple.expense.tracker.util.currentZonedDateTime
+import com.github.arhor.simple.expense.tracker.service.util.currentZonedDateTime
 import org.flywaydb.core.Flyway
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty

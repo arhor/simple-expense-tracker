@@ -2,8 +2,8 @@ package com.github.arhor.simple.expense.tracker.service.impl
 
 import com.github.arhor.simple.expense.tracker.data.model.InternalUser
 import com.github.arhor.simple.expense.tracker.data.repository.InternalUserRepository
-import com.github.arhor.simple.expense.tracker.exception.EntityDuplicateException
-import com.github.arhor.simple.expense.tracker.exception.EntityNotFoundException
+import com.github.arhor.simple.expense.tracker.service.exception.EntityDuplicateException
+import com.github.arhor.simple.expense.tracker.service.exception.EntityNotFoundException
 import com.github.arhor.simple.expense.tracker.model.Currency
 import com.github.arhor.simple.expense.tracker.model.UserRequestDTO
 import com.github.arhor.simple.expense.tracker.model.UserResponseDTO

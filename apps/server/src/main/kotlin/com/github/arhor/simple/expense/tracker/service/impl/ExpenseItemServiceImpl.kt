@@ -5,7 +5,7 @@ import com.github.arhor.simple.expense.tracker.model.ExpenseItemRequestDTO
 import com.github.arhor.simple.expense.tracker.model.ExpenseItemResponseDTO
 import com.github.arhor.simple.expense.tracker.service.ExpenseItemService
 import com.github.arhor.simple.expense.tracker.service.mapping.ExpenseItemMapper
-import com.github.arhor.simple.expense.tracker.util.TemporalRange
+import com.github.arhor.simple.expense.tracker.service.util.TemporalRange
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDate

@@ -6,7 +6,7 @@ import com.github.arhor.simple.expense.tracker.data.repository.NotificationRepos
 import com.github.arhor.simple.expense.tracker.model.NotificationDTO
 import com.github.arhor.simple.expense.tracker.service.event.NotificationEvent
 import com.github.arhor.simple.expense.tracker.service.mapping.NotificationMapper
-import com.github.arhor.simple.expense.tracker.util.currentLocalDateTime
+import com.github.arhor.simple.expense.tracker.service.util.currentLocalDateTime
 import io.mockk.called
 import io.mockk.every
 import io.mockk.impl.annotations.InjectMockKs
@@ -135,58 +135,55 @@ internal class NotificationServiceImplTest {
 
     @Test
     fun `should persist notification when there are not target user within current notification subscribers`() {
-        // given
-        val expectedSourceUserId = 1L
-        val expectedTargetUserId = 2L
-        val expectedTimestamp = LocalDateTime.parse("2022-09-08T12:00:00")
-        val expectedSeverity = NotificationDTO.Severity.SUCCESS.name
-        val expectedMessage = "test-message"
-        val expectedNotification = NotificationDTO(expectedMessage, NotificationDTO.Severity.valueOf(expectedSeverity))
+        mockkStatic("com.github.arhor.simple.expense.tracker.service.util.TimeUtilsKt") {
+            // given
+            val expectedSourceUserId = 1L
+            val expectedTargetUserId = 2L
+            val expectedTimestamp = LocalDateTime.parse("2022-09-08T12:00:00")
+            val expectedSeverity = NotificationDTO.Severity.SUCCESS.name
+            val expectedMessage = "test-message"
+            val expectedNotification = NotificationDTO(expectedMessage, NotificationDTO.Severity.valueOf(expectedSeverity))
 
-        val notification = slot<Notification>()
+            val notification = slot<Notification>()
 
-        mockkStatic("com.github.arhor.simple.expense.tracker.util.TimeUtilsKt")
+            every { currentLocalDateTime() } returns expectedTimestamp
+            every { notificationRepository.save(any()) } returnsArgument 0
+            every { notificationMapper.mapDtoToEntity(any(), any(), any(), any()) } answers {
+                Notification(
+                    message = arg<NotificationDTO>(0).message!!,
+                    severity = arg<NotificationDTO>(0).severity!!.name,
+                    targetUserId = arg(1),
+                    sourceUserId = arg(2),
+                    timestamp = arg(3),
+                )
+            }
 
-        every { currentLocalDateTime() } returns expectedTimestamp
-        every { notificationRepository.save(any()) } returnsArgument 0
-        every { notificationMapper.mapDtoToEntity(any(), any(), any(), any()) } answers {
-            Notification(
-                message = arg<NotificationDTO>(0).message!!,
-                severity = arg<NotificationDTO>(0).severity!!.name,
-                targetUserId = arg(1),
-                sourceUserId = arg(2),
-                timestamp = arg(3),
-            )
-        }
-
-        // when
-        notificationService.sendNotification(
-            sourceUserId = expectedSourceUserId,
-            targetUserId = expectedTargetUserId,
-            notification = expectedNotification,
-        )
-
-        // then
-        verify(exactly = 1) {
-            notificationMapper.mapDtoToEntity(
-                dto = expectedNotification,
-                targetUserId = expectedTargetUserId,
+            // when
+            notificationService.sendNotification(
                 sourceUserId = expectedSourceUserId,
-                timestamp = expectedTimestamp
+                targetUserId = expectedTargetUserId,
+                notification = expectedNotification,
             )
+
+            // then
+            verify(exactly = 1) {
+                notificationMapper.mapDtoToEntity(
+                    dto = expectedNotification,
+                    targetUserId = expectedTargetUserId,
+                    sourceUserId = expectedSourceUserId,
+                    timestamp = expectedTimestamp
+                )
+            }
+            verify(exactly = 1) { notificationRepository.save(capture(notification)) }
+            verify { applicationEventPublisher wasNot called }
+
+            assertThat(notification.captured)
+                .returns(expectedSourceUserId, from { it.sourceUserId })
+                .returns(expectedTargetUserId, from { it.targetUserId })
+                .returns(expectedTimestamp, from { it.timestamp })
+                .returns(expectedSeverity, from { it.severity })
+                .returns(expectedMessage, from { it.message })
         }
-        verify(exactly = 1) { notificationRepository.save(capture(notification)) }
-        verify { applicationEventPublisher wasNot called }
-
-        assertThat(notification.captured)
-            .returns(expectedSourceUserId, from { it.sourceUserId })
-            .returns(expectedTargetUserId, from { it.targetUserId })
-            .returns(expectedTimestamp, from { it.timestamp })
-            .returns(expectedSeverity, from { it.severity })
-            .returns(expectedMessage, from { it.message })
-
-        // finally
-        unmockkStatic("com.github.arhor.simple.expense.tracker.util.TimeUtilsKt")
     }
 
     @Test

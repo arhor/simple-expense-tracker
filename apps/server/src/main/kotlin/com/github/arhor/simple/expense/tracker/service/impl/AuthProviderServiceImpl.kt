@@ -3,7 +3,7 @@ package com.github.arhor.simple.expense.tracker.service.impl
 import com.github.arhor.simple.expense.tracker.config.props.ApplicationProps
 import com.github.arhor.simple.expense.tracker.model.AuthProviderDTO
 import com.github.arhor.simple.expense.tracker.service.AuthProviderService
-import com.github.arhor.simple.expense.tracker.util.NULL_STRING
+import com.github.arhor.simple.expense.tracker.service.util.NULL_STRING
 import org.slf4j.LoggerFactory
 import org.springframework.security.oauth2.client.registration.ClientRegistration
 import org.springframework.stereotype.Service

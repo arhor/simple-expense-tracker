@@ -5,7 +5,7 @@ import com.github.arhor.simple.expense.tracker.model.NotificationDTO
 import com.github.arhor.simple.expense.tracker.service.NotificationService
 import com.github.arhor.simple.expense.tracker.service.event.NotificationEvent
 import com.github.arhor.simple.expense.tracker.service.mapping.NotificationMapper
-import com.github.arhor.simple.expense.tracker.util.currentLocalDateTime
+import com.github.arhor.simple.expense.tracker.service.util.currentLocalDateTime
 import org.springframework.context.ApplicationEventPublisher
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional

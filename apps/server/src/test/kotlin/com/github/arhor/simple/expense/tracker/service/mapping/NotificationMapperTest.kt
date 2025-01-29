@@ -3,7 +3,7 @@ package com.github.arhor.simple.expense.tracker.service.mapping
 import com.github.arhor.simple.expense.tracker.data.model.projection.CompactNotificationProjection
 import com.github.arhor.simple.expense.tracker.model.NotificationDTO
 import com.github.arhor.simple.expense.tracker.model.NotificationDTO.Severity
-import com.github.arhor.simple.expense.tracker.util.currentLocalDateTime
+import com.github.arhor.simple.expense.tracker.service.util.currentLocalDateTime
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.EnumSource

@@ -1,6 +1,6 @@
 package com.github.arhor.simple.expense.tracker
 
-import com.github.arhor.simple.expense.tracker.util.zoneIdOrDefaultUTC
+import com.github.arhor.simple.expense.tracker.service.util.zoneIdOrDefaultUTC
 import com.tngtech.archunit.core.domain.JavaCall.Predicates.target
 import com.tngtech.archunit.core.domain.JavaClass.Predicates.implement
 import com.tngtech.archunit.core.domain.JavaClasses
@@ -28,13 +28,13 @@ internal class ApplicationArchitectureTest {
         val architecture =
             layeredArchitecture()
                 .consideringOnlyDependenciesInLayers()
-                .layer("Web").definedBy("${applicationPackage}.web..")
+                .layer("API").definedBy("${applicationPackage}.api..")
                 .layer("Service").definedBy("${applicationPackage}.service..")
-                .layer("Persistence").definedBy("${applicationPackage}.data..")
+                .layer("Data").definedBy("${applicationPackage}.data..")
                 .layer("Configuration").definedBy("${applicationPackage}.config..")
-                .whereLayer("Web").mayNotBeAccessedByAnyLayer()
-                .whereLayer("Service").mayOnlyBeAccessedByLayers("Web", "Configuration")
-                .whereLayer("Persistence").mayOnlyBeAccessedByLayers("Service")
+                .whereLayer("API").mayNotBeAccessedByAnyLayer()
+                .whereLayer("Service").mayOnlyBeAccessedByLayers("API", "Configuration")
+                .whereLayer("Data").mayOnlyBeAccessedByLayers("Service")
 
         // then
         architecture.check(appClasses)
