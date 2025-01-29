@@ -5,7 +5,6 @@ plugins {
     id "com.adarshr.test-logger"
     id "io.spring.dependency-management"
     id "jacoco"
-    id "org.flywaydb.flyway"
     id "org.jetbrains.kotlin.jvm"
     id "org.jetbrains.kotlin.kapt"
     id "org.jetbrains.kotlin.plugin.spring"
@@ -25,22 +24,6 @@ java {
 
 kapt {
     keepJavacAnnotationProcessors = true
-}
-
-jacoco {
-    toolVersion = project.property("versions.jacoco")
-}
-
-flyway {
-    url = env["JDBC_DATABASE_URL"]
-    user = env["JDBC_DATABASE_USERNAME"]
-    password = env["JDBC_DATABASE_PASSWORD"]
-
-    driver = "org.postgresql.Driver"
-    encoding = "UTF-8"
-    locations = ["classpath:db/migration"]
-    baselineVersion = "0.0"
-    baselineOnMigrate = true
 }
 
 repositories {
@@ -84,10 +67,14 @@ dependencies {
     implementation platform(rootProject)
     implementation project(":apps:schema")
     implementation "de.siegmar:fastcsv"
+
+    implementation "com.fasterxml.jackson.module:jackson-module-kotlin"
     implementation "org.flywaydb:flyway-core"
+    implementation "org.flywaydb:flyway-database-postgresql"
+
     implementation "org.javamoney:moneta"
     implementation "org.jetbrains.kotlin:kotlin-reflect"
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib"
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core"
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-slf4j"
     implementation "org.springdoc:springdoc-openapi-starter-webmvc-ui"
@@ -104,15 +91,13 @@ dependencies {
     testImplementation "com.ninja-squad:springmockk"
     testImplementation "com.tngtech.archunit:archunit-junit5"
     testImplementation "org.springframework.boot:spring-boot-starter-test"
+    testImplementation "org.springframework.boot:spring-boot-testcontainers"
+    testImplementation "org.jetbrains.kotlin:kotlin-test-junit5"
     testImplementation "org.springframework.security:spring-security-test"
     testImplementation "org.testcontainers:junit-jupiter"
     testImplementation "org.testcontainers:postgresql"
-}
 
-dependencyManagement {
-    imports {
-        mavenBom "org.testcontainers:testcontainers-bom:${project.property("versions.testcontainers")}"
-    }
+    testRuntimeOnly "org.junit.platform:junit-platform-launcher"
 }
 
 jacocoTestReport {

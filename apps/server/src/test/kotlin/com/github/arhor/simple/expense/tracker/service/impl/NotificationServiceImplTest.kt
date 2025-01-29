@@ -31,6 +31,7 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.springframework.context.ApplicationEventPublisher
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter
+import org.springframework.web.servlet.mvc.method.annotation.SseEmitter.SseEventBuilder
 import java.time.LocalDateTime
 import java.util.UUID
 import java.util.stream.Stream
@@ -109,7 +110,7 @@ internal class NotificationServiceImplTest {
         mockkObject(eventSource)
         mockkStatic(SseEmitter::class)
 
-        every { eventSource.send(any()) } just runs
+        every { eventSource.send(any<SseEventBuilder>()) } just runs
         every { SseEmitter.event() } returns eventBuilder
 
         // when
@@ -221,7 +222,7 @@ internal class NotificationServiceImplTest {
                 )
             }
         }
-        every { eventSource.send(any()) } just runs
+        every { eventSource.send(any<SseEventBuilder>()) } just runs
         every { SseEmitter.event() } returns eventBuilder
         every { notificationRepository.deleteById(any()) } just runs
 

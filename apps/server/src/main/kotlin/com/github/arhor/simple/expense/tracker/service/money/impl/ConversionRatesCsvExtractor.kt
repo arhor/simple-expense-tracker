@@ -1,8 +1,8 @@
 package com.github.arhor.simple.expense.tracker.service.money.impl
 
 import com.github.arhor.simple.expense.tracker.service.money.ConversionRatesExtractor
-import de.siegmar.fastcsv.reader.NamedCsvReader
-import de.siegmar.fastcsv.reader.NamedCsvRow
+import de.siegmar.fastcsv.reader.CsvReader
+import de.siegmar.fastcsv.reader.NamedCsvRecord
 import org.slf4j.LoggerFactory
 import org.springframework.core.io.Resource
 import org.springframework.stereotype.Component
@@ -23,7 +23,7 @@ class ConversionRatesCsvExtractor : ConversionRatesExtractor {
             throw e
         }
 
-        NamedCsvReader.builder().skipComments(true).build(resource.inputStream.reader()).use { csv ->
+        CsvReader.builder().ofNamedCsvRecord(resource.inputStream.reader()).use { csv ->
             try {
                 val conversionRates = readConversionRatesFromCsv(
                     year = year,
@@ -41,7 +41,7 @@ class ConversionRatesCsvExtractor : ConversionRatesExtractor {
 
     private fun readConversionRatesFromCsv(
         year: Int,
-        file: NamedCsvReader,
+        file: CsvReader<NamedCsvRecord>,
         name: String?
     ): Map<LocalDate, Map<String, Double>> {
         val length = determineMapCapacity(year)
@@ -54,7 +54,7 @@ class ConversionRatesCsvExtractor : ConversionRatesExtractor {
                         ERROR_UNEXPECTED_DATE_TEMPLATE.format(
                             name,
                             date,
-                            row.originalLineNumber,
+                            row.startingLineNumber,
                             year,
                         )
                     )
@@ -65,8 +65,8 @@ class ConversionRatesCsvExtractor : ConversionRatesExtractor {
         return result
     }
 
-    private inline fun NamedCsvRow.extractDateAndRates(action: (LocalDate, Map<String, Double>) -> Unit) {
-        val currentRowFields = fields
+    private inline fun NamedCsvRecord.extractDateAndRates(action: (LocalDate, Map<String, Double>) -> Unit) {
+        val currentRowFields = fieldsAsMap
         val rates = HashMap<String, Double>(currentRowFields.size - 1)
 
         var date: LocalDate? = null
@@ -99,11 +99,11 @@ class ConversionRatesCsvExtractor : ConversionRatesExtractor {
         }
     }
 
-    private fun throwDateColumnException(csvRow: NamedCsvRow): Nothing {
+    private fun throwDateColumnException(record: NamedCsvRecord): Nothing {
         throw IllegalStateException(
             ERROR_MULTIPLE_DATE_COLUMNS_TEMPLATE.format(
                 COL_DATE,
-                csvRow,
+                record,
             )
         )
     }

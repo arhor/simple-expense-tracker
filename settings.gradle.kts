@@ -7,7 +7,6 @@ pluginManagement {
         id("com.avast.gradle.docker-compose")    version prop("versions.dockerComposeGradlePlugin")
         id("com.github.node-gradle.node")        version prop("versions.nodeGradlePlugin")
         id("io.spring.dependency-management")    version prop("versions.springDependencyManagement")
-        id("org.flywaydb.flyway")                version prop("versions.flyway")
         id("org.jsonschema2pojo")                version prop("versions.jsonschema2pojo")
         id("org.jetbrains.kotlin.jvm")           version prop("versions.kotlin")
         id("org.jetbrains.kotlin.kapt")          version prop("versions.kotlin")
