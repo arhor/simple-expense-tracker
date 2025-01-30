@@ -1,0 +1,184 @@
+{
+  "name": "simple-expense-tracker-client",
+  "type": "module",
+  "version": "0.0.1",
+  "private": true,
+  "author": {
+    "name": "Maksim Buryshynets",
+    "email": "arhor18@gmail.com"
+  },
+  "scripts": {
+    "serve": "vite serve",
+    "build": "tsc && vite build",
+    "start": "vite preview",
+    "lint": "eslint .",
+    "lint:fix": "eslint .",
+    "test": "vitest --passWithNoTests"
+  },
+  "dependencies": {
+    "@emotion/cache": "^11.11.0",
+    "@emotion/react": "^11.11.0",
+    "@emotion/styled": "^11.11.0",
+    "@fontsource/roboto": "^5.0.3",
+    "@mui/icons-material": "^5.11.16",
+    "@mui/material": "^5.13.5",
+    "axios": "^0.27.2",
+    "i18next": "^24.2.2",
+    "i18next-http-backend": "^3.0.2",
+    "loglevel": "^1.8.0",
+    "mobx": "^6.13.5",
+    "mobx-react-lite": "^4.1.0",
+    "notistack": "^3.0.2",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "react-i18next": "^15.4.0",
+    "react-router": "^7.1.3",
+    "react-router-dom": "^7.1.3",
+    "uuid": "^9.0.0"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.19.0",
+    "@types/react": "^19.0.8",
+    "@types/react-dom": "^19.0.3",
+    "@vitejs/plugin-react": "^4.3.4",
+    "eslint": "^9.19.0",
+    "eslint-plugin-react-hooks": "^5.0.0",
+    "eslint-plugin-react-refresh": "^0.4.18",
+    "globals": "^15.14.0",
+    "typescript": "~5.7.2",
+    "typescript-eslint": "^8.21.0",
+    "vite": "^6.0.11",
+
+    "@testing-library/jest-dom": "^6.6.3",
+    "@testing-library/react": "^16.2.0",
+    "@testing-library/user-event": "^14.6.1",
+    "@types/node": "22.12.0",
+    "@types/uuid": "^8.3.4",
+
+    "@typescript-eslint/eslint-plugin": "^8.22.0",
+    "@typescript-eslint/parser": "^8.22.0",
+
+    "eslint-import-resolver-alias": "^1.1.2",
+    "eslint-plugin-import": "^2.31.0",
+    "eslint-plugin-react": "^7.37.4",
+    "eslint-plugin-simple-import-sort": "^12.1.1",
+    "eslint-plugin-mobx": "^0.0.13",
+    "jsdom": "^19.0.0",
+    "vite-plugin-eslint": "^1.8.1",
+    "vite-plugin-pwa": "^0.21.1",
+    "vitest": "^2.1.5"
+  },
+  "prettier": {
+    "printWidth": 120,
+    "singleQuote": true,
+    "arrowParens": "always",
+    "endOfLine": "lf",
+    "semi": true,
+    "tabWidth": 4,
+    "trailingComma": "all",
+    "bracketSpacing": true,
+    "bracketSameLine": false
+  },
+  "browserslist": [
+    "> 1%",
+    "last 2 versions",
+    "not dead"
+  ],
+  "eslintConfig": {
+    "root": true,
+    "env": {
+      "node": true,
+      "browser": true
+    },
+    "plugins": [
+      "import",
+      "mobx",
+      "react",
+      "@typescript-eslint"
+    ],
+    "extends": [
+      "eslint:recommended",
+      "plugin:react/recommended",
+      "plugin:@typescript-eslint/recommended"
+    ],
+    "parser": "@typescript-eslint/parser",
+    "parserOptions": {
+      "sourceType": "module",
+      "ecmaVersion": "latest",
+      "ecmaFeatures": {
+        "jsx": true
+      }
+    },
+    "ignorePatterns": [
+      "vite.config.ts"
+    ],
+    "rules": {
+      "no-console": "error",
+      "no-debugger": "error",
+      "no-param-reassign": "error",
+      "mobx/exhaustive-make-observable": "error",
+      "mobx/unconditional-make-observable": "error",
+      "mobx/missing-make-observable": "error",
+      "react/react-in-jsx-scope": "off",
+      "import/no-unresolved": "error",
+      "import/named": "error",
+      "import/no-duplicates": "warn",
+      "import/order": [
+        "error",
+        {
+          "groups": [
+            "builtin",
+            "external",
+            "internal"
+          ],
+          "pathGroups": [
+            {
+              "pattern": "react",
+              "group": "external",
+              "position": "before"
+            },
+            {
+              "pattern": "@mui/**",
+              "group": "external",
+              "position": "after"
+            }
+          ],
+          "pathGroupsExcludedImportTypes": [
+            "react"
+          ],
+          "newlines-between": "always",
+          "alphabetize": {
+            "order": "asc",
+            "caseInsensitive": true
+          }
+        }
+      ]
+    },
+    "settings": {
+      "react": {
+        "version": "detect"
+      },
+      "import/resolver": {
+        "typescript": {
+          "project": "tsconfig.json"
+        }
+      },
+      "import/extensions": [
+        ".js",
+        ".jsx",
+        ".ts",
+        ".tsx"
+      ]
+    },
+    "overrides": [
+      {
+        "files": [
+          "**/*.test.{js,jsx,ts,tsx}"
+        ],
+        "env": {
+          "jest": true
+        }
+      }
+    ]
+  }
+}

@@ -12,7 +12,7 @@ gradle-test-logger = "3.2.0"
 mockk = "1.13.3"
 archunit = "1.2.1"
 awaitility = "4.2.1"
-node = "18.14.2"
+node = "22.11.0"
 jsonschema2pojo = "1.2.2"
 dockerComposeGradlePlugin = "0.17.12"
 

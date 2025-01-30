@@ -17,6 +17,7 @@ pluginManagement {
 
 rootProject.name = "simple-expense-tracker"
 
+include(":app-client")
 include(":apps:client")
 include(":apps:schema")
 include(":apps:server")
