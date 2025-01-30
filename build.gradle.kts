@@ -37,18 +37,17 @@ tasks {
         entryCompression = ZipEntryCompression.STORED
         duplicatesStrategy = DuplicatesStrategy.INCLUDE
 
-        val serverBuild = zipTree("${project(":apps:server").layout.buildDirectory}/libs/server.jar")
-        val clientBuild = "${project(":apps:client").projectDir}/dist"
+        val serverBuild = project(":apps:server").layout.buildDirectory.dir("libs/server.jar")
+        val clientBuild = project(":apps:client").layout.buildDirectory.dir("dist")
 
-        from(serverBuild).into("/")
-        from(clientBuild).into("/BOOT-INF/classes/static")
+        from(serverBuild) { into("/") }
+        from(clientBuild) { into("/BOOT-INF/classes/static") }
 
-        manifest {
-            from(serverBuild.find { it.name == "MANIFEST.MF" }) {
-
+        doLast {
+            manifest {
+                from(serverBuild.get().asFileTree.find { it.name == "MANIFEST.MF" })
+                attributes["Implementation-Title"] = project.name
             }
-
-            attributes["Implementation-Title"] = project.name
         }
     }
 }
