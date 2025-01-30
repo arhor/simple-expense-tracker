@@ -2,10 +2,33 @@ import com.github.gradle.node.npm.task.NpmTask
 import com.github.gradle.node.npm.task.NpxTask
 
 plugins {
-    id("simple-expense-tracker.node-conventions")
+    id("idea")
+    id("com.github.node-gradle.node")
 }
 
-description = "Client-side application based on React.js and Node.js ${libs.versions.node}"
+description = "Client-side application based on React.js and Node.js ${libs.versions.node.get()}"
+
+node {
+    version.set(libs.versions.node.get())
+
+    download = System.getenv("DOWNLOAD_NODE") != "false"
+
+    workDir = file("$rootDir/.gradle/nodejs")
+    npmWorkDir = file("$rootDir/.gradle/npm")
+    yarnWorkDir = file("$rootDir/.gradle/yarn")
+}
+
+idea {
+    module {
+        excludeDirs.addAll(
+            files(
+                "$projectDir/coverage",
+                "$projectDir/dist",
+                "$projectDir/node_modules",
+            )
+        )
+    }
+}
 
 tasks {
     val synchronizeModel by registering(Sync::class) {

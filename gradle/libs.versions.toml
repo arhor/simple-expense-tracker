@@ -13,6 +13,8 @@ mockk = "1.13.3"
 archunit = "1.2.1"
 awaitility = "4.2.1"
 node = "18.14.2"
+jsonschema2pojo = "1.2.2"
+dockerComposeGradlePlugin = "0.17.12"
 
 [libraries]
 findbugs-jsr305 = { module = "com.google.code.findbugs:jsr305", version.ref = "findbugs-jsr305" }
@@ -35,3 +37,6 @@ kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 kotlin-plugin-spring = { id = "org.jetbrains.kotlin.plugin.spring", version.ref = "kotlin" }
 spring-boot = { id = "org.springframework.boot", version.ref = "spring-boot" }
 spring-deps = { id = "io.spring.dependency-management", version.ref = "spring-dependency-management" }
+docker-compose = { id = "com.avast.gradle.docker-compose", version.ref = "dockerComposeGradlePlugin" }
+node = { id = "com.github.node-gradle.node", version = "3.5.0" }
+jsonschema2pojo = { id = "org.jsonschema2pojo", version.ref = "jsonschema2pojo" }

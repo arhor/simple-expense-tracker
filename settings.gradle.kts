@@ -9,7 +9,6 @@ pluginManagement {
         id("io.spring.dependency-management")    version prop("versions.springDependencyManagement")
         id("org.jsonschema2pojo")                version prop("versions.jsonschema2pojo")
         id("org.jetbrains.kotlin.jvm")           version prop("versions.kotlin")
-        id("org.jetbrains.kotlin.kapt")          version prop("versions.kotlin")
         id("org.jetbrains.kotlin.plugin.spring") version prop("versions.kotlin")
         id("org.springframework.boot")           version prop("versions.springBoot")
         // @formatter:on

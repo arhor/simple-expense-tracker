@@ -1,12 +1,36 @@
 import com.github.gradle.node.npm.task.NpmTask
 
 plugins {
+    id("idea")
     id("java-library")
-    id("org.jsonschema2pojo")
-    id("simple-expense-tracker.node-conventions")
+    alias(libs.plugins.jsonschema2pojo)
+    alias(libs.plugins.node)
 }
 
 description = "Shared models described via JSON Schema, used to generate sources for the Client/Server communication"
+
+node {
+    version.set(project.property("versions.node").toString())
+
+    download = System.getenv("DOWNLOAD_NODE") != "false"
+
+    workDir = file("$rootDir/.gradle/nodejs")
+    npmWorkDir = file("$rootDir/.gradle/npm")
+    yarnWorkDir = file("$rootDir/.gradle/yarn")
+}
+
+idea {
+    module {
+        excludeDirs.addAll(
+            files(
+                "$projectDir/coverage",
+                "$projectDir/dist",
+                "$projectDir/node_modules",
+            )
+        )
+    }
+}
+
 
 repositories {
     mavenCentral()

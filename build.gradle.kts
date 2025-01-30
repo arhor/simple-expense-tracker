@@ -1,12 +1,9 @@
-import io.github.arhor.dotenv.Dotenv
+import java.time.Instant
+import java.time.temporal.ChronoUnit.SECONDS
 
 plugins {
     id("base")
     id("java-platform")
-}
-
-ext {
-    set("env", Dotenv.configure().location("$rootDir").filename(".env").load())
 }
 
 dependencies {
@@ -34,16 +31,23 @@ tasks {
         entryCompression = ZipEntryCompression.STORED
         duplicatesStrategy = DuplicatesStrategy.INCLUDE
 
-        val serverBuild = project(":apps:server").layout.buildDirectory.dir("libs/server.jar")
+        val serverBuild = project(":apps:server").layout.buildDirectory.dir("libs/server.jar").map(::zipTree)
         val clientBuild = project(":apps:client").layout.buildDirectory.dir("dist")
 
         from(serverBuild) { into("/") }
         from(clientBuild) { into("/BOOT-INF/classes/static") }
 
-        doLast {
-            manifest {
-                from(serverBuild.get().asFileTree.find { it.name == "MANIFEST.MF" })
-                attributes["Implementation-Title"] = project.name
+        manifest {
+            attributes(
+                "Implementation-Title" to project.name,
+                "Build-Time" to Instant.now().truncatedTo(SECONDS),
+            )
+            from(serverBuild.map { it.find { file -> file.name == "MANIFEST.MF" } }) {
+                eachEntry {
+                    if (!baseValue.isNullOrBlank()) {
+                        value = baseValue
+                    }
+                }
             }
         }
     }
