@@ -22,7 +22,7 @@ export default defineConfig(({ mode }) => {
         },
         server: {
             proxy: {
-                '^/(graphql)': {
+                '^/(api)': {
                     target: 'http://localhost:4000',
                     changeOrigin: true,
                 },
@@ -35,23 +35,28 @@ export default defineConfig(({ mode }) => {
                         react: [
                             'react',
                             'react-dom',
-                            'react-i18next',
                             'react-router',
                             'react-router-dom',
                         ],
                         material: [
+                            '@emotion/cache',
+                            '@emotion/react',
+                            '@emotion/styled',
                             '@mui/icons-material',
-		                    '@mui/material',
+                            '@mui/material',
                         ],
                     },
                 },
             },
         },
         test: {
-            globals: true,
-            environment: 'jsdom',
-            watch: false,
-            setupFiles: ['src/tests.setup.ts'],
+            browser: {
+                enabled: true,
+                provider: 'playwright',
+                instances: [
+                    { browser: 'chromium' },
+                ],
+            },
         },
     }
 });
