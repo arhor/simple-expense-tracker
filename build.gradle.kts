@@ -17,12 +17,9 @@ dependencies {
         api("com.tngtech.archunit:archunit-junit5:" + project.property("versions.archunit"))
         api("de.siegmar:fastcsv:" + project.property("versions.fastcsv"))
         api("jakarta.validation:jakarta.validation-api:" + project.property("versions.jakartaValidation"))
-        api("org.codehaus.janino:janino:" + project.property("versions.janino"))
         api("org.javamoney:moneta:" + project.property("versions.javamoneyMoneta"))
         api("org.jetbrains.kotlinx:kotlinx-coroutines-core:" + project.property("versions.kotlinCoroutines"))
         api("org.jetbrains.kotlinx:kotlinx-coroutines-slf4j:" + project.property("versions.kotlinCoroutines"))
-        api("org.mapstruct:mapstruct:" + project.property("versions.mapstruct"))
-        api("org.mapstruct:mapstruct-processor:" + project.property("versions.mapstruct"))
         api("org.springdoc:springdoc-openapi-starter-webmvc-ui:" + project.property("versions.springDocOpenapi"))
     }
 }

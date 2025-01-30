@@ -26,8 +26,8 @@ jsonSchema2Pojo {
     removeOldOutput = true
     includeJsr303Annotations = true
     includeJsr305Annotations = true
-    includeSetters = false
-    includeGetters = false
+    includeSetters = true
+    includeGetters = true
     includeConstructors = true
     useLongIntegers = true
     useJakartaValidation = true

@@ -1,5 +1,5 @@
 server:
-  port: ${PORT:5000}
+  port: \${PORT:5000}
   error:
     whitelabel:
       enabled: false
@@ -19,7 +19,7 @@ spring:
     resources:
       add-mappings: false
   profiles:
-    active: ${SPRING_ACTIVE_PROFILES:dev}
+    active: \${SPRING_ACTIVE_PROFILES:dev}
   jmx:
     enabled: false
   mvc:
@@ -33,15 +33,15 @@ spring:
       platform: postgres
   datasource:
     driverClassName: org.postgresql.Driver
-    url: ${JDBC_DATABASE_URL}
-    username: ${JDBC_DATABASE_USERNAME}
-    password: ${JDBC_DATABASE_PASSWORD}
+    url: \${JDBC_DATABASE_URL}
+    username: \${JDBC_DATABASE_USERNAME}
+    password: \${JDBC_DATABASE_PASSWORD}
     hikari:
       auto-commit: false
   flyway:
-    url: ${spring.datasource.url}
-    user: ${spring.datasource.username}
-    password: ${spring.datasource.password}
+    url: \${spring.datasource.url}
+    user: \${spring.datasource.username}
+    password: \${spring.datasource.password}
     enabled: true
     baseline-on-migrate: true
     baseline-version: 0.0
@@ -56,12 +56,12 @@ spring:
       client:
         registration:
           github:
-            clientId: ${GITHUB_CLIENT_ID:null}
-            clientSecret: ${GITHUB_CLIENT_SECRET:null}
+            clientId: \${GITHUB_CLIENT_ID:null}
+            clientSecret: \${GITHUB_CLIENT_SECRET:null}
 
           google:
-            clientId: ${GOOGLE_CLIENT_ID:null}
-            clientSecret: ${GOOGLE_CLIENT_SECRET:null}
+            clientId: \${GOOGLE_CLIENT_ID:null}
+            clientSecret: \${GOOGLE_CLIENT_SECRET:null}
   session:
     store-type: jdbc
     jdbc:
