@@ -8,9 +8,9 @@ export default function App() {
     return (
         <AppThemeProvider>
             <ErrorBoundary>
-                    <SnackbarProvider preventDuplicate>
-                        <AppRouter />
-                    </SnackbarProvider>
+                <SnackbarProvider preventDuplicate>
+                    <AppRouter />
+                </SnackbarProvider>
             </ErrorBoundary>
         </AppThemeProvider>
     );

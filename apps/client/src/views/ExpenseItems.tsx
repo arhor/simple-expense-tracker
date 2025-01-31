@@ -4,9 +4,9 @@ import { autorun } from 'mobx';
 import { observer } from 'mobx-react-lite';
 import { useParams } from 'react-router-dom';
 
-import { useStore } from '~/store';
+import { useStore } from '@/store';
 
-const ExpenseItems = () => {
+export default function ExpenseItems() {
     const { expenseId } = useParams();
     const { expense } = useStore();    
 
@@ -49,6 +49,4 @@ const ExpenseItems = () => {
             </table>
         </>
     );
-};
-
-export default observer(ExpenseItems);
+}

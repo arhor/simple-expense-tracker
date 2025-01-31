@@ -2,18 +2,23 @@ import { useEffect } from 'react';
 
 import { autorun } from 'mobx';
 import { observer } from 'mobx-react-lite';
-import { Navigate, useLocation } from 'react-router-dom';
+import { Navigate, useLocation, useSearchParams } from 'react-router-dom';
 
-import SignUpForm from '~/components/SignUpForm';
-import { useStore } from '~/store';
+import { SignInForm } from '@/components';
+import { useStore } from '@/store';
 
-const SignUp = () => {
+const SignIn = () => {
+    const [ searchParams ] = useSearchParams();
     const { state } = useLocation() as { state: { doNotCallAuth?: boolean } | null };
     const { user } = useStore();
 
-    if (state?.doNotCallAuth) {
+    if (searchParams.has('auth') && searchParams.get('auth') == 'success') {
         return (
-            <SignUpForm />
+            <Navigate to="/" />
+        );
+    } else if (state?.doNotCallAuth) {
+        return (
+            <SignInForm />
         );
     } else {
         useEffect(() => {
@@ -21,13 +26,13 @@ const SignUp = () => {
                 user.fetchData();
             });
         }, []);
-
+    
         return user.authenticated ? (
             <Navigate to="/" />
         ) : (
-            <SignUpForm />
+            <SignInForm />
         );
     }
 };
 
-export default observer(SignUp);
+export default observer(SignIn);
