@@ -1,4 +1,4 @@
-import { AxiosRequestConfig } from 'axios';
+import { InternalAxiosRequestConfig } from 'axios';
 import log from 'loglevel';
 
 const DEFAULT_TIMEOUT = 10_000;
@@ -7,7 +7,7 @@ const timeouts: ReadonlyMap<string, number> = new Map([
     ['/api/users/current', 5_000],
 ]);
 
-export default function addRequestTimeout(config: AxiosRequestConfig): AxiosRequestConfig {
+export default function addRequestTimeout(config: InternalAxiosRequestConfig): InternalAxiosRequestConfig {
     const { timeout, ...restConfig } = config;
     const requestUrl = (config.baseURL + '/' + config.url).replace(/([^:]\/)\/+/g, "$1");
     const timeoutToUse = timeout || timeouts.get(requestUrl) || DEFAULT_TIMEOUT;

@@ -1,11 +1,11 @@
-import { render } from '@testing-library/react';
-import { vi } from 'vitest';
+import { vi, describe, test } from 'vitest';
+import { render } from 'vitest-browser-react'
 
 import { Loader } from '@/components';
 
 vi.mock('react-i18next', () => ({
     useTranslation: () => ({
-        t: (str) => str,
+        t: (arg: string) => arg,
         i18n: {
             changeLanguage: () => new Promise(() => { }),
         },

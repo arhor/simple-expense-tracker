@@ -1,4 +1,4 @@
-import { Optional, PartialOptional } from '~/utils/core-utils';
+import { Optional, PartialOptional } from '@/utils/core-utils';
 
 export type ValidationRule<T> = (v: Optional<T>) => true | string;
 

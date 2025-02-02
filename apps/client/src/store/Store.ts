@@ -1,7 +1,9 @@
-import AppStore from '~/store/app';
-import ExpenseStore from '~/store/expense';
-import NotificationStore from '~/store/notification';
-import UserStore from '~/store/user';
+import { createContext, useContext } from 'react';
+
+import AppStore from '@/store/app';
+import ExpenseStore from '@/store/expense';
+import NotificationStore from '@/store/notification';
+import UserStore from '@/store/user';
 
 export type Store = {
     app: AppStore;
@@ -32,3 +34,10 @@ export class RootStore implements Store {
     }
 }
 
+export const store = new RootStore();
+
+export const StoreContext = createContext<Readonly<Store>>(store);
+
+export function useStore() {
+    return useContext(StoreContext);
+}

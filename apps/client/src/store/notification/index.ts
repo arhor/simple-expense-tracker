@@ -1,2 +1,2 @@
-export { default } from '~/store/notification/NotificationStore';
-export * from '~/store/notification/NotificationStore';
+export { default } from '@/store/notification/NotificationStore';
+export * from '@/store/notification/NotificationStore';

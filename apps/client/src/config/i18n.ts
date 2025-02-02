@@ -1,7 +1,8 @@
+import { initReactI18next } from 'react-i18next';
+
 import i18n from 'i18next';
 import httpBackend from 'i18next-http-backend';
 import log from 'loglevel';
-import { initReactI18next } from 'react-i18next';
 
 i18n.use(httpBackend)
     .use(initReactI18next)

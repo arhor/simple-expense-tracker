@@ -1,6 +1,8 @@
 import axios from 'axios';
 
-import { requestInterceptor } from '~/api/interceptors';
+import addCsrfToken from '@/api/interceptors/addCsrfToken';
+import addRequestTimeout from '@/api/interceptors/addRequestTimeout';
+import { pipe } from '@/utils/function-utils';
 
 const client = axios.create({
     baseURL: '/api',
@@ -11,6 +13,11 @@ const client = axios.create({
     },
 });
 
-client.interceptors.request.use(requestInterceptor);
+client.interceptors.request.use(
+    pipe(
+        addCsrfToken,
+        addRequestTimeout,
+    )
+);
 
 export default client;

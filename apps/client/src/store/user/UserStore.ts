@@ -1,10 +1,10 @@
 import log from 'loglevel';
-import { action, makeObservable, observable } from 'mobx';
+import { makeAutoObservable } from 'mobx';
 
-import client from '~/api/client.js';
-import { UserResponseDTO } from '~/generated/UserResponseDTO';
-import { Store } from '~/store/Store';
-import { Optional } from '~/utils/core-utils';
+import client from '@/api/client.js';
+import { UserResponseDTO } from '@/generated/UserResponseDTO';
+import { Store } from '@/store/Store';
+import { Optional } from '@/utils/core-utils';
 
 export default class UserStore {
 
@@ -12,19 +12,11 @@ export default class UserStore {
 
     id: Optional<number> = null;
     username: Optional<string> = null;
-    authenticated = false;
+    authorities: Optional<string[]> = null;
+    authenticated: boolean = false;
 
     constructor() {
-        makeObservable(this, {
-            root: false, 
-            id: observable,
-            username: observable,
-            authenticated: observable,
-            signUp: action.bound,
-            fetchData: action.bound,
-            setData: action.bound,
-            clear: action.bound,
-        });
+        makeAutoObservable(this, { root: false }, { autoBind: true })
     }
 
     async signUp(username: string, password: string): Promise<void> {
@@ -51,6 +43,7 @@ export default class UserStore {
     setData(data: Partial<UserResponseDTO>) {
         this.id = data.id;
         this.username = data.username;
+        this.authorities = data.authorities;
         this.authenticated = ((data.id !== null) && (data.id !== undefined));
     }
 

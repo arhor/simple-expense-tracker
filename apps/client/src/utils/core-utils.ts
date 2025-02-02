@@ -1,3 +1,6 @@
+/* eslint-disable no-unused-vars */
+/* eslint-disable no-undef */
+
 export type Optional<T> = T | null | undefined;
 
 export type PartialOptional<T> = Partial<{ [P in keyof T]: Optional<T[P]> }>;

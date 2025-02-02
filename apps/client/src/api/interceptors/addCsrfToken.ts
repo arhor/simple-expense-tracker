@@ -1,29 +1,20 @@
-import { AxiosRequestConfig } from 'axios';
+import { InternalAxiosRequestConfig } from 'axios';
 import * as uuid from 'uuid';
+
+const SAFE_METHODS = new Set([
+    'GET',
+    'HEAD',
+    'OPTIONS',
+    'TRACE',
+]);
 
 export const CSRF_TOKEN = uuid.v4();
 
-const SAFE_METHODS: Readonly<Record<string, boolean>> = {
-    GET: true,
-    HEAD: true,
-    OPTIONS: true,
-    TRACE: true,
-};
+export default function addCsrfToken(config: InternalAxiosRequestConfig): InternalAxiosRequestConfig {
+    const method = config.method?.toUpperCase();
 
-export default function addCsrfToken(config: AxiosRequestConfig): AxiosRequestConfig {
-    const requestMethod = config.method?.toUpperCase();
-
-    if (requestMethod && SAFE_METHODS[requestMethod]) {
-        return config;
+    if (!method || SAFE_METHODS.has(method)) {
+        config.headers.set('X-XSRF-TOKEN', CSRF_TOKEN);
     }
-
-    const { headers = {}, ...restConfig } = config;
-
-    return {
-        headers: {
-            ...headers,
-            'X-XSRF-TOKEN': CSRF_TOKEN,
-        },
-        ...restConfig,
-    };
+    return config;
 }

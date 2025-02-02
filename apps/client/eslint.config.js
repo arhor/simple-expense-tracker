@@ -7,10 +7,29 @@ import globals from 'globals';
 import tseslint from 'typescript-eslint';
 
 export default tseslint.config(
-    { ignores: ['dist'] },
+    { ignores: ['build', 'dist'] },
     {
         extends: [js.configs.recommended, ...tseslint.configs.recommended],
         files: ['**/*.{ts,tsx}'],
+        settings: {
+            react: {
+                version: '18.3',
+            },
+            'import/resolver': {
+                alias: {
+                    map: [
+                        ['~', './src'],
+                    ],
+                    extensions: ['.js', '.jsx', '.json', '.ts', '.tsx',],
+                },
+            },
+            'import/extensions': [
+                '.js',
+                '.jsx',
+                '.ts',
+                '.tsx'
+            ]
+        },
         languageOptions: {
             ecmaVersion: 2020,
             globals: { ...globals.browser },
@@ -26,79 +45,42 @@ export default tseslint.config(
             'react': eslintPluginReact,
             'react-hooks': eslintPluginReactHooks,
             'react-refresh': eslintPluginReactRefresh,
+            'simple-import-sort': eslintPluginSimpleImportSort,
         },
         rules: {
-            ...reactHooks.configs.recommended.rules,
-            'react-refresh/only-export-components': [
-                'warn',
-                { allowConstantExport: true },
-            ],
+            ...js.configs.recommended.rules,
+            ...eslintPluginReact.configs.recommended.rules,
+            ...eslintPluginReact.configs['jsx-runtime'].rules,
+            ...eslintPluginReactHooks.configs.recommended.rules,
+            'react/jsx-no-target-blank': 'off',
+            'react-refresh/only-export-components': ['warn', {
+                allowConstantExport: true,
+            }],
+            'no-console': 'warn',
+            'no-debugger': 'error',
+            'no-param-reassign': 'error',
+            'react/react-in-jsx-scope': 'off',
+            'simple-import-sort/exports': 'error',
+            'simple-import-sort/imports': ['error', {
+                'groups': [
+                    ['^react'],
+                    ['^'],
+                    ['^@mui'],
+                    ['^@/', '^\\u0000@/'],
+                ]
+            }],
+        },
+    },
+    {
+        files: ['vite.config.{js,ts}'],
+        languageOptions: {
+            globals: globals.node,
+        },
+    },
+    {
+        files: ['**/*.test.{js,jsx,ts,tsx}'],
+        languageOptions: {
+            globals: globals.jest,
         },
     },
 )
-
-
-// export default [
-//     {
-//         settings: {
-//             react: {
-//                 version: '18.3',
-//             },
-//             'import/resolver': {
-//                 alias: {
-//                     map: [
-//                         ['~', './src'],
-//                     ],
-//                     extensions: ['.js', '.jsx', '.json', '.ts', '.tsx',],
-//                 },
-//             },
-//             'import/extensions': [
-//                 '.js',
-//                 '.jsx',
-//                 '.ts',
-//                 '.tsx'
-//             ]
-//         },
-//         plugins: {
-//             'react': eslintPluginReact,
-//             'react-hooks': eslintPluginReactHooks,
-//             'react-refresh': eslintPluginReactRefresh,
-//             'simple-import-sort': eslintPluginSimpleImportSort,
-//         },
-//         rules: {
-//             ...js.configs.recommended.rules,
-//             ...eslintPluginReact.configs.recommended.rules,
-//             ...eslintPluginReact.configs['jsx-runtime'].rules,
-//             ...eslintPluginReactHooks.configs.recommended.rules,
-//             'react/jsx-no-target-blank': 'off',
-//             'react-refresh/only-export-components': ['warn', {
-//                 allowConstantExport: true,
-//             }],
-//             'no-console': 'warn',
-//             'no-debugger': 'error',
-//             'no-param-reassign': 'error',
-//             'react/react-in-jsx-scope': 'off',
-//             'simple-import-sort/exports': 'error',
-//             'simple-import-sort/imports': ['error', {
-//                 'groups': [
-//                     ['^react'],
-//                     ['^'],
-//                     ['^@mui'],
-//                     ['^@/', '^\\u0000@/'],
-//                 ]
-//             }],
-//         },
-//     },
-//     {
-//         files: ['vite.config.js'],
-//         languageOptions: {
-//             globals: globals.node,
-//         },
-//     },
-//     {
-//         files: ['**/*.test.{js,jsx}'],
-//         languageOptions: {
-//             globals: globals.jest,
-//         },
-//     },
-// ]

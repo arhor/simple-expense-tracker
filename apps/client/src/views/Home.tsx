@@ -1,14 +1,14 @@
 import { useState } from 'react';
-
-import { observer } from 'mobx-react-lite';
 import { useNavigate } from 'react-router';
 
-import ExpenseCreateDialog from '~/components/ExpenseCreateDialog';
-import ExpenseList from '~/components/ExpenseList';
-import ExpenseUpdateDialog from '~/components/ExpenseUpdateDialog';
-import { useStore } from '~/store';
+import { observer } from 'mobx-react-lite';
 
-const Expenses = () => {
+import ExpenseCreateDialog from '@/components/ExpenseCreateDialog';
+import ExpenseList from '@/components/ExpenseList';
+import ExpenseUpdateDialog from '@/components/ExpenseUpdateDialog';
+import { useStore } from '@/store';
+
+const Home = observer(function Home() {
     const [ createDialogOpen, setCreateDialogOpen ] = useState(false);
     const [ updateDialogOpen, setUpdateDialogOpen ] = useState(false);
     const [ currentExpenseId, setCurrentExpenseId ] = useState<number | null>(null);
@@ -63,6 +63,6 @@ const Expenses = () => {
             />
         </>
     );
-};
+})
 
-export default observer(Expenses);
+export default Home;
