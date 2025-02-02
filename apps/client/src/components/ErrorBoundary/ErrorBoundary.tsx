@@ -1,6 +1,7 @@
 import { Component, ErrorInfo, ReactNode } from 'react';
+import { Translation } from 'react-i18next';
 
-import StatelessWidget from '~/components/StatelessWidget';
+import { StatelessWidget } from '@/components';
 
 const DEFAULT_TITLE = 'Ups, something went wrong...';
 const DEFAULT_DESCRIPTION = 'Please, contact system administrator if you have nothing else to do';
@@ -14,11 +15,12 @@ export type State = {
     errorInfo: ErrorInfo | null;
 };
 
-class ErrorBoundary extends Component<Props, State> {
-    state: State = {
+// eslint-disable-next-line no-unused-vars
+class ErrorBoundaryWithTranslation extends Component<Props & { t: (arg0: string) => string }, State> {
+    state = {
         error: null,
         errorInfo: null,
-    };
+    } as State;
 
     static getDerivedStateFromError(error: Error) {
         return { error };
@@ -30,11 +32,13 @@ class ErrorBoundary extends Component<Props, State> {
 
     render() {
         const { error, errorInfo } = this.state;
+        const { t } = this.props;
 
         if (errorInfo) {
-            const [ title, description ] = process.env.NODE_ENV === 'development'
-                ? [ error?.toString() ?? DEFAULT_TITLE, errorInfo.componentStack ]
-                : [ DEFAULT_TITLE, DEFAULT_DESCRIPTION ];
+            // eslint-disable-next-line no-undef
+            const [title, description] = process?.env?.NODE_ENV === 'development'
+                ? [error?.toString() ?? DEFAULT_TITLE, errorInfo.componentStack ?? DEFAULT_DESCRIPTION]
+                : [t(DEFAULT_TITLE), t(DEFAULT_DESCRIPTION)];
 
             return <StatelessWidget title={title} description={description} />;
         }
@@ -42,4 +46,16 @@ class ErrorBoundary extends Component<Props, State> {
     }
 }
 
-export default ErrorBoundary;
+export default function ErrorBoundary(props: Props) {
+    return (
+        <Translation>
+            {
+                (t) => (
+                    <ErrorBoundaryWithTranslation t={t}>
+                        {props.children}
+                    </ErrorBoundaryWithTranslation>
+                )
+            }
+        </Translation>
+    );
+}
