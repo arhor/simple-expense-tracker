@@ -9,14 +9,14 @@ import Stack from '@mui/material/Stack';
 import { getIconByName } from '@/services/icon-component-service';
 import { useStore } from '@/store';
 
-const AuthProviderList = () => {
+const AuthProviderList = observer(() => {
     const { app } = useStore();
 
     useEffect(() => {
         autorun(() => {
             app.fetchAuthProviders();
         });
-    }, []);
+    }, [app]);
 
     return (
         <Stack direction="row" alignItems="center" spacing={2} sx={{ padding: 2 }}>
@@ -31,6 +31,6 @@ const AuthProviderList = () => {
             })}
         </Stack>
     );
-};
+});
 
-export default observer(AuthProviderList);
+export default AuthProviderList;

@@ -94,13 +94,16 @@ spring:
     activate:
       on-profile: dev
     import:
-      - optional:file:.env[.properties]
-      - optional:file:.env.local[.properties]
-      - optional:file:../.env[.properties]
-      - optional:file:../.env.local[.properties]
+      - optional:file:${project.rootDir}/.env[.properties]
+      - optional:file:${project.rootDir}/../.env[.properties]
   cache:
     caffeine:
       spec: 'initialCapacity=100,maximumSize=500,expireAfterAccess=300s,recordStats'
 
 application-props:
   log-method-execution: true
+
+tracing:
+  method-execution-logging:
+    enabled: true
+    level: debug
