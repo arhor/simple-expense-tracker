@@ -1,5 +1,6 @@
-import { observer } from 'mobx-react-lite';
 import { useTranslation } from 'react-i18next';
+
+import { observer } from 'mobx-react-lite';
 
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
@@ -10,12 +11,12 @@ import { useTheme } from '@mui/material/styles';
 import Switch from '@mui/material/Switch';
 import Typography from '@mui/material/Typography';
 
-import { useAppThemeControl } from '@/AppThemeProvider';
+import { useAppThemeControl } from '@/theme';
 
 const AppSettings = () => {
     const theme = useTheme();
     const { t } = useTranslation();
-    const { toggleColorMode } = useAppThemeControl();
+    const { switchColorMode } = useAppThemeControl();
 
     return (
         <Grid container justifyContent="center">
@@ -40,7 +41,7 @@ const AppSettings = () => {
                                     control={
                                         <Switch
                                             checked={theme.palette.mode === 'dark'}
-                                            onChange={toggleColorMode}
+                                            onChange={switchColorMode}
                                         />
                                     }
                                 />

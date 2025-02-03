@@ -25,7 +25,7 @@ const buttons = [
 
 export default function Footer() {
     const { pathname } = useLocation();
-    const [value, setValue] = useState();
+    const [value, setValue] = useState<number>();
 
     useEffect(() => {
         setValue(buttons.findIndex(it => it.path == pathname));

@@ -11,7 +11,7 @@ import { Optional } from '@/utils/core-utils';
 const Loading = Loader;
 const REACT_LAZY_TYPE = Symbol.for('react.lazy');
 
-function determineNameOf(component: ComponentType<*>) {
+function determineNameOf<T extends JSX.IntrinsicAttributes>(component: ComponentType<T>) {
     return component.displayName
         || component.name
         || 'AnonymousComponent';
@@ -22,7 +22,7 @@ function authorized(authenticated: boolean | null | undefined, authorities: stri
         && requiredAuthorities.every(auth => authorities.includes(auth));
 }
 
-export function withProtection<T extends JSX.IntrinsicAttributes>(Component: ComponentType, authorities: string[]) {
+export function withProtection<T extends JSX.IntrinsicAttributes>(Component: ComponentType<T>, authorities: string[]) {
     const ProtectedComponent = (props: T) => {
         const [loading, setLoading] = useState(true);
         const { user } = useStore();

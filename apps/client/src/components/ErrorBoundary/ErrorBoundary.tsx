@@ -1,6 +1,8 @@
 import { Component, ErrorInfo, ReactNode } from 'react';
 import { Translation } from 'react-i18next';
 
+import log from 'loglevel';
+
 import { StatelessWidget } from '@/components';
 
 const DEFAULT_TITLE = 'Ups, something went wrong...';
@@ -35,12 +37,13 @@ class ErrorBoundaryWithTranslation extends Component<Props & { t: (arg0: string)
         const { t } = this.props;
 
         if (errorInfo) {
-            // eslint-disable-next-line no-undef
-            const [title, description] = process?.env?.NODE_ENV === 'development'
-                ? [error?.toString() ?? DEFAULT_TITLE, errorInfo.componentStack ?? DEFAULT_DESCRIPTION]
-                : [t(DEFAULT_TITLE), t(DEFAULT_DESCRIPTION)];
-
-            return <StatelessWidget title={title} description={description} />;
+            log.error(error?.toString(), errorInfo.componentStack);
+            return (
+                <StatelessWidget
+                    title={t(DEFAULT_TITLE)}
+                    description={t(DEFAULT_DESCRIPTION)}
+                />
+            );
         }
         return this.props.children;
     }
