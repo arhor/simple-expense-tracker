@@ -8,8 +8,6 @@ import { useSnackbar } from 'notistack';
 import Container from '@mui/material/Container';
 
 import { Footer, Header, Loader } from '@/components';
-import AppBar from '@/components/AppBar';
-import AppNav from '@/components/AppNav';
 import { useStore } from '@/store';
 
 function Layout() {
@@ -29,7 +27,6 @@ function Layout() {
 
     return (
         <>
-            <AppBar />
             <Header />
             <Container component="main" sx={{ p: 5 }}>
                 <Suspense fallback={<Loader />}>
@@ -37,7 +34,6 @@ function Layout() {
                 </Suspense>
             </Container>
             <Footer />
-            <AppNav />
         </>
     );
 }

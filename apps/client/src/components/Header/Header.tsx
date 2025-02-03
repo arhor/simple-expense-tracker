@@ -1,5 +1,7 @@
 import { useTranslation } from 'react-i18next';
 
+import { observer } from 'mobx-react-lite';
+
 import AppBar from '@mui/material/AppBar';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import { styled, useTheme } from '@mui/material/styles';
@@ -11,7 +13,7 @@ import { useAppThemeControl } from '@/theme';
 
 const Offset = styled('div')(({ theme }) => theme.mixins.toolbar);
 
-export default function Header() {
+const Header = observer(() => {
     const theme = useTheme();
     const { t } = useTranslation();
     const { switchColorMode } = useAppThemeControl();
@@ -37,4 +39,6 @@ export default function Header() {
             <Offset />
         </>
     );
-}
+});
+
+export default Header;

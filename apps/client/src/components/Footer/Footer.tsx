@@ -1,25 +1,25 @@
 import { useEffect, useState } from 'react';
 import { Link as RouterLink, useLocation } from 'react-router-dom';
 
-import ForumIcon from '@mui/icons-material/Forum';
-import UserAddIcon from '@mui/icons-material/PersonAdd';
-import PostAddIcon from '@mui/icons-material/PostAdd';
+import BarChartIcon from '@mui/icons-material/BarChart';
+import CurrencyExchangeIcon from '@mui/icons-material/CurrencyExchange';
+import SettingsIcon from '@mui/icons-material/Settings';
 import BottomNavigation from '@mui/material/BottomNavigation';
 import BottomNavigationAction from '@mui/material/BottomNavigationAction';
 import Paper from '@mui/material/Paper';
 
 const buttons = [
     {
-        icon: ForumIcon,
+        icon: CurrencyExchangeIcon,
         path: '/',
     },
     {
-        icon: UserAddIcon,
-        path: '/create-user',
+        icon: BarChartIcon,
+        path: '/reports',
     },
     {
-        icon: PostAddIcon,
-        path: '/create-post',
+        icon: SettingsIcon,
+        path: '/settings',
     },
 ];
 
