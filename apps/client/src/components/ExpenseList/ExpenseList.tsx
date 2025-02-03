@@ -5,8 +5,8 @@ import { observer } from 'mobx-react-lite';
 
 import Grid from '@mui/material/Grid';
 
-import Expense from '~/components/Expense';
-import { useStore } from '~/store';
+import Expense from '@/components/Expense';
+import { useStore } from '@/store';
 
 export type Props = {
     onCreate: () => void;

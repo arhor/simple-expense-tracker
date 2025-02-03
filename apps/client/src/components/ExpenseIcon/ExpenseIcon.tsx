@@ -1,5 +1,5 @@
-import { getIconByName } from '~/services/icon-component-service';
-import { Optional } from '~/utils/core-utils';
+import { getIconByName } from '@/services/icon-component-service';
+import { Optional } from '@/utils/core-utils';
 
 export type Props = {
     icon: Optional<string>;

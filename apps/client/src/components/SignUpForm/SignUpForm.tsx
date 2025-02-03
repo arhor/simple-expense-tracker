@@ -1,7 +1,7 @@
 import { FormEvent, useState } from 'react';
+import { Link as RouterLink, useNavigate } from 'react-router-dom';
 
 import { observer } from 'mobx-react-lite';
-import { Link as RouterLink, useNavigate } from 'react-router-dom';
 
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Avatar from '@mui/material/Avatar';
@@ -12,10 +12,10 @@ import Link from '@mui/material/Link';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 
-import { UserRequestDTO } from '~/generated/UserRequestDTO';
-import { useStore } from '~/store';
-import { Optional } from '~/utils/core-utils';
-import { defineValidator, formIsValid } from '~/utils/validation-utils';
+import { UserRequestDTO } from '@/generated/UserRequestDTO';
+import { useStore } from '@/store';
+import { Optional } from '@/utils/core-utils';
+import { defineValidator, formIsValid } from '@/utils/validation-utils';
 
 const USERNAME_REG_EXP = /^[a-zA-Z0-9]{6,20}$/;
 const PASSWORD_REG_EXP = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])[a-zA-Z0-9]{8,20}$/;

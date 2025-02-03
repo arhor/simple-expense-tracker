@@ -8,8 +8,8 @@ import DialogTitle from '@mui/material/DialogTitle';
 import Grid from '@mui/material/Grid';
 import TextField from '@mui/material/TextField';
 
-import { ExpenseRequestDTO } from '~/generated/ExpenseRequestDTO';
-import { defineValidator, formIsValid } from '~/utils/validation-utils';
+import { ExpenseRequestDTO } from '@/generated/ExpenseRequestDTO';
+import { defineValidator, formIsValid } from '@/utils/validation-utils';
 
 const validator = defineValidator<ExpenseRequestDTO>({
     name: [

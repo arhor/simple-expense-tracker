@@ -1,9 +1,9 @@
 import log from 'loglevel';
 import { action, makeObservable, observable, runInAction } from 'mobx';
 
-import client from '~/api/client.js';
-import { AuthProviderDTO } from '~/generated/AuthProviderDTO';
-import { Store } from '~/store/Store';
+import client from '@/api/client.js';
+import { AuthProviderDTO } from '@/generated/AuthProviderDTO';
+import { Store } from '@/store/Store';
 
 export default class AppStore {
 
