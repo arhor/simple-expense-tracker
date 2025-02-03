@@ -6,8 +6,8 @@ import { observer } from 'mobx-react-lite';
 import IconButton from '@mui/material/IconButton';
 import Stack from '@mui/material/Stack';
 
-import { getIconByName } from '~/services/icon-component-service';
-import { useStore } from '~/store';
+import { getIconByName } from '@/services/icon-component-service';
+import { useStore } from '@/store';
 
 const AuthProviderList = () => {
     const { app } = useStore();
