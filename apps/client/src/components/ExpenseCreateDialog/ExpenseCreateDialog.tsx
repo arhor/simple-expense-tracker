@@ -13,9 +13,9 @@ import Slide from '@mui/material/Slide';
 import TextField from '@mui/material/TextField';
 import { TransitionProps } from '@mui/material/transitions';
 
-import { ExpenseRequestDTO } from '~/generated/ExpenseRequestDTO';
-import { useStore } from '~/store';
-import { defineValidator, formIsValid } from '~/utils/validation-utils';
+import { ExpenseRequestDTO } from '@/generated/ExpenseRequestDTO';
+import { useStore } from '@/store';
+import { defineValidator, formIsValid } from '@/utils/validation-utils';
 
 const Transition = forwardRef(function Transition(
     props: TransitionProps & {
