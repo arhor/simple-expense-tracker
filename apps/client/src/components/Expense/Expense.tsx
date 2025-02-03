@@ -4,7 +4,7 @@ import IconButton from '@mui/material/IconButton';
 import Tooltip from '@mui/material/Tooltip';
 import Typography from '@mui/material/Typography';
 
-import ExpenseIcon from '~/components/ExpenseIcon';
+import ExpenseIcon from '@/components/ExpenseIcon';
 
 // TODO: consider non-optional props consistent with model
 export type Props = {
