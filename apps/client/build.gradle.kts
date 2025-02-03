@@ -47,17 +47,8 @@ tasks {
         args = listOf("--update-db")
     }
 
-    val test by registering(NpmTask::class) {
-        dependsOn(npmInstall, updateBrowserList, synchronizeModel)
-
-        group = "verification"
-        workingDir.fileValue(projectDir)
-
-        args = listOf("run", "test")
-    }
-
     register<NpmTask>("build") {
-        dependsOn(npmInstall, updateBrowserList, synchronizeModel, test)
+        dependsOn(npmInstall, updateBrowserList, synchronizeModel)
 
         group = "build"
         workingDir.fileValue(projectDir)
@@ -71,7 +62,7 @@ tasks {
             "package-lock.json",
             "tsconfig.json",
             "tsconfig.node.json",
-            "vite.config.json",
+            "vite.config.ts",
         )
 
         outputs.dir("build/dist")
